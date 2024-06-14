@@ -26,13 +26,13 @@ function SignInSide() {
             email: email.trim(),
             password: password.trim()
         }
-        // axios
-        // .post('/api/account/login', userLogin)
-        // .then(res => {
-
-        // })
-        // .catch(err => console.log(err)) 
-        navigate("/")
+        axios
+        .post('/api/account/login', userLogin)
+        .then(res => {
+            console.log(res.data)
+        })
+        .catch(err => console.log(err)) 
+        // navigate("/")
       }
    }
     
@@ -45,11 +45,11 @@ function SignInSide() {
                   <p className="text-xl text-white font-normal">Một nền tảng, mọi kênh bán hàng <br />
                   Bạn muốn bán ở đâu, Sapo sẽ giúp bạn tăng trưởng doanh thu và mở rộng không giới hạn</p>
               </div>
-              <img className="w-full h-full object-cover cursor-pointer"  src="https://i.pinimg.com/736x/17/a4/e8/17a4e8d1347f6bbaf2ff6333a9d1ce19.jpg" alt="" onClick={() => navigate('/')}/>
+              <img className="w-full h-full object-cover"  src="https://i.pinimg.com/736x/17/a4/e8/17a4e8d1347f6bbaf2ff6333a9d1ce19.jpg" alt="" />
           </div>
           <div className="w-1/2  h-full bg-[#f5f5f5] flex flex-col p-20 justify-between items-center">
               <h1 className=" text-xl text-[#060606] font-semibold ">
-                <img src={LOGO} alt="" className="w-20 max-w-[500px] rounded-full" />
+                <img src={LOGO} alt="" className="w-20 max-w-[500px]  cursor-pointer rounded-full" onClick={() => navigate('/')}/>
               </h1>
 
               <div className="w-full flex flex-col ">

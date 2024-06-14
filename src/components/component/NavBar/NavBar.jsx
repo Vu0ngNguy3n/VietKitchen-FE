@@ -3,6 +3,7 @@ import LOGO from "../../../assests/VIET.png"
 import { GrLanguage } from "react-icons/gr";
 import { FaBars, FaXmark } from "react-icons/fa6";
 import { useState } from "react";
+import { Link } from "react-scroll";
 
 
 
@@ -14,15 +15,15 @@ const NavBar = () => {
         setIsMenuOpen(!isMenuOpen);
     }
     const navItems = [
-        { link: "Overview", path: "home" },
-        { link: "Feature", path: "feature" },
-        { link: "About", path: "about" },
-        { link: "Pricing", path: "pricing" },
+        { link: "Tổng quát", path: "home" },
+        { link: "Chức năng", path: "feature" },
+        { link: "Nền tảng", path: "about" },
+        { link: "Bảng giá", path: "pricing" },
     ]
 
     return (
         <>
-            <nav className="bg-white md:px-14 p-4 max-w-screen-2xl mx-auto text-primary fixed top-0 right-0 left-0" >
+            <nav className="bg-white md:px-14 p-4 w-full mx-auto text-primary fixed top-0 right-0 left-0" >
                 <div className="text-lg container mx-auto flex justify-between items-cente font-medium">
                     <div className="flex space-x-14 items-center">
                         <a href="#" className="text-2x1 font-semibold flex items-center space-x-3 text-primary">
@@ -33,14 +34,14 @@ const NavBar = () => {
                         <ul className="md:flex space-x-12 hidden">
                             {
                                 navItems.map(({ link, path }) =>
-                                    <a className="block hover:text-gray-300" key={link} onClick={() => navigate(`/${path}`)}>{link}</a>
+                                    <Link className="block hover:text-gray-300 cursor-pointer" activeClass="active" spy={true} smooth={true} offset={-100} key={link} to={path}>{link}</Link>
                                 )}
                         </ul>
                     </div>
 
                     <div className="space-x-12 hidden md:flex items-center">
                         <a href="" className="hidden lg:flex items-center hover:text-secondary"><GrLanguage className="mr-2" />Language</a>
-                        <button className="bg-secondary py-2 px-4 transition-all duration-300 rounded hover:text-white hover:bg-indigo-600 ">Sign Up</button>
+                        <button className="bg-secondary py-2 px-4 transition-all duration-300 rounded hover:text-white hover:bg-indigo-600 " onClick={() => navigate("/login")}>Đăng nhập</button>
                     </div>
 
                     <div className="md:hidden">
@@ -58,7 +59,10 @@ const NavBar = () => {
             <div className={`space-y-4 px-4 text-xl pt-24 pb-5 bg-secondary ${isMenuOpen ? 'block fixed top-0 right-0 left-0' : "hidden"}`}>
                 {
                     navItems.map(({ link, path }) =>
-                        <a className="block hover:text-gray-300" key={link} onClick={() => navigate(`/${path}`)}>{link}</a>
+                        <Link className="block hover:text-gray-300 cursor-pointer text-white" activeClass="active" 
+                            spy={true} smooth={true} offset={-80} key={link} to={path}
+                            onClick={toggleMenu}
+                        >{link}</Link>
                     )}
             </div>
         </>
