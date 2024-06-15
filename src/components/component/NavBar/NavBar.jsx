@@ -2,14 +2,29 @@ import { useNavigate } from "react-router";
 import LOGO from "../../../assests/VIET.png"
 import { GrLanguage } from "react-icons/gr";
 import { FaBars, FaXmark } from "react-icons/fa6";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-scroll";
+import { toast } from "react-toastify";
 
 
 
 const NavBar = () => {
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [userStorage, setUserStorage] = useState();
+
+    useEffect(() =>{
+        const storedUser = localStorage.getItem('user');
+        const user = storedUser ? JSON.parse(storedUser) : null
+        setUserStorage(user);
+    },[])
+
+    const hanldeLogout = () => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        setUserStorage(null);
+        toast.success("Đăng xuất thành công")
+    }
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -40,8 +55,8 @@ const NavBar = () => {
                     </div>
 
                     <div className="space-x-12 hidden md:flex items-center">
-                        <a href="" className="hidden lg:flex items-center hover:text-secondary"><GrLanguage className="mr-2" />Language</a>
-                        <button className="bg-secondary py-2 px-4 transition-all duration-300 rounded hover:text-white hover:bg-indigo-600 " onClick={() => navigate("/login")}>Đăng nhập</button>
+                        {userStorage !== null ?<a  className="hidden lg:flex items-center hover:text-secondary cursor-pointer" onClick={() => toast.success("success")}>Hello, {userStorage?.username}</a> : ''}
+                        {userStorage !== null ?<button className="bg-secondary py-2 px-4 transition-all duration-300 rounded hover:text-white hover:bg-indigo-600 " onClick={() => hanldeLogout()}>Đăng xuất</button>:<button className="bg-secondary py-2 px-4 transition-all duration-300 rounded hover:text-white hover:bg-indigo-600 " onClick={() => navigate("/login")}>Đăng nhập</button>}
                     </div>
 
                     <div className="md:hidden">

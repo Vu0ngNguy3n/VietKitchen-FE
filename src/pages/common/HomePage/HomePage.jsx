@@ -6,9 +6,12 @@ import About from "../../../components/component/About/About"
 import Pricing from "../../../components/component/Pricing/Pricing"
 import Newsletter from "../../../components/component/Newsletter/Newsletter"
 import Footer from "../../../components/component/Footer/Footer"
+import { useEffect, useState } from "react"
 
 
 function HomePage() {
+    
+
     return (
         <>
             <NavBar />
