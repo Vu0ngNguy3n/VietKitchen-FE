@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 nav{
-  z-index: 10001 !important;
+  z-index: 10 !important;
 }
 
 .gardientBg{
@@ -14,4 +14,8 @@ nav{
 
 .btnHome{
   @apply py-3 px-8 bg-secondary font-semibold text-white rounded hover:bg-primary transition-all duration-300
+}
+
+.toastContainerDefault{
+  margin-top: 60px;
 }

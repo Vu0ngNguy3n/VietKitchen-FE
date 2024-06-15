@@ -2,15 +2,59 @@ import { useNavigate } from "react-router";
 import GOOGLE_ICON from "../../../assests/Google__G__logo.png"
 import LOGO from "../../../assests/VIET.png"
 import { useState } from "react";
+import { toast } from "react-toastify";
+import validator from "validator";
 
 function SignUp() {
   const navigate = useNavigate()
   const [codeVerify, setCodeVerify] = useState();
   const [isVerifying, setIsVerifying] = useState(false);
   const [confirmCode, setConfirmCode] = useState('')
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState();
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isDisableInput, setIsDisableInput] = useState(true)
+  const [isValidEmail, setIsValidEmail] = useState(true);
+  const [isValidPhone, setIsValidPhone] = useState(true);
 
   const handleSignUp = () => {
-    navigate("/login")
+    if (username.trim() === '') {
+      toast.warn("Họ và tên đang để trống")
+    } else if (email.trim() === '') {
+      toast.warn("Email sai định dạng")
+    } else if (phoneNumber.trim() === '') {
+      toast.warn("Số điện thoại đang để trống")
+    } else if (password.trim() === '' || confirmPassword === '') {
+      toast.warn("Mật khẩu không được để trống")
+    } else if (password.trim() !== confirmPassword.trim()) {
+      toast.warn("Xác nhận mật khẩu không đúng")
+    } else {
+      setIsVerifying(!isVerifying)
+      setIsDisableInput(false)
+      toast(isValidEmail)
+    }
+    // navigate("/login")
+  }
+
+  const handleEmailChange = (e) => {
+    const inputEmail = e.target.value;
+    setEmail(inputEmail);
+    const isValid = validator.isEmail(inputEmail);
+    setIsValidEmail(isValid)
+  }
+
+  const handleChangePhoneNumber = (e) => {
+    const inputPhone = e.target.value;
+    setPhoneNumber(inputPhone);
+
+    const isValid = validator.isMobilePhone(inputPhone, 'vi-VN');
+    setIsValidPhone(isValid)
+  }
+
+  const handleVerify = async () => {
+    setIsVerifying(!isVerifying);
   }
 
   return (
@@ -32,28 +76,60 @@ function SignUp() {
             <input
               type="text"
               placeholder="Họ và tên"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none  transition duration-500 ease-in-out  focus:outline-none focus:border-blue-700"
             />
             <input
               type="email"
               placeholder="Email"
+              value={email}
+              onChange={handleEmailChange}
               className="w-full text-black py-2 my-2 bg-transparent border-b border-black  transition duration-500 ease-in-out outline-none  focus:outline-none focus:border-blue-700"
             />
+            {!isValidEmail && (
+              <p className="mt-2 text-sm text-red-500" id="email-error">
+                Email sai định dạng.
+              </p>
+            )}
             <input
-              type="number"
+              type="text"
               placeholder="Số điện thoại"
+              value={phoneNumber}
+              onChange={handleChangePhoneNumber}
               className="w-full text-black py-2 my-2 bg-transparent border-b border-black  transition duration-500 ease-in-out outline-none focus:outline-none focus:border-blue-700"
             />
+            {!isValidPhone && (
+              <p className="mt-2 text-sm text-red-500" id="phone-error">
+                Số điện thoại sai định dạng
+              </p>
+            )}
             <input
               type="password"
               placeholder="Mật khẩu"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
               className="w-full text-black py-2 my-2 bg-transparent border-b border-black  transition duration-500 ease-in-out outline-none focus:outline-none focus:border-blue-700"
             />
             <input
               type="password"
               placeholder="Xác nhận mật khẩu"
+              value={confirmPassword}
+              onChange={e => setConfirmPassword(e.target.value)}
               className="w-full text-black py-2 my-2 bg-transparent border-b border-black  transition duration-500 ease-in-out outline-none focus:outline-none focus:border-blue-700"
             />
+            <div className={`w-full py-2 my-2 ${isDisableInput ? 'hidden' : ''}`}>
+              <input
+                type="text"
+                placeholder="Mã xác thực"
+                className=" text-black  bg-transparent border-b border-black outline-none  transition duration-500 ease-in-out  focus:outline-none focus:border-blue-700"
+              />
+              <button
+                disabled={!isVerifying}
+                onClick={handleVerify}
+                className="bg-secondary py-2 px-4 transition-all duration-300 rounded hover:text-white hover:bg-indigo-600 ml-4 disabled:cursor-not-allowed"
+              >Gửi mã</button>
+            </div>
           </div>
 
 
