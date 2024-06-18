@@ -6,6 +6,12 @@ import Permissions from "../pages/admin/Permissions"
 import Packages from "../pages/admin/Packages"
 import AccountsManagements from "../pages/admin/AccountManagement"
 import AccountDetail from "../pages/admin/AccountDetail"
+import Dashboardmanager from "../pages/manager/DashboardManager"
+import StaffManager from "../pages/manager/StaffManager"
+import CustomerManager from "../pages/manager/CustomerManager"
+import DishesManagement from "../pages/manager/DishesManagement"
+import InvoiceManagement from "../pages/manager/InvoiceManagerment"
+import CategoryManagement from "../pages/manager/CategoryManagement"
 
 const publicRoutes = [
     {path: '/login', component: SignInSide},
@@ -16,6 +22,13 @@ const publicRoutes = [
     {path: '/admin/packages', component: Packages},
     {path: '/admin/accountsManagement', component: AccountsManagements},
     {path: '/admin/accountDetail', component: AccountDetail},
+    {path: '/manager/dashboard', component: Dashboardmanager},
+    {path: '/manager/staffs', component: StaffManager},
+    {path: '/manager/customers', component: CustomerManager},
+    {path: '/manager/dishes', component: DishesManagement},
+    {path: '/manager/invoices', component: InvoiceManagement},
+    {path: '/manager/categories', component: CategoryManagement},
+
 ]
 
 const adminRoutes = [

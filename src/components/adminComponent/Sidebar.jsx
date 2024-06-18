@@ -13,7 +13,7 @@ const Sidebar = () => {
             </div>
             <div className='flex items-center gap-[15px] py-[20px] border-b-[1px] transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary border-[#EDEDED]/[0.3] cursor-pointer ' onClick={() => navigate('/admin/dashboard')}>
                 {/* <FaTachometerAlt color='white' /> */}
-                <p className='text-[14px] leading-[20px] font-bold text-white '>Thống kê</p>
+                <p className='text-[14px] leading-[20px] font-bold text-white '>Tổng quan</p>
             </div>
             <div className='pt-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
                 <p className='text-[10px] font-extrabold leading-[16px] text-white/[0.4]'> Dịch vụ</p>
