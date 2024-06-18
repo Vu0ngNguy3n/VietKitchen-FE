@@ -36,7 +36,7 @@ function SignInSide() {
                             email: user.email
                         }
                         localStorage.setItem('user',JSON.stringify(userStorage));
-                        console.log('Login successfully');
+                        console.log(user);
                         // console.log(user);
                         toast.success("Đăng nhập thành công")
                         navigate("/")
