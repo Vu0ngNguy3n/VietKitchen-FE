@@ -1,9 +1,10 @@
 import React from 'react'
 import LOGO from "../../assests/VIET.png"
-import { FaFileInvoiceDollar, FaUserAlt, FaWrench, FaStickyNote, FaRegChartBar, FaRegCalendarAlt, FaChevronRight, FaChevronLeft, FaBolt, FaUserFriends } from "react-icons/fa"
+import { FaFileInvoiceDollar, FaUserAlt, FaWrench, FaListAlt , FaStickyNote, FaRegChartBar, FaRegCalendarAlt, FaChevronRight, FaChevronLeft, FaBolt, FaUserFriends } from "react-icons/fa"
 import { MdCategory } from "react-icons/md";
 import { BiSolidDish } from "react-icons/bi";
 import { useNavigate } from 'react-router'
+import { PiUniteFill } from "react-icons/pi";
 
 const SidebarManager = () => {
 
@@ -43,6 +44,18 @@ const SidebarManager = () => {
                     </div>
                     {/* <FaChevronRight color='white' /> */}
                 </div>
+                
+
+            </div>
+            <div className='pt-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
+                <p className='text-[10px] font-extrabold leading-[16px] text-white/[0.4]'> Mặt hàng</p>
+                <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'
+                    onClick={() => navigate("/manager/dishes")}>
+                    <div className='flex items-center gap-[10px]'>
+                        <BiSolidDish color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Món ăn</p>
+                    </div>
+                    {/* <FaChevronRight color='white' /> */}
+                </div>
                 <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'
                     onClick={() => navigate("/manager/categories")}>
                     <div className='flex items-center gap-[10px]'>
@@ -53,26 +66,18 @@ const SidebarManager = () => {
                 <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'
                     onClick={() => navigate("/manager/dishes")}>
                     <div className='flex items-center gap-[10px]'>
-                        <BiSolidDish color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Món ăn</p>
+                        <FaListAlt  color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Combo</p>
                     </div>
                     {/* <FaChevronRight color='white' /> */}
                 </div>
-            </div>
-            <div className='pt-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
-                <p className='text-[10px] font-extrabold leading-[16px] text-white/[0.4]'> Người dùng</p>
                 <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'
-                    onClick={() => navigate("/admin/accountsManagement")}>
+                    onClick={() => navigate("/manager/dishes")}>
                     <div className='flex items-center gap-[10px]'>
-                        <FaStickyNote color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Danh sách</p>
+                        <PiUniteFill color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Đơn vị tính</p>
                     </div>
                     {/* <FaChevronRight color='white' /> */}
                 </div>
-                <div className='flex items-center gap-[10px] py-[15px]  cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'>
-                    <FaRegChartBar color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Charts</p>
-                </div>
-                <div className='flex items-center gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'>
-                    <FaRegCalendarAlt color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Tables</p>
-                </div>
+                
             </div>
             <div className='pt-[15px]'>
                 <div className='flex items-center justify-center' onClick={() => navigate("/")}>
