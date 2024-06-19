@@ -11,9 +11,15 @@ function SignInSide() {
   const [typeLogin, setTypeLogin] = useState(1);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('') ;
+  const [staffUsername, setStaffUsername] = useState('');
 
   const handleChangeTypeLogin = (type) => {
     setTypeLogin(type);
+    setPassword('');
+    setEmail('');
+    setPhoneNumber('');
+    setStaffUsername('');
   };
 
   const handleLogin = async () => {
@@ -83,7 +89,7 @@ function SignInSide() {
             <h3 className="text-3xl font-semibold mb-2">Đăng nhập</h3>
             <p className="text-base mb-2 text-blue-500">
               Xin chào!{' '}
-              {typeLogin === 1 ? 'Đăng nhập với tư cách quản trị viên hệ thống' : 'Đăng nhập với tư cách nhân viên'}
+              {typeLogin === 1 ? 'Đăng nhập với tư cách quản trị viên hệ thống / chủ cửa hàng' : 'Đăng nhập với tư cách nhân viên'}
             </p>
           </div>
           <div className="flex w-full justify-around ">
@@ -93,7 +99,7 @@ function SignInSide() {
               }`}
               onClick={() => handleChangeTypeLogin(1)}
             >
-              <h3 className="font-semibold">Chủ nhà hàng/ Quản lý</h3>
+              <h3 className="font-semibold">Quản trị viên/ Quản lý nhà hàng</h3>
             </div>
             <div
               className={`border-b-2 pb-1 cursor-pointer transition duration-500 ease-in-out ${
@@ -108,14 +114,31 @@ function SignInSide() {
           <div className="w-full flex flex-col mt-4">
             <input
               type="email"
-              placeholder={typeLogin === 1 ? 'Email' : 'Tên đăng nhập'}
-              className="w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none  focus:outline-none"
+              placeholder={'Email'}
+              className={`w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none  focus:outline-none ${typeLogin===2?'hidden':''}`}
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+            <input
+              type="text"
+              placeholder={'Số điện thoại nhà hàng'}
+              className={`w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none  focus:outline-none ${typeLogin===1?'hidden':''}`}
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder={'Tên đăng nhập'}
+              className={`w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none  focus:outline-none ${typeLogin===1?'hidden':''}`}
+              value={staffUsername}
+              onChange={(e) => setStaffUsername(e.target.value)}
+            />
+            
             <input
               type="password"
               placeholder="Mật khẩu"
               className="w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none focus:outline-none"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>

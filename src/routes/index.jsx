@@ -9,9 +9,9 @@ import AccountDetail from "../pages/admin/AccountDetail"
 import Dashboardmanager from "../pages/manager/DashboardManager"
 import StaffManager from "../pages/manager/StaffManager"
 import CustomerManager from "../pages/manager/CustomerManager"
-import DishesManagement from "../pages/manager/DishesManagement"
 import InvoiceManagement from "../pages/manager/InvoiceManagerment"
 import CategoryManagement from "../pages/manager/CategoryManagement"
+import DishesManagement from "../pages/manager/DishesManagement/DishesManagement"
 
 const publicRoutes = [
     {path: '/login', component: SignInSide},
