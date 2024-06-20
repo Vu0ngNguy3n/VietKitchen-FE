@@ -36,6 +36,7 @@ function SignInSide() {
             const token = data.result.token;
             const user = jwtDecode(token);
             localStorage.setItem('token', token);
+            console.log(user)
             const userStorage = {
               username: user.sub,
               email: user.email,
