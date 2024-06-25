@@ -307,7 +307,7 @@ function SignUp() {
         <div className="absolute top-[20%] left-[10%] flex flex-col">
           <h1 className="text-lg text-white font-extrabold my-4">VietKitchen</h1>
           <p className="text-xl text-white font-normal">Một nền tảng, mọi kênh bán hàng <br />
-            Bạn muốn bán ở đâu, Sapo sẽ giúp bạn tăng trưởng doanh thu và mở rộng không giới hạn</p>
+            Bạn muốn bán ở đâu, VietKitchen sẽ giúp bạn tăng trưởng doanh thu và mở rộng không giới hạn</p>
         </div>
         <img className="w-full h-full object-cover" src="https://i.pinimg.com/736x/68/9c/b4/689cb4f26da487574a61e9af60e889a0.jpg" alt="" />
       </div>

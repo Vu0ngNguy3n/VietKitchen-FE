@@ -38,12 +38,12 @@ const Sidebar = () => {
                     </div>
                     {/* <FaChevronRight color='white' /> */}
                 </div>
-                <div className='flex items-center gap-[10px] py-[15px]  cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'>
+                {/* <div className='flex items-center gap-[10px] py-[15px]  cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'>
                     <FaRegChartBar color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Charts</p>
                 </div>
                 <div className='flex items-center gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'>
                     <FaRegCalendarAlt color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Tables</p>
-                </div>
+                </div> */}
             </div>
             <div className='pt-[15px]'>
                 <div className='flex items-center justify-center' onClick={( ) => navigate("/")}>
