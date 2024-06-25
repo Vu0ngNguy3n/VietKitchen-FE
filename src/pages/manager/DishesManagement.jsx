@@ -1,5 +1,5 @@
-import SidebarManager from "../../../components/managerComponent/SidebarManager"
-import HeaderManagerDashboard from "../../../components/managerComponent/HeaderManagerDashboard"
+import SidebarManager from "../../components/managerComponent/SidebarManager"
+import HeaderManagerDashboard from "../../components/managerComponent/HeaderManagerDashboard"
 import { IoMdAdd } from "react-icons/io";
 
 

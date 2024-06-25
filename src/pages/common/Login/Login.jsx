@@ -5,6 +5,7 @@ import LOGO from '../../../assests/VIET.png';
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
 import { toast } from 'react-toastify';
+import axiosInstance from '../../../utils/axiosInstance';
 
 function SignInSide() {
   const navigate = useNavigate();
@@ -36,14 +37,40 @@ function SignInSide() {
             const token = data.result.token;
             const user = jwtDecode(token);
             localStorage.setItem('token', token);
-            console.log(user)
             const userStorage = {
               username: user.sub,
               email: user.email,
+              role: user.scope,
+              accountId: user.accountId
             };
+            console.log(user);
             localStorage.setItem('user', JSON.stringify(userStorage));
             toast.success('Đăng nhập thành công');
-            navigate('/');
+            if(user.scope === "ADMIN"){
+              navigate("/admin/dashboard");
+            }else if(user.scope.includes("MANAGER")){
+
+              axiosInstance
+              .get(`/api/restaurant/account/${user.accountId}`)
+              .then(res => {
+                if(res.data.result === null){
+                  navigate('/manager/restaurantInformation')
+                }else{
+                  navigate("/manager/dashboard")
+                }
+              })
+              .catch((err) => {
+                if (err.response) {
+                  const errorRes = err.response.data;
+                  toast.error(errorRes.message);
+                } else if (err.request) {
+                  toast.error(err.request);
+                } else {
+                  toast.error(err.message);
+                }
+              })
+            }
+
           }
         })
         .catch((err) => {
@@ -66,7 +93,7 @@ function SignInSide() {
           <h1 className="text-lg text-white font-extrabold my-4">VietKitchen</h1>
           <p className="text-xl text-white font-normal">
             Một nền tảng, mọi kênh bán hàng <br />
-            Bạn muốn bán ở đâu, Sapo sẽ giúp bạn tăng trưởng doanh thu và mở rộng không giới hạn
+            Bạn muốn bán ở đâu, VietKitchen sẽ giúp bạn tăng trưởng doanh thu và mở rộng không giới hạn
           </p>
         </div>
         <img

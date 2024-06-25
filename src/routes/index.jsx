@@ -11,11 +11,12 @@ import StaffManager from "../pages/manager/StaffManager"
 import CustomerManager from "../pages/manager/CustomerManager"
 import InvoiceManagement from "../pages/manager/InvoiceManagerment"
 import CategoryManagement from "../pages/manager/CategoryManagement"
-import DishesManagement from "../pages/manager/DishesManagement/DishesManagement"
 import ComboManagement from "../pages/manager/ComboManagement"
 import UnitManagement from "../pages/manager/UnitManagement"
 import SettingManager from "../pages/manager/SettingManager"
 import RestaurantInformation from "../pages/manager/RestaurantInformation"
+import PackageDetail from "../pages/admin/PackageDetail"
+import DishesManagement from "../pages/manager/DishesManagement"
 
 const publicRoutes = [
     {path: '/login', component: SignInSide},
@@ -24,8 +25,9 @@ const publicRoutes = [
     {path: '/admin/dashboard', component: Dashboard},
     {path: '/admin/permissions', component: Permissions},
     {path: '/admin/packages', component: Packages},
+    {path: '/admin/packageDetail', component: PackageDetail},
     {path: '/admin/accountsManagement', component: AccountsManagements},
-    {path: '/admin/accountDetail', component: AccountDetail},
+    {path: '/admin/accountDetail/:accountId', component: AccountDetail},
     {path: '/manager/dashboard', component: Dashboardmanager},
     {path: '/manager/staffs', component: StaffManager},
     {path: '/manager/customers', component: CustomerManager},

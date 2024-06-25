@@ -1,38 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Dashboardview from "../../components/adminComponent/DashboardView"
 import Sidebar from "../../components/adminComponent/Sidebar"
 import { FaSearch, FaFileExport, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router";
+import axiosInstance from "../../utils/axiosInstance";
+import { toast } from "react-toastify";
 
 
 function AccountsManagements() {
 
     const [statusTable, setStatusTable] = useState("enable")
+    const [listUsers, setListUsers] = useState([]);
     const navigate = useNavigate();
 
-    const listUsers = [
-        {
-            username: "Đình Hoàn",
-            email: "dinhhoan0511@gmail.com",
-            restaurant: "VietKitchen",
-            packageName: "Trial",
-            isEnable: true
-        },
-        {
-            username: "Đình Hoàn",
-            email: "dinhhoan0511@gmail.com",
-            restaurant: "VietKitchen",
-            packageName: "Trial",
-            isEnable: true
-        },
-        {
-            username: "Đình Hoàn",
-            email: "dinhhoan0511@gmail.com",
-            restaurant: "VietKitchen",
-            packageName: "Trial",
-            isEnable: true
-        }
-    ]
+    useEffect(() => {
+        axiosInstance
+        .get("/api/account/manager")
+        .then(res => {
+            setListUsers(res.data.result);
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })
+    },[])
 
 
     return (
@@ -109,24 +106,24 @@ function AccountsManagements() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {listUsers.map((user, index) => (
-                                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    {listUsers?.map((user, index) => (
+                                        user?.status === true && <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" key={index}>
                                             <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {user.username}
+                                                {user?.username}
                                             </th>
                                             <td class="px-6 py-4">
-                                                {user.email}
+                                                {user?.email}
                                             </td>
                                             <td class="px-6 py-4">
-                                                {user.restaurant}
+                                                {user?.restaurant === null ? '' : user?.restaurant?.restaurantName}
                                             </td>
                                             <td class="px-6 py-4">
-                                                {user.packageName}
+                                                {user?.restaurant === null ? '' : user?.restaurant?.restaurantPackage?.packName}
                                             </td>
                                             <td class="px-6 py-4 flex justify-center">
                                                 <button
                                                     className="py-2 px-5 bg-secondary font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
-                                                    onClick={() => navigate('/admin/accountDetail')}
+                                                    onClick={() => navigate(`/admin/accountDetail/${user?.id}`)}
                                                 >
                                                     <FaEdit className="mr-1" />
                                                     Chỉnh sửa</button>
@@ -137,12 +134,32 @@ function AccountsManagements() {
                                                     className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
                                                 >
                                                     <FaEdit className="mr-1" />
-                                                    {user.isEnable === true ? "Vô hiệu hóa" : "Mở khóa"}
+                                                    {user?.isEnable === true ? "Vô hiệu hóa" : "Mở khóa"}
                                                 </button>
                                                 {/* <span class="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer">{user.isEnable === true ? "Vô hiệu hóa" : "Mở khóa"}</span> */}
                                             </td>
                                         </tr>
                                     ))}
+
+                                    {listUsers.length === 0 ?<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                            <th scope="row" class="px-6 py-4 font-medium text-red-900 whitespace-nowrap dark:text-white">
+                                                Không có người dùng
+                                            </th>
+                                            <td class="px-6 py-4">
+                                            </td>
+                                            <td class="px-6 py-4">
+                                            </td>
+                                            <td class="px-6 py-4">
+                                            </td>
+                                            <td class="px-6 py-4 flex justify-center">
+                                                
+                                                {/* <span class="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer">Chỉnh sửa</span> */}
+                                            </td>
+                                            <td class="px-6 py-4 flex-row justify-end">
+                                               
+                                                {/* <span class="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer">{user.isEnable === true ? "Vô hiệu hóa" : "Mở khóa"}</span> */}
+                                            </td>
+                                        </tr>:''}
 
                                 </tbody>
                             </table>
