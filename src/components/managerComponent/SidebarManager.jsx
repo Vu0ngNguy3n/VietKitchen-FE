@@ -1,6 +1,6 @@
 import React from 'react'
 import LOGO from "../../assests/VIET.png"
-import { FaFileInvoiceDollar, FaUserAlt, FaWrench, FaListAlt , FaStickyNote, FaRegChartBar, FaRegCalendarAlt, FaChevronRight, FaChevronLeft, FaBolt, FaUserFriends } from "react-icons/fa"
+import { FaFileInvoiceDollar, FaUserAlt, FaWrench, FaListAlt , FaStickyNote, FaRegChartBar, FaRegCalendarAlt, FaChevronRight, FaChevronLeft, FaBolt, FaUserFriends, FaMap } from "react-icons/fa"
 import { MdCategory } from "react-icons/md";
 import { BiSolidDish } from "react-icons/bi";
 import { useNavigate } from 'react-router'
@@ -24,6 +24,13 @@ const SidebarManager = () => {
             </div>
             <div className='pt-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
                 <p className='text-[10px] font-extrabold leading-[16px] text-white/[0.4]'> Quản lý</p>
+                <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'
+                    onClick={() => navigate("/manager/restaurantMap")}>
+                    <div className='flex items-center gap-[10px]'>
+                        <FaMap color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white' >Sơ đồ</p>
+                    </div>
+                    {/* <FaChevronRight color='white' /> */}
+                </div>
                 <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'
                     onClick={() => navigate("/manager/staffs")}>
                     <div className='flex items-center gap-[10px]'>
@@ -71,13 +78,7 @@ const SidebarManager = () => {
                     </div>
                     {/* <FaChevronRight color='white' /> */}
                 </div>
-                <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'
-                    onClick={() => navigate("/manager/units")}>
-                    <div className='flex items-center gap-[10px]'>
-                        <PiUniteFill color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Đơn vị tính</p>
-                    </div>
-                    {/* <FaChevronRight color='white' /> */}
-                </div>
+               
                 
             </div>
             {/* <div className='pt-[15px]'>

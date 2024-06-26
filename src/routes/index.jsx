@@ -17,6 +17,7 @@ import SettingManager from "../pages/manager/SettingManager"
 import RestaurantInformation from "../pages/manager/RestaurantInformation"
 import PackageDetail from "../pages/admin/PackageDetail"
 import DishesManagement from "../pages/manager/DishesManagement"
+import RestaurantMap from "../pages/manager/RestaurantMap"
 
 const publicRoutes = [
     {path: '/login', component: SignInSide},
@@ -38,6 +39,7 @@ const publicRoutes = [
     {path: '/manager/units', component: UnitManagement},
     {path: '/manager/setting', component: SettingManager},
     {path: '/manager/restaurantInformation', component: RestaurantInformation},
+    {path: '/manager/restaurantMap', component: RestaurantMap},
 
 ]
 
