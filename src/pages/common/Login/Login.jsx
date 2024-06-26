@@ -41,9 +41,9 @@ function SignInSide() {
               username: user.sub,
               email: user.email,
               role: user.scope,
-              accountId: user.accountId
+              accountId: user.accountId,
+              restaurantId: user.restaurantId
             };
-            console.log(user);
             localStorage.setItem('user', JSON.stringify(userStorage));
             toast.success('Đăng nhập thành công');
             if(user.scope === "ADMIN"){
