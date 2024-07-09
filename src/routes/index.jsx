@@ -18,6 +18,7 @@ import RestaurantInformation from "../pages/manager/RestaurantInformation"
 import PackageDetail from "../pages/admin/PackageDetail"
 import DishesManagement from "../pages/manager/DishesManagement"
 import RestaurantMap from "../pages/manager/RestaurantMap"
+import AddCombo from "../pages/manager/AddCombo"
 
 const publicRoutes = [
     {path: '/login', component: SignInSide},
@@ -36,6 +37,7 @@ const publicRoutes = [
     {path: '/manager/invoices', component: InvoiceManagement},
     {path: '/manager/categories', component: CategoryManagement},
     {path: '/manager/combos', component: ComboManagement},
+    {path: '/manager/addCombo', component: AddCombo},
     {path: '/manager/units', component: UnitManagement},
     {path: '/manager/setting', component: SettingManager},
     {path: '/manager/restaurantInformation', component: RestaurantInformation},

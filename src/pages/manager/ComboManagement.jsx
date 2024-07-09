@@ -1,8 +1,12 @@
 import SidebarManager from "../../components/managerComponent/SidebarManager"
 import HeaderManagerDashboard from "../../components/managerComponent/HeaderManagerDashboard"
 import { IoMdAdd } from "react-icons/io";
+import { useNavigate } from "react-router";
 
 function ComboManagement() {
+
+    const navigate = useNavigate();
+
     return (
         <div className="">
             <div className="flex ">
@@ -14,7 +18,10 @@ function ComboManagement() {
                     <div className="min-w-[40]x rounded-lg bg-white p-16 shadow min-h-[90vh] mt-2">
                     <div className="flex justify-between">
                             <h1 className="font-black text-3xl">Quản lý Combo</h1>
-                            <button className="py-2 px-3 bg-secondary font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center">
+                            <button 
+                                className="py-2 px-3 bg-secondary font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
+                                onClick={() => navigate('/manager/addCombo')}
+                                >
                                 <IoMdAdd />Thêm Combo</button>
                         </div>
                         <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-6">
