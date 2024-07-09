@@ -1,5 +1,6 @@
 import React from "react";
 import { useDrag } from "react-dnd";
+import ROUND4 from '../../../assests/reactange4.jpg'
 
 const Table = ({ id, url, positionX, positionY, name}) => {
     const [{ isDragging }, drag] = useDrag(() => ({
@@ -19,20 +20,17 @@ const Table = ({ id, url, positionX, positionY, name}) => {
                 top: `${positionY}px`,
                 width: '100px',
                 height: '100px',
-                border: isDragging ? "5px solid pink" : "0px",
+                // border: isDragging ? "5px solid pink" : "0px",
                 opacity: isDragging ? 0.5 : 1,
             }}
         >
             <img
-                src={url}
+                src={ROUND4}
                 width={'100px'}
                 height={"100px"}
                 alt={`Table ${id}`}
-                style={{
-                    display: 'block',
-                    width: '100%',
-                    height: '100%',
-                }}
+                className='object-cover block w-full h-full'
+                
             />
             <div
                 style={{

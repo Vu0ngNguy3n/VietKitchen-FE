@@ -421,7 +421,7 @@ const Map = () => {
                         <div className="flex justify-center my-10">
                             <div
                                 ref={drop}
-                                className="relative bg-gray-100 border-2 border-gray-300 rounded-lg shadow-lg"
+                                className="relative bg-white border-2 border-gray-300 rounded-lg shadow-lg"
                                 style={{ width: "90%", height: "600px" }}
                             >
                                 {board?.map((picture, index) => (
