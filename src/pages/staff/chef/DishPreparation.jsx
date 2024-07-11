@@ -51,7 +51,7 @@ function DishPreparation(){
                     <NavBarStaff />
                     <div className="flex flex-wrap mt-4">
                          {messages.map((msg, index) => (
-                            <li key={index}>{msg?.orderId}</li>
+                            <li key={index}>{msg.length}</li>
                             ))}
                     </div>
                 </div>
