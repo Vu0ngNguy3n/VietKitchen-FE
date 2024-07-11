@@ -112,17 +112,6 @@ function Menu(){
         const action = addToCart(dishAdd);
         dispatch(action);
         toast.success('add success')
-        const result = {
-            dishOrderRequests:[
-                {
-                    dishId: 1,
-                    comboId: null,
-                    quantity: 1 
-                }
-            ],
-            orderId: 1
-        }
-        addDish(result)
     }
 
     return(

@@ -119,12 +119,11 @@ function Ordering(){
                 quantity: 1
             }
         })
-        console.log(newCart);
         const result = {
             dishOrderRequests:newCart,
             orderId: orderId,
         }
-        // console.log(newCart);
+        console.log(result);
 
         addDish(result);   
            
