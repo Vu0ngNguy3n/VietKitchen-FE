@@ -18,7 +18,6 @@ function DishPreparation(){
         console.log('Connected to WebSocket');
         setConnected(true);
         stompClient.subscribe('/topic/order', (message) => {
-            console.log(message);
           setMessages(prevMessages => [...prevMessages, JSON.parse(message.body)]);
         });
       },
@@ -37,6 +36,10 @@ function DishPreparation(){
       }
     };
   }, []);
+
+  useEffect(() => {
+    console.log(messages);
+  },[messages])
 
     return(
         <div className="">
