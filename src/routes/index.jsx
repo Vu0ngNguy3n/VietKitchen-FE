@@ -19,6 +19,9 @@ import PackageDetail from "../pages/admin/PackageDetail"
 import DishesManagement from "../pages/manager/DishesManagement"
 import RestaurantMap from "../pages/manager/RestaurantMap"
 import AddCombo from "../pages/manager/AddCombo"
+import Ordering from "../pages/staff/waiter/Ordering"
+import Menu from "../pages/staff/waiter/Menu"
+import DishPreparation from "../pages/staff/chef/DishPreparation"
 
 const publicRoutes = [
     {path: '/login', component: SignInSide},
@@ -42,6 +45,9 @@ const publicRoutes = [
     {path: '/manager/setting', component: SettingManager},
     {path: '/manager/restaurantInformation', component: RestaurantInformation},
     {path: '/manager/restaurantMap', component: RestaurantMap},
+    {path: '/waiter/ordering', component: Ordering},
+    {path: '/waiter/menu/:slug', component: Menu},
+    {path: '/chef/dishPreparation', component: DishPreparation},
 
 ]
 

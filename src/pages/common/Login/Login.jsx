@@ -21,11 +21,13 @@ function SignInSide() {
     setEmail('');
     setPhoneNumber('');
     setStaffUsername('');
+    console.log(type);
   };
 
   const handleLogin = async () => {
-    if (email.trim() !== '' && password.trim() !== '') {
-      const userLogin = {
+    
+    if(typeLogin === 1){
+        const userLogin = {
         email: email.trim(),
         password: password.trim(),
       };
@@ -83,7 +85,53 @@ function SignInSide() {
             toast.error(err.message);
           }
         });
-    }
+      }else if(typeLogin === 2){
+        const employee = {
+          phoneNumberOfRestaurant: phoneNumber,
+          username:staffUsername,
+          password: password
+        }
+        axios
+        .post('/api/identify/employee/login', employee)
+        .then((res) => {
+          const data = res.data;
+          if (data.code === 200) {
+            const token = data.result.token;
+            const user1 = jwtDecode(token);
+            localStorage.setItem('token', token);
+            const userStorage1 = {
+              restaurantId: user1.restaurantId,
+              role: user1.scope,
+              employeeId: user1.employeeId,
+              accountId: user1.accountId
+            };
+            localStorage.setItem('user', JSON.stringify(userStorage1));
+            console.log(user1);
+            toast.success('Đăng nhập thành công');
+            if(user1.scope === "CHEF"){
+              navigate('/chef/dishPreparation')
+            }else{
+              if(user1.scope === "WAITER"){
+                navigate('/waiter/ordering')  
+              }else{
+
+              }
+            }
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            const errorRes = err.response.data;
+            toast.error(errorRes.message);
+          } else if (err.request) {
+            toast.error(err.request);
+          } else {
+            toast.error(err.message);
+          }
+        });
+
+        
+      }
   };
 
   return (
