@@ -52,8 +52,8 @@ function InvoiceManagement() {
                 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none cursor-pointer"
                                     >
                                         <option selected>Hôm nay</option>
-                                        <option value="7ago">7 ngày trước</option>
-                                        <option value="yesterday">hôm qua</option>
+                                        <option value="7ago">Hôm qua</option>
+                                        <option value="yesterday">7 ngày trước</option>
                                         <option value="lmonth">Tháng trước</option>
                                     </select>
                                 </form>
