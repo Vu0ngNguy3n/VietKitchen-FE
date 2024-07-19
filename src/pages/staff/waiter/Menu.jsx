@@ -1,34 +1,85 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import { toast } from "react-toastify";
 import NavBarStaff from "../../../components/staffComponent/NavBarStaff"
 import SidebarStaff from "../../../components/staffComponent/SidebarStaff"
 import axiosInstance from "../../../utils/axiosInstance";
 import { FaPlusCircle } from "react-icons/fa";
 import { formatVND } from "../../../utils/format";
-import { addToCart } from "../../../actions/cartActions";
-import { useDispatch } from "react-redux";
+import { addToCart, clearCart, increaseDishQuantity, reduceDish, removeDish } from "../../../actions/cartActions";
+import { useDispatch, useSelector } from "react-redux";
+import { IoMdAdd } from "react-icons/io";
+import {calculateCartTotal} from '../../../utils/helper'
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
-
+import { PiPencilSimpleLineBold } from "react-icons/pi";
+import { FaUserCircle } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
+import { GrRestaurant } from "react-icons/gr";
+import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
+import { CiEdit } from "react-icons/ci";
+import { getUser } from "../../../utils/constant";
+import { saveCustomer } from "../../../actions/customerActions";
+import { saveTable } from "../../../actions/tableActions";
+import { saveOrderId } from "../../../actions/orderActions";
 
 function Menu(){
     const {slug} = useParams();
+    const cartList = useSelector(state => state.cart);
+    const table = useSelector(state => state.table);
+    const totalAmount = calculateCartTotal(cartList);
+    const orderId = useSelector(state => state.orderId);
+    const customerDetail = useSelector(state => state.customer);
     const [dishesList, setDishesList] = useState([]);
+    const [customer, setCustomer] = useState();
     const dispatch = useDispatch();
     const [messages, setMessages] = useState([]);
+    const [isCreateCustomer, setIsCreateCustomer] = useState(false);
   const [client, setClient] = useState(null);
   const [connected, setConnected] = useState(false);
-  const [orderId, setOrderId] = useState();
+  const [isExistCustomer, setIsExistCustomer] = useState(false);
+  const [phoneNumber, setPhoneNumber ] = useState();
+  const [areaList, setAreaList] = useState([]);
+  const [currentArea, setCurrentArea] = useState();
+  const [tableList, setTableList] = useState([]);
+  const [currentTable, setCurrentTable] = useState();
+  const [isAddCustomer, setIsAddCustomer] = useState(false);
+  const [phoneNumberAdd, setPhoneNumberAdd] = useState();
+  const [customerName, setCustomerName] = useState();
+  const [address, setAddress] = useState();
+  const user = getUser();
+  const navigate = useNavigate();
 
   useEffect(() => {
+
+    axiosInstance
+      .get(`/api/area/${user?.restaurantId}`)
+      .then((res) => {
+        if (res.data.result.length >= 0 && !currentArea) {
+          setCurrentArea(res.data.result[0]?.id);
+        }
+        setAreaList(res.data.result);
+      })
+      .catch((err) => {
+        if (err.response) {
+          const errorRes = err.response.data;
+          toast.error(errorRes.message);
+        } else if (err.request) {
+          toast.error(err.request);
+        } else {
+          toast.error(err.message);
+        }
+      });
+
+      console.log(customerDetail);
+
     const socket = new SockJS('http://localhost:8080/websocket');
     const stompClient = new Client({
       webSocketFactory: () => socket,
       onConnect: () => {
         console.log('Connected to WebSocket');
         setConnected(true);
-        stompClient.subscribe('/topic/order', (message) => {
+        stompClient.send('/topic/order', (message) => {
           setMessages(prevMessages => [...prevMessages, message.body]);
         });
       },
@@ -48,16 +99,61 @@ function Menu(){
     };
   }, []);
 
+  useEffect(() => {
+    if(currentArea){
+      axiosInstance
+      .get(`/api/table/area/${currentArea}`)
+      .then((res) => {
+        if (res.data.result.length >= 0 && !currentTable) {
+          setCurrentTable(res.data.result[0]?.id);
+        }
+        setTableList(res.data.result);
+      })
+      .catch((err) => {
+        if (err.response) {
+          const errorRes = err.response.data;
+          toast.error(errorRes.message);
+        } else if (err.request) {
+          toast.error(err.request);
+        } else {
+          toast.error(err.message);
+        }
+      });
+    }
+  }, [currentArea]);
+
+  useEffect(() => {
+    (customerDetail === null) ? setIsExistCustomer(false) : setIsExistCustomer(true);
+  },[customerDetail, table])
+
   const addDish = (message) => {
     if (client && connected) {
       client.publish({
-        destination: '/app/addDishes',
-        body: JSON.stringify(message),
+        destination: "/app/addDishes",
+        body: JSON.stringify(message), 
       });
     } else {
       console.error("Client is not connected");
     }
   };
+
+  const handleSubmitDish = () => {
+     const newCart = cartList?.map((c) => {
+      return {
+        dishId: c.dishId,
+        comboId: c.comboId,
+        quantity: c.quantity,
+      };
+    });
+    const result = {
+      dishOrderRequests: newCart,
+      orderId: orderId,
+    };
+
+    addDish(result);
+    const action = clearCart();
+    dispatch(action);
+  }
 
 
     useEffect(() => {
@@ -66,6 +162,7 @@ function Menu(){
         .then(res => {
             const data = res.data;
             setDishesList(data.result);
+            console.log(data.result );
         })
         .catch((err) => {
           if (err.response) {
@@ -77,6 +174,8 @@ function Menu(){
             toast.error(err.message);
           }
         });
+
+
 
         
     },[slug])
@@ -107,12 +206,157 @@ function Menu(){
                 comboId: null
             }
         }
-        console.log(dishAdd);
 
         const action = addToCart(dishAdd);
         dispatch(action);
         toast.success('add success')
     }
+
+    const handleIncreaseDish = (id) => {
+        const action = increaseDishQuantity(id);
+        dispatch(action);
+        toast("Increase success")
+    }
+
+    const handleDecreaseDish = (dish) => {
+        const action = reduceDish(dish);
+        dispatch(action);
+        toast("decrease success")
+    }
+
+    const handleRemoveDish = (id) => {
+      const action = removeDish(id);
+      dispatch(action);
+      toast("Remove success");
+    }
+
+    const handleEnterTable = () => {
+      axiosInstance
+      .get(`/api/customers/${phoneNumber}`)
+      .then((res) => {
+        const data = res.data.result;
+        if (data !== null) {
+          setCustomer(data);
+          const actionCustomer = saveCustomer(data);
+          dispatch(actionCustomer);
+          setIsExistCustomer(true);
+          const requestData =  {
+                      tableId: table?.tableId,
+                      employeeId: user?.employeeId,
+                      customerResponse: data,
+                      restaurantId: user?.restaurantId,
+                    };
+                    axiosInstance
+                    .post(`/create`, requestData)
+                    .then((res) => {
+                      const idResult = res.data.result.id;
+                      const actionOrder = saveOrderId(idResult);
+                      dispatch(actionOrder);
+                      console.log(idResult);
+                    })
+                    .catch((err) => {
+                      if (err.response) {
+                        const errorRes = err.response.data;
+                        toast.error(errorRes.message);
+                      } else if (err.request) {
+                        toast.error("Yêu cầu không thành công");
+                      } else {
+                        toast.error(err.message);
+                      }
+                    });
+        } else {
+          toast("User not exist");
+        }
+      })
+      .catch((err) => {
+        if (err.response) {
+          const errorRes = err.response.data;
+          toast.error(errorRes.message);
+          setIsAddCustomer(true);
+          setIsExistCustomer(true);
+        } else if (err.request) {
+          toast.error("Yêu cầu không thành công");
+        } else {
+          toast.error(err.message);
+        }
+      });
+    }
+
+    useEffect(() => {
+      const data = {
+        tableId: currentTable,
+        employeeId: user?.employeeId,
+        customerResponse: customer,
+        restaurantId: user?.restaurantId,
+      }
+    },[customer])
+
+    const handleCreateCustomer = () => {
+      
+      const customerAdd = {
+        phoneNumber: phoneNumberAdd,
+        name: customerName,
+        address: address,
+        restaurantId: user?.restaurantId
+      }
+       axiosInstance
+                .post(`/api/customers/create`, customerAdd)
+                .then(res => {
+                    const data = res.data.result;
+                    setCustomer(data);
+                    const action = saveCustomer(data);
+                    dispatch(action);
+                    toast.success(`Tạo thông tin khách hàng ${customerName} thành công`);
+                    handleCloseCreatePop();
+                    const requestData =  {
+                      tableId: table?.tableId,
+                      employeeId: user?.employeeId,
+                      customerResponse: data,
+                      restaurantId: user?.restaurantId,
+                    };
+                    axiosInstance
+                    .post(`/create`, requestData)
+                    .then((res) => {
+                      const idResult = res.data.result.id;
+                      const actionOrder = saveOrderId(idResult);
+                      dispatch(actionOrder);
+                      console.log(idResult);
+                    })
+                    .catch((err) => {
+                      if (err.response) {
+                        const errorRes = err.response.data;
+                        toast.error(errorRes.message);
+                      } else if (err.request) {
+                        toast.error("Yêu cầu không thành công");
+                      } else {
+                        toast.error(err.message);
+                      }
+                    });
+                })
+                .catch(err => {
+                    if(err.response){
+                        const errRes = err.response.data;
+                        toast.error(errRes.message);
+                    }else if(err.request){
+                        toast.error("Không thể gửi yêu cầu đến máy chủ!")
+                    }else{
+                        toast.error(err.message);
+                    }
+                })
+
+      
+    }
+
+    const handleClearCart = ( ) => {
+      const action = clearCart();
+      dispatch(action);
+    }
+
+    const handleCloseCreatePop = () => {
+      setIsAddCustomer(false);
+      setIsExistCustomer(false);
+    }
+
 
     return(
         <div className="">
@@ -122,10 +366,131 @@ function Menu(){
                 </div>
                 <div className="basis-[88%] border overflow-scroll h-[100vh]">
                     <NavBarStaff />
-                    <div className="flex flex-wrap mt-4">
-                        
-                        {dishesList?.map((d, index) => {
-                            return (
+                    <div className="flex w-full">
+                      <div className="w-full border-r-2">
+                        <div className={`h-11 mb-2  flex justify-between ${isExistCustomer?"":'hidden'}`}>
+                            <div className="h-full flex items-center justify-between w-[49%] py-2 px-3 bg-slate-300">
+                              <FaUserCircle />
+                              <div className="ml-2 flex items-center">
+                                 <b className="font-semibold">{customerDetail?.name}</b>
+                              </div>
+                              <div className="w-[50%]"></div>
+                              <PiPencilSimpleLineBold className="cursor-pointer"/>
+
+                            </div>
+                            <div className="h-full flex items-center w-[49%] py-2 px-3 bg-slate-300 mr-2 shadow-md rounded-sm">
+                              <FaSearch className="cursor-pointer" />
+                              <input 
+                                id="inputOrder"
+                                type="text"
+                                className=" bg-slate-300 text-black outline-none ml-2 placeholder-black focus:placeholder-gray-600 w-full px-2"
+                                placeholder="Hãy nhập tên khách hàng"
+                              />
+                            </div>
+                        </div>
+                        <div className={`h-11 mb-2  flex justify-between ${isExistCustomer?"hidden":''}`}>
+                           
+                            <div className="h-full flex w-full justify-end  ">
+                              <button
+                                  className="py-2 px-3 bg-secondary font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
+                              >
+                                  <IoMdAdd /> Thêm Khách hàng
+                              </button>
+                            </div>
+                        </div>
+                        {!isExistCustomer  ?<div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
+                                <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-md z-50 animate-slideIn">
+                                    {/* <button
+                                        className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-2xl"
+                                    >
+                                        &times;
+                                    </button> */}
+                                    <h2 className="text-xl font-semibold mb-4">
+                                      Nhập thông tin khách hàng
+                                    </h2>
+                                    <div className="mb-4">
+                                        <label className="block mb-2">Số điện thoại khách hàng</label>
+                                        <input
+                                            type="number"
+                                            value={phoneNumber}
+                                            onChange={e => setPhoneNumber(e.target.value)}
+                                            placeholder="Số điện thoại khách hàng"
+                                            className="w-full px-3 py-2 border rounded-md"
+                                        />
+                                    </div>
+                                    <div className="flex justify-end gap-2">
+                                        
+                                        <button
+                                          onClick={() => handleEnterTable()}
+                                            className="py-2 px-5 bg-lgreen font-semibold text-white rounded hover:bg-green transition-all duration-300"
+                                        >
+                                          Xác nhận
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>:''}
+
+                            {isAddCustomer ?  <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
+                                <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-md z-50 animate-slideIn">
+                                    <button
+                                        className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-2xl "
+                                        onClick={handleCloseCreatePop}
+                                    >
+                                        &times;
+                                    </button>
+                                    <h2 className="text-xl font-semibold mb-4">
+                                       Thêm khách hàng
+                                    </h2>
+                                    <div className="mb-4">
+                                        <label className="block mb-2">Số điện thoại</label>
+                                        <input
+                                            type="number"
+                                            placeholder="Số điện thoại"
+                                            value={phoneNumberAdd}
+                                            onChange={(e) => setPhoneNumberAdd(e.target.value)}
+                                            className={`w-full px-3 py-2 border rounded-md `}
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block mb-2">Tên khách hàng</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Tên khách hàng"
+                                            value={customerName}
+                                            onChange={e => setCustomerName(e.target.value)}
+                                            className="w-full px-3 py-2 border rounded-md"
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block mb-2">Địa chỉ</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Địa chỉ"
+                                            value={address}
+                                            onChange={e => setAddress(e.target.value)}
+                                            className="w-full px-3 py-2 border rounded-md"
+                                        />
+                                    </div>
+                                    <div className="flex justify-end gap-2">
+                                        <button
+                                            onClick={handleCloseCreatePop}
+                                            className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-red-700 transition-all duration-300"
+                                        >
+                                            Hủy
+                                        </button>
+                                        <button
+                                            onClick={() => handleCreateCustomer()}
+                                            className="py-2 px-5 bg-lgreen font-semibold text-white rounded hover:bg-green transition-all duration-300"
+                                        >
+                                            Thêm
+                                        </button>
+                                    </div>
+                                </div>
+                            </div> : ''}
+                            
+                        <div className=" flex flex-wrap ">
+                          {dishesList?.map((d, index) => {
+                              return (
                                 <a 
                                     href="#"
                                     className="w-full md:w-1/2 flex flex-col items-center md:flex-row"
@@ -142,11 +507,110 @@ function Menu(){
                                         </div>
                                     </div>
                                 </a>
-                            )
-                        })}
+                              )
+                          })}
+                        </div>
+                      </div>
+                      
+                      <div className="w-[35%] bg-slate-500">
+                          <div className="w-full h-14 flex justify-between">
+                            <div className="bg-slate-300 flex flex-wrap justify-center w-[25%] p-2 rounded-sm ">
+                              <GrRestaurant className="size-4 mb-2"/>
+                              <span className="text-[14px] font-semibold">Vị trí bàn</span>
+                            </div>
+                            <div className="bg-slate-300 flex w-[74%] items-center p-2 rounded-sm">
+                              <span className="font-semibold">{table?.areaName}: {table?.tableName}</span>
+                            </div>
+                          </div>
+                          <div className="flex-row relative">
+                            <div className="h-[79vh]  overflow-hidden ">
+                              {cartList?.map((cart, index) => {
+                                return (
+                                  <div className="w-full bg-secondary px-1 py-2 mt-2 shadow-sm rounded-sm" key={index}>
+                                      <div className="w-full text-white flex justify-between">
+                                        <b>{index <= 9 ? index+1 : index+1}. {cart?.name}</b>
+                                        <div className="w-[30%] font-semibold text-right">
+                                          <span>{cart?.quantity}</span>
+                                        </div>
+                                        <i className="font-semibold">{formatVND(cart?.price*cart?.quantity)}</i>
+                                      </div>
+                                      <div className="w-full">
+                                        <span className="ml-4 mx-2 text-white text-[12px]">Giá thường: {formatVND(cart?.price)}</span>
+                                      </div>
+                                      <div className="w-full flex justify-around mt-2 items-center pb-2">
+                                        <div 
+                                            className="w-1/4 p-2 border-2 flex justify-center bg-white shadow-sm mb cursor-pointer"
+                                            onClick={() => handleDecreaseDish(cart)}
+                                            ><FaMinus className="size-3" /></div>
+                                        <div
+                                            className="w-1/4 p-2 border-2 flex justify-center bg-white shadow-sm mb cursor-pointer"
+                                            onClick={() => handleIncreaseDish(cart?.dishId)}
+                                        ><FaPlus className="size-3"/></div>
+                                        {/* <div className="w-1/6 p-2 border-2 flex justify-center bg-white shadow-sm mb cursor-pointer"><CiEdit/></div> */}
+                                        <div 
+                                          className="w-1/4 p-2 border-2 flex justify-center bg-white shadow-sm mb cursor-pointer"
+                                          onClick={() => handleRemoveDish(cart?.dishId)}
+                                          ><FaTrash className="size-3"/></div>
+                                      </div>
+                                    </div>
+                                )
+                              })}
+                            </div>
+                            <div className="absolute bottom-0 w-full flex flex-wrap justify-center">
+                              <div className="bg-white  w-full p-3 mx-1 my-2 flex justify-between ">
+                                <span >Tổng tiền:</span>
+                                <span className="font-semibold">{formatVND(totalAmount)}</span>
+                              </div>
+                              <div className="w-full flex flex-wrap justify-between">
+                                <div className="w-[24%] bg-red-700 h-16 text-white ml-[2px] rounded-sm flex items-center justify-center  cursor-pointer" onClick={() => handleClearCart()}>
+                                  <span>Làm mới</span>
+                                </div>
+                                <div className="w-[24%] bg-purple-500 h-16 text-white ml-[2px] rounded-sm flex items-center justify-center cursor-pointer " 
+                                    onClick={() => navigate("/waiter/ordering")}
+                                >
+                                  <span>Trạng thái </span>
+                                </div>
+                                <div className="w-[24%] bg-green h-16 text-white ml-[2px] rounded-sm flex items-center justify-center  cursor-pointer " onClick={() => handleSubmitDish()}>
+                                  <span>Xác nhận</span>
+                                </div>
+                                <div className="w-[24%] bg-blue-600 h-16 text-white ml-[2px] rounded-sm flex items-center justify-center cursor-pointer">
+                                  <span>Thanh toán</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                        
                     </div>
                 </div>
             </div>
+            <style jsx>{`
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                    }
+                    to {
+                        opacity: 1;
+                    }
+                }
+
+                @keyframes slideIn {
+                    from {
+                        transform: translateY(-20%);
+                    }
+                    to {
+                        transform: translateY(0);
+                    }
+                }
+
+                .animate-fadeIn {
+                    animation: fadeIn 0.3s ease-in-out;
+                }
+
+                .animate-slideIn {
+                    animation: slideIn 0.3s ease-in-out;
+                }
+            `}</style>
         </div>
 
 

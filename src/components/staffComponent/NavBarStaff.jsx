@@ -3,6 +3,7 @@ import { FaSearch, FaEnvelope, FaRegBell } from "react-icons/fa"
 import { useNavigate } from 'react-router'
 import profile from "../../assests/profile-user.svg"
 import { FaCartShopping } from "react-icons/fa6";
+import { useSelector } from 'react-redux';
 
 
 
@@ -10,6 +11,7 @@ const NavBarStaff = () => {
     const [open, setOpen] = useState(false)
     const navigate = useNavigate();
     const [userStorage, setUserStorage] = useState();
+    const cartList = useSelector(state => state.cart)
 
     useEffect(() =>{
         const storedUser = localStorage.getItem('user');
@@ -40,6 +42,7 @@ const NavBarStaff = () => {
                         <div className='flex items-center pr-2 justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:text-secondary'
                             onClick={() => navigate("/waiter/ordering")}>
                                 <FaCartShopping  /> <p className='text-[14px] font-semibold leading-[20px]  '>Giỏ hàng</p>
+                                {cartList?.length}
                         </div>
                     </div>
                     <div className='flex items-center gap-[15px] relative' onClick={showProfile} >
@@ -64,6 +67,8 @@ const NavBarStaff = () => {
                     </div>
                 </div>
             </div>
+
+          
         </div>
     )
 }

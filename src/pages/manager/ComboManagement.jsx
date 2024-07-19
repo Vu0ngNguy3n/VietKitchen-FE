@@ -300,20 +300,20 @@ function ComboManagement() {
                                 </thead>
                                 <tbody>
                                     {comboList?.map(combo => (
-                                        <tr key={combo.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                        <tr key={combo?.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                             <td className="p-4">
-                                                <img src={combo.imageUrl} alt={combo.comboName} className="w-16 h-16 object-cover rounded-md" />
+                                                <img src={combo?.imageUrl} alt={combo?.comboName} className="w-16 h-16 object-cover rounded-md" />
                                             </td>
                                             <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                                                {combo.comboName}
+                                                {combo?.comboName}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {combo.comboPrice}
+                                                {combo?.comboPrice}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {combo.description}
+                                                {combo?.description}
                                             </td>
-                                            <td className="px-6 py-4 flex space-x-2">
+                                            <td className="px-6 py-4 flex space-x-2 ">
                                                 <button
                                                     className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
                                                     onClick={() => handleEditCombo(combo)}

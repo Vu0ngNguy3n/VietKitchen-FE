@@ -22,6 +22,8 @@ import AddCombo from "../pages/manager/AddCombo"
 import Ordering from "../pages/staff/waiter/Ordering"
 import Menu from "../pages/staff/waiter/Menu"
 import DishPreparation from "../pages/staff/chef/DishPreparation"
+import MapWaiter from "../pages/staff/waiter/MapWaiter"
+import Payment from "../pages/staff/waiter/Payment"
 
 const publicRoutes = [
     {path: '/login', component: SignInSide},
@@ -47,6 +49,8 @@ const publicRoutes = [
     {path: '/manager/restaurantMap', component: RestaurantMap},
     {path: '/waiter/ordering', component: Ordering},
     {path: '/waiter/menu/:slug', component: Menu},
+    {path: '/waiter/map', component: MapWaiter},
+    {path: '/waiter/payment', component: Payment},
     {path: '/chef/dishPreparation', component: DishPreparation},
 
 ]

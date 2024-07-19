@@ -75,7 +75,6 @@ const Map = () => {
     useEffect(() => {
         const user = getUser();
         setUserStorage(user);
-        console.log(user.restaurantId , '2');
         axiosInstance
         .get(`/api/area/${user?.restaurantId}`)
         .then(res =>{ 

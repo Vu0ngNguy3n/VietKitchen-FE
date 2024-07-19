@@ -1,16 +1,46 @@
+import { toast } from "react-toastify";
 import { Client } from "@stomp/stompjs";
 import { useEffect, useState } from "react";
 import SockJS from "sockjs-client";
 import NavBarStaff from "../../../components/staffComponent/NavBarStaff"
 import SidebarStaff from "../../../components/staffComponent/SidebarStaff"
-
+import axiosInstance from "../../../utils/axiosInstance";
+import { getUser } from "../../../utils/constant";
+import { FaClockRotateLeft } from "react-icons/fa6";
+import { RiProgress6Line } from "react-icons/ri";
+import { FaTrash } from "react-icons/fa";
 
 function DishPreparation(){
      const [messages, setMessages] = useState([]);
   const [client, setClient] = useState(null);
   const [connected, setConnected] = useState(false);
+  const [oldCart, setOldCart] = useState();
+  const user = getUser();
+  const waiting = "WAITING";
+  const confirm = "CONFIRM";
+  const decline = "DECLINE";
+  const prepare = "PREPARE";
+
 
   useEffect(() => {
+    axiosInstance
+    .get(`/api/dish-order/restaurant/${user?.restaurantId}`)
+    .then(res => {
+      const data = res.data.result;
+      console.log(data);
+      setOldCart(data);
+    })
+    .catch((err) => {
+        if (err.response) {
+          const errorRes = err.response.data;
+          toast.error(errorRes.message);
+        } else if (err.request) {
+          toast.error(err.request);
+        } else {
+          toast.error(err.message);
+        }
+      });
+
     const socket = new SockJS('http://localhost:8080/websocket');
     const stompClient = new Client({
       webSocketFactory: () => socket,
@@ -18,7 +48,10 @@ function DishPreparation(){
         console.log('Connected to WebSocket');
         setConnected(true);
         stompClient.subscribe('/topic/order', (message) => {
-          setMessages(prevMessages => [...prevMessages, JSON.parse(message.body)]);
+          const oldData = JSON.parse(message.body); 
+          const newData = [];
+          oldData.forEach(data => newData.push(data));
+          setMessages(prevMessages => [...prevMessages, ...newData]);
         });
       },
       onStompError: (frame) => {
@@ -37,8 +70,69 @@ function DishPreparation(){
     };
   }, []);
 
+  
+  const changeStatusDish = (message) => {
+    if (client && connected) {
+      client.publish({
+        destination: `/app/change-status`,
+        body: JSON.stringify(message), 
+      });
+    } else {
+      console.error("Client is not connected");
+    }
+  };
+
+ const handleChangeStatusDishOldCart = (dish) => {
+    let status = waiting;
+    if (dish?.status === waiting) {
+      status = prepare;
+    } else if (dish?.status === prepare) {
+      status = confirm;
+    }
+
+    const newCart = oldCart.map((c) => {
+      if (c?.id === dish?.id) {
+        const updatedDish = { ...c, status: status };
+        changeStatusDish(updatedDish); // Send updated status via WebSocket
+        return updatedDish;
+      } else {
+        return c;
+      }
+    });
+    console.log(dish);
+    setOldCart(newCart);
+  };
+
+  const handleChangeStatusDishMessage = (dish) => {
+    let status = waiting;
+    if (dish?.status === waiting) {
+      status = prepare;
+    } else if (dish?.status === prepare) {
+      status = confirm;
+    }
+
+    const newMessages = messages.map((c) => {
+      if (c?.id === dish?.id) {
+        const updatedDish = { ...c, status: status };
+        changeStatusDish(updatedDish); // Send updated status via WebSocket
+        return updatedDish;
+      } else {
+        return c;
+      }
+    });
+
+    setMessages(newMessages);
+  };
+
+  const handleDeclineDish = (dish) => {
+    
+  }
+  
+
+
   useEffect(() => {
     console.log(messages);
+    toast.warn("Có món ăn mới được gọi")
   },[messages])
 
     return(
@@ -49,11 +143,135 @@ function DishPreparation(){
                 </div>
                 <div className="basis-[88%] border overflow-scroll h-[100vh]">
                     <NavBarStaff />
-                    <div className="flex flex-wrap mt-4">
+                    {/* <div className="flex flex-wrap mt-4">
                          {messages.map((msg, index) => (
-                            <li key={index}>{msg.length}</li>
+                            <li key={index}>{msg.result.length}</li>
                             ))}
-                    </div>
+                    </div> */}
+                     <div className="relative overflow-x-auto  sm:rounded-lg flex justify-center ">
+                          <table className="w-[90%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 shadow-md ">
+                              <caption className="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
+                                  Danh sách món ăn chuẩn bị
+                                  {/* <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">Browse a list of Flowbite products designed to help you work and play, stay organized, get answers, keep in touch, grow your business, and more.</p> */}
+                              </caption>
+                              <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                  <tr>
+                                      <th scope="col" className="px-6 py-3">
+                                          Tên món ăn
+                                      </th>
+                                      <th scope="col" className="px-6 py-3">
+                                          Tên bàn
+                                      </th>
+                                      <th scope="col" className="px-6 py-3">
+                                          Số lượng
+                                      </th>
+                                      <th scope="col" className="px-6 py-3">
+                                          Đơn vị
+                                      </th>
+                                      <th scope="col" className="px-6 py-3">
+                                          <span className="sr-only">Edit</span>
+                                      </th>
+                                      <th scope="col" className="px-6 py-3">
+                                          <span ></span>
+                                      </th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                {oldCart?.map((d,index) => {
+                                  return (
+                                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
+                                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                {d?.dish?.name}
+                                            </th>
+                                            <td className="px-6 py-4">
+                                                {d?.order?.tableRestaurant?.name}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {d?.quantity}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {d?.dish?.unit?.name}
+                                            </td>
+                                            <td className={`px-6 py-4 `} >
+                                                <div 
+                                                  className={` p-2 transition-all duration-300 flex justify-center items-center cursor-pointer hover:opacity-75 rounded-sm w-[80%] ${d?.status === waiting && "bg-yellow-400"} 
+                                                  ${d?.status === confirm && "bg-green"} ${d?.status === prepare && "bg-blue-400"}`} 
+                                                  onClick={() => handleChangeStatusDishOldCart(d)}
+                                                >
+                                                  {d?.status === waiting &&
+                                                  <>
+                                                    <FaClockRotateLeft className="mr-2"/> 
+                                                      <span className="font-semibold ">
+                                                      Đang chờ
+                                                    </span>
+                                                  </>}
+
+                                                  {d?.status === prepare && 
+                                                  <>
+                                                    <RiProgress6Line className="mr-2"/> 
+                                                    <span>
+                                                      Đang chuẩn bị
+                                                  </span>
+                                                  </>}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <div className="cursor-pointer" onClick={() => handleDeclineDish(d)}>
+                                                  <FaTrash className="text-red-500 size-6"/>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                  )
+                                })}
+                                 {messages?.map((d, index) => {
+                                      return (
+                                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
+                                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                {d?.dish?.name}
+                                            </th>
+                                            <td className="px-6 py-4">
+                                                {d?.order?.tableRestaurant?.name}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {d?.quantity}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {d?.dish?.unit?.name}
+                                            </td>
+                                            <td className="px-6 py-4 text-right" >
+                                                <div className={` p-2 transition-all duration-300 flex justify-center items-center cursor-pointer hover:opacity-75 rounded-sm w-[80%] ${d?.status === waiting && "bg-yellow-400"} 
+                                                  ${d?.status === confirm && "bg-green"} ${d?.status === prepare && "bg-blue-400"}`} 
+                                                onClick={() => handleChangeStatusDishMessage(d)}>
+                                                  {d?.status === waiting &&
+                                                  <>
+                                                    <FaClockRotateLeft className="mr-2"/> 
+                                                      <span className="font-semibold ">
+                                                      Đang chờ
+                                                    </span>
+                                                  </>}
+
+                                                  {d?.status === prepare && 
+                                                  <>
+                                                    <RiProgress6Line className="mr-2"/> 
+                                                    <span>
+                                                      Đang chuẩn bị
+                                                  </span>
+                                                  </>}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <div className="cursor-pointer" onClick={() => handleDeclineDish(d)}>
+                                                  <FaTrash className="text-red-500 size-6"/>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                      )
+                                    })}
+                                  
+                                  
+                              </tbody>
+                          </table>
+                      </div>
                 </div>
             </div>
         </div>
