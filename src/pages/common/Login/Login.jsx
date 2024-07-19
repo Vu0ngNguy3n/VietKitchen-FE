@@ -112,7 +112,7 @@ function SignInSide() {
               navigate('/chef/dishPreparation')
             }else{
               if(user1.scope === "WAITER"){
-                navigate('/waiter/ordering')  
+                navigate('/waiter/map')  
               }else{
 
               }
