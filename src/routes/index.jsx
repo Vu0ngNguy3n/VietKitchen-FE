@@ -6,7 +6,7 @@ import Permissions from "../pages/admin/Permissions"
 import Packages from "../pages/admin/Packages"
 import AccountsManagements from "../pages/admin/AccountManagement"
 import AccountDetail from "../pages/admin/AccountDetail"
-import Dashboardmanager from "../pages/manager/DashboardManager"
+// import Dashboardmanager from "../pages/manager/DashboardManager"
 import StaffManager from "../pages/manager/StaffManager"
 import CustomerManager from "../pages/manager/CustomerManager"
 import InvoiceManagement from "../pages/manager/InvoiceManagerment"
@@ -24,6 +24,10 @@ import Menu from "../pages/staff/waiter/Menu"
 import DishPreparation from "../pages/staff/chef/DishPreparation"
 import MapWaiter from "../pages/staff/waiter/MapWaiter"
 import Payment from "../pages/staff/waiter/Payment"
+import MapHostess from "../pages/staff/hostess/MapHostess"
+import PaymentSetting from "../pages/manager/PaymentSetting"
+import DashboardManager from "../pages/manager/DashboardManager"
+import SettingPackage from "../pages/manager/SettingPackage"
 
 const publicRoutes = [
     {path: '/login', component: SignInSide},
@@ -35,7 +39,7 @@ const publicRoutes = [
     {path: '/admin/packageDetail', component: PackageDetail},
     {path: '/admin/accountsManagement', component: AccountsManagements},
     {path: '/admin/accountDetail/:accountId', component: AccountDetail},
-    {path: '/manager/dashboard', component: Dashboardmanager},
+    {path: '/manager/dashboard', component: DashboardManager},
     {path: '/manager/staffs', component: StaffManager},
     {path: '/manager/customers', component: CustomerManager},
     {path: '/manager/dishes', component: DishesManagement},
@@ -47,11 +51,14 @@ const publicRoutes = [
     {path: '/manager/setting', component: SettingManager},
     {path: '/manager/restaurantInformation', component: RestaurantInformation},
     {path: '/manager/restaurantMap', component: RestaurantMap},
+    {path: '/manager/paymentSetting', component: PaymentSetting},
+    {path: '/manager/packageRestaurant', component: SettingPackage},
     {path: '/waiter/ordering', component: Ordering},
     {path: '/waiter/menu/:slug', component: Menu},
     {path: '/waiter/map', component: MapWaiter},
     {path: '/waiter/payment', component: Payment},
     {path: '/chef/dishPreparation', component: DishPreparation},
+    {path: '/hostess/map', component: MapHostess},
 
 ]
 

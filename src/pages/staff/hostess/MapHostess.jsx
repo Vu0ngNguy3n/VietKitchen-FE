@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
+import { BiSolidDish } from "react-icons/bi";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import Map from "../../../components/managerComponent/RestaunrantMap/Map"
 import NavBarStaff from "../../../components/staffComponent/NavBarStaff"
 import axiosInstance from "../../../utils/axiosInstance";
-import LOGO from "../../../assests/VIET.png"
 import { getUser } from "../../../utils/constant";
-import { useNavigate } from "react-router";
-import { BiSolidDish } from "react-icons/bi";
-import { saveTable } from "../../../actions/tableActions";
-import { useDispatch } from "react-redux";
-import { saveCustomer } from "../../../actions/customerActions";
-import { saveOrderId } from "../../../actions/orderActions";
+import LOGO from "../../../assests/VIET.png"
+import Table from "../../../components/managerComponent/RestaunrantMap/Table"
+import SockJS from "sockjs-client";
+import { Client } from "@stomp/stompjs";
 
 
-function MapWaiter(){
+function MapHostess() {
 
     const [areaList, setAreaList] = useState([])
     const [currentArea, setCurrentArea] = useState();
@@ -22,6 +21,8 @@ function MapWaiter(){
     const user = getUser();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [client, setClient] = useState(null);
+    const [connected, setConnected] = useState(false);
 
     useEffect(() => {
         axiosInstance
@@ -33,6 +34,7 @@ function MapWaiter(){
                 setCurrentAreaName(data[0].name)
             }
             setAreaList(data)
+            console.log(data);
         })
         .catch(err => {
                     if (err.response) {
@@ -44,7 +46,37 @@ function MapWaiter(){
                         toast.error(err.message);
                     }
                 })   
+
+
+        const socket = new SockJS("http://localhost:8080/websocket");
+        const stompClient = new Client({
+        webSocketFactory: () => socket,
+        onConnect: () => {
+            console.log("Connected to WebSocket");
+            setConnected(true);
+            stompClient.subscribe(`/topic/restaurant/${user?.restaurantId}`, (message) => {
+                const data = JSON.parse(message.body);
+                setBoard((prevMessages) => 
+                     prevMessages.map(m => (m?.id === data?.id ? data : m))
+                );
+            });
+        },
+        onStompError: (frame) => {
+            console.error("Broker reported error: " + frame.headers["message"]);
+            console.error("Additional details: " + frame.body);
+        },
+        });
+
+        stompClient.activate();
+        setClient(stompClient);
+
+        return () => {
+        if (client) {
+            client.deactivate();
+        }
+        };
     },[])
+
 
     useEffect(() => {
         if(currentArea !== undefined){
@@ -72,47 +104,11 @@ function MapWaiter(){
         setCurrentArea(area?.id)
         setCurrentAreaName(area?.name)
     }
-    const handleChooseTable = (table) => {
-        const tableData = {
-            tableId: table.id,
-            tableName: table?.name,
-            areaId: currentArea,
-            areaName: currentAreaName
-        }
-        const action = saveTable(tableData);
-        dispatch(action);
-        axiosInstance
-        .get(`/api/order/table/${table.id}`)
-        .then(res => {
-           if(res.data.result !== null){
-                const dataCustomer = res.data.result.customer;
-                const dataOrderId = res.data.result.id;
-                const actionCustomer = saveCustomer(dataCustomer);
-                dispatch(actionCustomer);
-                const actionOrderId = saveOrderId(dataOrderId);
-                dispatch(actionOrderId)
-                navigate("/waiter/menu/hai-san")
-           }else{
-                navigate("/waiter/menu/hai-san")
-           }
-            
-        })
-        .catch(err => {
-                        if (err.response) {
-                            const errorRes = err.response.data;
-                            toast.error(errorRes.message);
-                        } else if (err.request) {
-                            toast.error("Yêu cầu không thành công");
-                        } else {
-                            toast.error(err.message);
-                        }
-                    })    
-    }
+    
 
     return (
-        <div className="">
-            <div className="flex ">
-                <div className="basis-[12%] h-[100vh]">
+        <div className="flex">
+            <div className="basis-[12%] h-[100vh]">
                     <div className='bg-primary px-[25px] h-screen relative'>
                         <div className='px-[15px] py-[30px] flex items-center justify-center border-b-[1px] border-[#EDEDED]/[0.3] '>
                             <img src={LOGO} alt="" className="w-10 inline-block items-center rounded-full mr-2" />
@@ -140,44 +136,27 @@ function MapWaiter(){
             
                     </div>
                 </div>
-                <div className="basis-[100%] border overflow-scroll h-[100vh]">
-                    <NavBarStaff />
-                    <div className="min-w-[40]x bg-secondary p-10 shadow min-h-[86vh] mt-2 ">
-                         {/* <h1 className="font-black text-3xl">Sơ đồ nhà hàng</h1> */}
+            <div className="basis-[88%] border overflow-scroll h-[100vh]">
+                <NavBarStaff />
+                <div className="min-w-[40]x rounded-lg bg-slate-300 p-6 shadow min-h-[90vh] h-full w-full">
                         
-                        <div className="w-full flex flex-wrap justify-between">
-                            {board?.map((table, index) => {
-                                return (
-                                    <div 
-                                        className="flex-row p-8 border-2 border-transparent bg-white justify-center w-[12%] mb-2 rounded-lg shadow-lg cursor-pointer hover:opacity-80 transition-all duration-300" 
-                                        key={index} 
-                                        onClick={() => handleChooseTable(table)}    
-                                    >
-                                        <div className="text-center">
-                                            <b>{table?.name}</b>
-                                        </div>
-                                        <div className="text-center mt-2">
-                                            <hr className="w-1/2 mx-auto border-gray-400" />
-                                            <span className={`block mt-2 text-sm font-semibold ${table?.orderCurrent === null ? "text-gray-500" : "text-green"}`}>{table?.orderCurrent === null ? "Bàn trống" : "Có khách"}</span>
-                                        </div>
-                                    </div>
-
-                                )
-                            })}
-                            <div className="w-[12%]"></div>
-                            <div className="w-[12%]"></div>
-                            <div className="w-[12%]"></div>
-                            <div className="w-[12%]"></div>
-                            <div className="w-[12%]"></div>
-                            <div className="w-[12%]"></div>
-                        </div>
+                    <div className="relative bg-white border-2 border-gray-300 rounded-lg shadow-lg w-full h-[600px]">
+                        {board?.map((picture, index) => (
+                            <Table
+                                        url={picture?.tableType.imageUrl}
+                                        id={picture?.id}
+                                        key={index}
+                                        positionX={picture?.positionX}
+                                        positionY={picture?.positionY}
+                                        name={picture?.name}
+                                        orderCurrent={picture?.orderCurrent}
+                                    />
+                        ))}
                     </div>
                 </div>
-
-
             </div>
         </div>
     )
 }
 
-export default MapWaiter
+export default MapHostess

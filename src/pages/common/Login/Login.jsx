@@ -108,13 +108,15 @@ function SignInSide() {
             localStorage.setItem('user', JSON.stringify(userStorage1));
             console.log(user1);
             toast.success('Đăng nhập thành công');
-            if(user1.scope === "CHEF"){
+            if(user1.scope.includes("CHEF")){
               navigate('/chef/dishPreparation')
             }else{
-              if(user1.scope === "WAITER"){
+              if(user1.scope.includes("WAITER")){
                 navigate('/waiter/map')  
               }else{
-
+                if(user1.scope.includes("HOSTESS")){
+                  navigate('/hostess/map')
+                }
               }
             }
           }
@@ -244,14 +246,14 @@ function SignInSide() {
             </button>
           </div>
 
-          <div className="w-full flex items-center justify-center relative py-2">
+          {/* <div className="w-full flex items-center justify-center relative py-2">
             <div className="w-full h-[1px] bg-black/40"></div>
             <p className="text-lg absolute text-black/80 bg-[#f5f5f5]">or</p>
           </div>
           <div className="w-full text-[#060606] my-2 font-semibold bg-white border-2 border-black/40 rounded-md p-4 text-center flex items-center justify-center cursor-pointer">
             <img className="h-6 mr-2" src={GOOGLE_ICON} alt="" />
             Đăng nhập bằng Google
-          </div>
+          </div> */}
         </div>
 
         <div className="w-full flex  items-center justify-center">

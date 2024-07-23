@@ -47,9 +47,10 @@ function DishPreparation(){
       onConnect: () => {
         console.log('Connected to WebSocket');
         setConnected(true);
-        stompClient.subscribe('/topic/order', (message) => {
+        stompClient.subscribe(`/topic/order/restaurant/${user?.restaurantId}`, (message) => {
           const oldData = JSON.parse(message.body); 
           const newData = [];
+          // toast.warn("Có món ăn mới được gọi")
           oldData.forEach(data => newData.push(data));
           setMessages(prevMessages => [...prevMessages, ...newData]);
         });
@@ -99,7 +100,6 @@ function DishPreparation(){
         return c;
       }
     });
-    console.log(dish);
     setOldCart(newCart);
   };
 
@@ -124,16 +124,42 @@ function DishPreparation(){
     setMessages(newMessages);
   };
 
-  const handleDeclineDish = (dish) => {
+  const handleDeclineDish = (dish, type) => {
+    const status = decline;
+    if(type === "cart"){
+      const newCarts = oldCart.map(c => {
+        if (c?.id === dish?.id) {
+          const updatedDish = { ...c, status: status };
+          changeStatusDish(updatedDish); // Send updated status via WebSocket
+          return updatedDish;
+        } else {
+          return c;
+        }
+      })
+      console.log(newCarts);
+      setOldCart(newCarts)
+    }else{
+      const newMessages = messages.map((c) => {
+        if (c?.id === dish?.id) {
+          const updatedDish = { ...c, status: status };
+          changeStatusDish(updatedDish); // Send updated status via WebSocket
+          return updatedDish;
+        } else {
+          return c;
+        }
+      });
+      console.log(newMessages);
+      setMessages(newMessages);
+    }
     
   }
   
 
 
-  useEffect(() => {
-    console.log(messages);
-    toast.warn("Có món ăn mới được gọi")
-  },[messages])
+  // useEffect(() => {
+  //   console.log(messages);
+  //   // toast.warn("Có món ăn mới được gọi")
+  // },[messages])
 
     return(
         <div className="">
@@ -179,7 +205,7 @@ function DishPreparation(){
                               <tbody>
                                 {oldCart?.map((d,index) => {
                                   return (
-                                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
+                                    <tr className={`bg-white border-b dark:bg-gray-800 dark:border-gray-700 ${(d?.status === confirm || d?.status === decline) && "hidden"}`} key={index}>
                                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {d?.dish?.name}
                                             </th>
@@ -216,7 +242,7 @@ function DishPreparation(){
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 text-center">
-                                                <div className="cursor-pointer" onClick={() => handleDeclineDish(d)}>
+                                                <div className="cursor-pointer" onClick={() => handleDeclineDish(d, "cart")}>
                                                   <FaTrash className="text-red-500 size-6"/>
                                                 </div>
                                             </td>
@@ -225,7 +251,7 @@ function DishPreparation(){
                                 })}
                                  {messages?.map((d, index) => {
                                       return (
-                                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={index}>
+                                        <tr className={`bg-white border-b dark:bg-gray-800 dark:border-gray-700 ${(d?.status === confirm || d?.status === decline) && "hidden"}`} key={index}>
                                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {d?.dish?.name}
                                             </th>
@@ -260,7 +286,7 @@ function DishPreparation(){
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 text-center">
-                                                <div className="cursor-pointer" onClick={() => handleDeclineDish(d)}>
+                                                <div className="cursor-pointer" onClick={() => handleDeclineDish(d, "message")}>
                                                   <FaTrash className="text-red-500 size-6"/>
                                                 </div>
                                             </td>

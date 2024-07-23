@@ -59,11 +59,13 @@ function SignUp() {
           .catch(err => {
             if (err.response) {
               const errorRes = err.response.data
-              if (errorRes.message.trim() === "User existed") {
-                toast.error("Email đã được sử dụng!")
-              } else if (errorRes.message.trim() === "Phone number existed") {
-                toast.error("Số điện thoại đã tồn tại")
-              }
+              console.log(errorRes);
+              toast.error(errorRes.message)
+              // if (errorRes.message.trim() === "User existed") {
+              //   toast.error("Email đã được sử dụng!")
+              // } else if (errorRes.message.trim() === "Phone number existed") {
+              //   toast.error("Số điện thoại đã tồn tại")
+              // }
             } else if (err.request) {
               console.log("xảy ra lỗi khi gửi yêu cầu");
               // Yêu cầu đã được gửi nhưng không nhận được phản hồi
