@@ -39,7 +39,7 @@ function RestaurantInformation() {
                     .post("/api/restaurant/init", restaurantCreate)
                     .then(res => {
                         toast.success("Tạo thông tin cửa hàng thành công!")
-                        navigate("/manager/paymentSetting")
+                        navigate("/manager/units")
                         localStorage.setItem("token", res.data.result.token);
                         const userStorage = {
                             username: user.sub,
@@ -72,7 +72,7 @@ function RestaurantInformation() {
                     .put(`/api/restaurant/manager/${accountStorage?.accountId}`, restaurantCreate)
                     .then(res => {
                         toast.success("Cập nhật thông tin cửa hàng thành công!")
-                        // navigate("/manager/dashboard")
+                        navigate("/manager/dashboard")
                     })
                     .catch(err => {
                         if (err.response) {
