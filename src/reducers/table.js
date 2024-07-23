@@ -5,6 +5,10 @@ const tableReducers = (state = null, action) => {
             return saveTable;
         }
 
+        case "CLEAR_TABLE": {
+            return null
+        }
+
         default: return state
     }
 }

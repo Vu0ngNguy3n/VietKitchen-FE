@@ -5,6 +5,15 @@ import axiosInstance from "../../../utils/axiosInstance";
 import { getUser } from "../../../utils/constant";
 import Table from "./Table";
 import {  FaPlus } from "react-icons/fa";
+import REACTANGE4 from "../../../assests/reactange4.png"
+import REACTANGE6 from "../../../assests/reactange6.png"
+import REACTANGE8 from "../../../assests/reactange8.png"
+import ROUND4 from "../../../assests/round4.png"
+import ROUND6 from "../../../assests/round6.png"
+import ROUND8 from "../../../assests/round8.png"
+import SQUARE4 from "../../../assests/square4.png"
+import SQUARE6 from "../../../assests/square6.png"
+import SQUARE8 from "../../../assests/square8.png"
 
 const Map = () => {
     const [board, setBoard] = useState();
@@ -18,7 +27,7 @@ const Map = () => {
             const delta = monitor.getDifferenceFromInitialOffset();
             const positionX = Math.round(item.positionX + delta.x);
             const positionY = Math.round(item.positionY + delta.y);
-            moveImageToBoard(item.id, positionX, positionY);
+            moveImageToBoard(item?.id, positionX, positionY);
         },
         collect: (monitor) => ({
             isOver: !!monitor.isOver(),
@@ -52,12 +61,13 @@ const Map = () => {
         // }
         setIsEnableSave(true);
         setBoard((prevBoard) =>
-            prevBoard.map((b) => (b.id === id ? { ...b, positionX, positionY } : b))
+            prevBoard.map((b) => (b?.id === id ? { ...b, positionX, positionY } : b))
         );
 
     };
 
     const [areaList, setAreaList] = useState([])
+    const user = getUser();
     const [currentArea, setCurrentArea] = useState();
     const [userStorage, setUserStorage] = useState();
     const [areaName, setAreaName] = useState('');
@@ -71,16 +81,18 @@ const Map = () => {
     const [isOpenSave, setIsOpenSave] = useState(false);
     const [isAddTable, setIsAddTable] = useState(false);
     const [isAddArea, setIsAddArea] = useState(false);
+    const [isOpenCreateTable, setIsOpenCreateTable] = useState(false);
+    const [typeTable, setTypeTable] = useState();
+    const [shapeTable, setShapeTable] = useState();
 
     useEffect(() => {
-        const user = getUser();
         setUserStorage(user);
         axiosInstance
         .get(`/api/area/${user?.restaurantId}`)
         .then(res =>{ 
             const data =res.data.result;
             if(data.length > 0){
-                setCurrentArea(data[0].id)
+                setCurrentArea(data[0]?.id)
             }
             setAreaList(data)
         })
@@ -137,7 +149,6 @@ const Map = () => {
     }, [currentArea,isAddTable])
 
     useEffect(() => {
-            const user = getUser();
             axiosInstance
             .get(`/api/area/${user?.restaurantId}`)
             .then(res =>{ 
@@ -157,7 +168,7 @@ const Map = () => {
     },[ isAddArea])
 
     const handleOpenTable = () => {
-        setIsOpen(true);
+        setIsOpenCreateTable(true);
         setIsCreateArea(false);
     }
 
@@ -169,8 +180,10 @@ const Map = () => {
     const handleClosePopup = () => {
         setIsOpen(false)
         setAreaName('');
-        setTableName('');
-        setNumberTables(1);
+    }
+    
+    const handleClosePopTable = () => {
+        setIsOpenCreateTable(false);
     }
 
     const handleCreateArea = () => {
@@ -181,7 +194,7 @@ const Map = () => {
                 }else{
                     const area = {
                         name: areaName,
-                        restaurantId: +userStorage.restaurantId
+                        restaurantId: +user.restaurantId
                     }
 
                     axiosInstance
@@ -206,7 +219,8 @@ const Map = () => {
             }else{
                 const table = {
                     name: tableName,
-                    tableTypeId: currentTypeTable,
+                    numberChairs: typeTable,
+                    tableTypeId: shapeTable,
                     areaId: +currentArea,
                     positionX: 0,
                     positionY: 0,
@@ -216,7 +230,7 @@ const Map = () => {
                 .post(`/api/table/create/${numberTables}`, table)
                 .then(res => {
                     toast.success(`Tạo bàn ${tableName} thành công`);
-                    handleClosePopup();
+                    handleClosePopTable();
                     setIsAddTable(!isAddTable);
                 })
                 .catch(err => {
@@ -364,27 +378,21 @@ const Map = () => {
                                             className="w-full px-3 py-2 border rounded-md"
                                         />
                                     </div>}
-                                    {!isCreateArea && <div className="mb-4">
-                                        <label className="block mb-2">Tên bàn</label>
-                                        <input
-                                            type="text"
-                                            placeholder="Tên bàn"
-                                            value={tableName}
-                                            onChange={(e) => setTableName(e.target.value)}
-                                            className="w-full px-3 py-2 border rounded-md"
-                                        />
-                                    </div>}
-                                    {!isCreateArea && <div className="mb-4">
-                                        <label className="block mb-2">Số lượng bàn</label>
-                                        <input
-                                            type="number"
-                                            placeholder="Số lượng bàn"
-                                            value={numberTables}
-                                            onChange={(e) => setNumberTables(e.target.value)}
-                                            className="w-full px-3 py-2 border rounded-md"
-                                        />
-                                    </div>}
-                                   {!isCreateArea && <div className="mb-4">
+                                    <div className="flex justify-end gap-2">
+                                        <button
+                                            className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-red-700 transition-all duration-300"
+                                            onClick={handleClosePopup}
+                                        >
+                                            Hủy
+                                        </button>
+                                        <button
+                                            onClick={() => handleCreateArea()}
+                                            className="py-2 px-5 bg-lgreen font-semibold text-white rounded hover:bg-green transition-all duration-300"
+                                        >
+                                            Thêm 
+                                        </button>
+                                         
+                                   {/* {!isCreateArea && <div className="mb-4">
                                         <label className="block mb-2">Loại bàn</label>
                                         
                                         <select 
@@ -399,11 +407,109 @@ const Map = () => {
                                             )}
                                         </select>
 
-                                    </div>}
+                                    </div>} */}
+                                    </div>
+                                </div>
+                            </div>
+                            : ''}
+                            {isOpenCreateTable ? <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
+                                <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl z-50 animate-slideIn">
+                                    <button
+                                        className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-2xl"
+                                        onClick={handleClosePopTable}
+                                    >
+                                        &times;
+                                    </button>
+                                    <h2 className="text-xl font-semibold mb-4">
+                                        {isCreateArea ? 'Thêm khu vực mới' : 'Thêm bàn mới'}
+                                    </h2>
+                                    <hr />
+                                    <div className="w-full flex border-b-2 justify-between border-b-gray-400 pb-2 mb-4">
+                                        <div className="w-[52%]">
+                                           <div className="border-b-2 pb-2 border-b-gray-400">
+                                                <div className="mb-2">
+                                                    <label className="block mb-2 font-semibold">Tên bàn</label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Tên bàn"
+                                                        value={tableName}
+                                                        onChange={(e) => setTableName(e.target.value)}
+                                                        className="w-full px-3 py-2 border rounded-md"
+                                                    />
+                                                </div>
+                                                <div className="mb-2">
+                                                    <label className="block mb-2 font-semibold">Số lượng bàn</label>
+                                                    <input
+                                                        type="number"
+                                                        placeholder="Số lượng bàn"
+                                                        value={numberTables}
+                                                        onChange={(e) => setNumberTables(e.target.value)}
+                                                        className="w-full px-3 py-2 border rounded-md"
+                                                    />
+                                                </div>
+                                           </div>
+                                           <div className="flex justify-between py-2">
+                                                <div className="w-[45%] ">
+                                                    <label className="block mb-2 font-semibold">Loại bàn</label>
+                                                    <div className="flex-row">
+                                                        <div 
+                                                            className={`flex justify-center py-1 border-2 rounded mb-2 shadow-md cursor-pointer duration-300 transition-all ${typeTable === 4 ? "border-blue-500" : "border-gray-400 "}`} 
+                                                            onClick={() => setTypeTable(4)}
+                                                        >
+                                                            <span className="text-center font-semibold">Nhỏ {`(4) chỗ`}</span>
+                                                        </div>
+                                                        <div 
+                                                            className={`flex justify-center py-1 border-2 rounded mb-2 shadow-md cursor-pointer duration-300 transition-all ${typeTable === 6 ? "border-blue-500" : "border-gray-400 "}`} 
+                                                            onClick={() => setTypeTable(6)}
+                                                        >
+                                                            <span className="text-center font-semibold">Trung bình {`(5-8) chỗ`}</span>
+                                                        </div>
+                                                        <div 
+                                                            className={`flex justify-center py-1 border-2 rounded mb-2 shadow-md cursor-pointer duration-300 transition-all ${typeTable === 8 ? "border-blue-500" : "border-gray-400 "}`} 
+                                                            onClick={() => setTypeTable(8)}
+                                                        >
+                                                            <span className="text-center font-semibold">Lớn {`(> 9 chỗ)`}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="w-[45%]">
+                                                    <label className="block mb-2 font-semibold">Kiểu dáng</label>
+                                                     <div className="flex-row">
+                                                        {typeTableList?.map((t,index) => {
+                                                            return (
+                                                                <div 
+                                                                    className={`flex justify-center py-1 border-2 rounded mb-2 shadow-md cursor-pointer duration-300 transition-all ${t?.id === shapeTable ?"border-blue-500":"border-gray-400 "}`} 
+                                                                    key={index}
+                                                                    onClick={() => setShapeTable(t?.id)}
+                                                                >
+                                                                    {t?.name === "Bàn tròn" && <div className="border-2 border-gray-400 py-1 h-6 w-6 rounded-full"></div>}
+                                                                    {t?.name === "Bàn vuông" && <div className="border-2 border-gray-400 py-1 h-6 w-6"></div>}
+                                                                    {t?.name === "Bàn chữ nhật" && <div className="border-2 border-gray-400 py-1 h-6 w-10"></div>}
+                                                                </div>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                </div>
+                                           </div>
+                                        </div>
+                                        <div className="w-[45%] border-l-2 flex justify-center items-center">
+                                            {(typeTable === 4 && shapeTable === 3) && <img src={REACTANGE4} alt="" className="size-52"/>}
+                                            {(typeTable === 6 && shapeTable === 3) && <img src={REACTANGE6} alt="" className="size-52"/>}
+                                            {(typeTable === 8 && shapeTable === 3) && <img src={REACTANGE8} alt="" className="size-52"/>}
+                                            {(typeTable === 4 && shapeTable === 1) && <img src={ROUND4} alt="" className="size-52"/>}
+                                            {(typeTable === 6 && shapeTable === 1) && <img src={ROUND6} alt="" className="size-52"/>}
+                                            {(typeTable === 8 && shapeTable === 1) && <img src={ROUND8} alt="" className="size-52"/>}
+                                            {(typeTable === 4 && shapeTable === 2) && <img src={SQUARE4} alt="" className="size-52"/>}
+                                            {(typeTable === 6 && shapeTable === 2) && <img src={SQUARE6} alt="" className="size-52"/>}
+                                            {(typeTable === 8 && shapeTable === 2) && <img src={SQUARE8} alt="" className="size-52"/>}
+                                            
+                                        </div>
+                                    </div>
+                                   
                                     <div className="flex justify-end gap-2">
                                         <button
                                             className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-red-700 transition-all duration-300"
-                                            onClick={handleClosePopup}
+                                            onClick={handleClosePopTable}
                                         >
                                             Hủy
                                         </button>
@@ -425,12 +531,14 @@ const Map = () => {
                             >
                                 {board?.map((picture, index) => (
                                     <Table
-                                        url={picture?.tableType.imageUrl}
+                                        typeTable={picture?.tableType?.id}
                                         id={picture?.id}
                                         key={index}
                                         positionX={picture?.positionX}
                                         positionY={picture?.positionY}
                                         name={picture?.name}
+                                        orderCurrent={picture?.orderCurrent}
+                                        numberChairs={picture?.numberChairs}
                                     />
                                 ))}
                             </div>

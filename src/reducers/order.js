@@ -5,6 +5,10 @@ const orderReducer = (state = "", action) => {
             return orderId;
         }
 
+        case "CLEAR_ORDER_ID":{
+            return action.payload
+        }
+
         default: return state;
     }
 }

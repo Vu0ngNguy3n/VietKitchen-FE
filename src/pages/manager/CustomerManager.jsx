@@ -29,7 +29,7 @@ function CustomerManager() {
         setRestaurantId(user.restaurantId);
 
         axiosInstance
-        .get("/api/customers/rankingCustomer")
+        .get(`/api/customers/rankingCustomer/${user?.restaurantId}`)
         .then(res => {
             const data = res.data;
             setListCustomers(data);
@@ -162,7 +162,7 @@ function CustomerManager() {
                                     <input
                                         type="text"
                                         className="w-full px-4 py-3 pl-10 outline-none italic "
-                                        placeholder="Nhập tên khách hàng"
+                                        placeholder="Nhập SĐT khách hàng"
                                     />
                                 </div>
                             </div>

@@ -5,6 +5,7 @@ import { MdManageAccounts } from "react-icons/md";
 import { PiUniteFill } from "react-icons/pi";
 import { RiMoneyDollarCircleFill } from "react-icons/ri";
 import { useNavigate } from "react-router";
+import { MdOutlinePayment } from "react-icons/md";
 
 
 function SettingManager() {
@@ -29,22 +30,39 @@ function SettingManager() {
                                     <h1 className="font-black text-xl">Thiết lập thông tin</h1>
 
                                 </div>
-                                <div className="flex gap-4 justify-between mt-6">
+                                <div className="flex gap-4 justify-between mt-6 flex-wrap">
                                     <div className='flex items-center gap-[10px] basis-[40%]'>
                                         <FaShop color='black ' size={35} />
                                         <div className="flex-row">
                                             <p 
-                                            className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.5] cursor-pointer'
+                                            className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.7] cursor-pointer'
                                             onClick={() => navigate('/manager/restaurantInformation')}
                                             >Thông tin nhà hàng</p>
                                             <span>Xem và điều chỉnh thông tin nhà hàng của bạn</span>
                                         </div>
                                     </div>
                                     <div className='flex items-center gap-[10px] basis-[40%]'>
-                                        <MdManageAccounts  color='black ' size={35} />
+                                        <MdOutlinePayment  color='black ' size={35} />
                                         <div className="flex-row">
-                                            <p className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.5] cursor-pointer'>Thiết lập tài khoản</p>
-                                            <span>Xem và điều chỉnh thông tin nhà hàng của bạn</span>
+                                            <p 
+                                                className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.7] cursor-pointer'
+                                                onClick={() => navigate('/manager/paymentSetting')}
+                                            >
+                                                Thiết lập thanh toán
+                                            </p>
+                                            <span>Xem và điều chỉnh thông tin thanh toán của nhà hàng.</span>
+                                        </div>
+                                    </div>
+                                    <div className='flex items-center gap-[10px] basis-[40%]'>
+                                        <MdOutlinePayment  color='black ' size={35} />
+                                        <div className="flex-row">
+                                            <p 
+                                                className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.7] cursor-pointer'
+                                                onClick={() => navigate('/manager/packageRestaurant')}
+                                            >
+                                                Thông tin gói
+                                            </p>
+                                            <span>Xem và và nâng cấp gói cho nhà hàng.</span>
                                         </div>
                                     </div>
                                 </div>
@@ -67,13 +85,6 @@ function SettingManager() {
                                     </div>
                                     <div className='flex items-center gap-[10px] basis-[40%]'>
                                         <RiMoneyDollarCircleFill color='black ' size={35} />
-                                        <div className="flex-row">
-                                            <p className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.5] cursor-pointer'>Thiết lập bán hàng</p>
-                                            <span>Xem và thiết lập các chế độ bán hàng trong nhà hàng</span>
-                                        </div>
-                                    </div>
-                                    <div className='flex items-center gap-[10px] basis-[40%]'>
-                                        <FaShop color='black ' size={35} />
                                         <div className="flex-row">
                                             <p className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.5] cursor-pointer'>Thiết lập bán hàng</p>
                                             <span>Xem và thiết lập các chế độ bán hàng trong nhà hàng</span>

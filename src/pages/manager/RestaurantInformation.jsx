@@ -8,6 +8,7 @@ import HeaderManagerDashboard from "../../components/managerComponent/HeaderMana
 import { Select } from "../../components/managerComponent/Select";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
+import { getUser } from "../../utils/constant";
 
 function RestaurantInformation() {
 
@@ -17,6 +18,7 @@ function RestaurantInformation() {
     const [accountStorage, setAccountStorage] = useState();
     const [restaurantInformation, setRestaurantInformation] = useState('');
     const [address, setAddress] = useState('')
+    const user = getUser();
 
     function handleUpdate() {
       
@@ -37,8 +39,16 @@ function RestaurantInformation() {
                     .post("/api/restaurant/init", restaurantCreate)
                     .then(res => {
                         toast.success("Tạo thông tin cửa hàng thành công!")
-                        navigate("/manager/dashboard")
+                        navigate("/manager/paymentSetting")
                         localStorage.setItem("token", res.data.result.token);
+                        const userStorage = {
+                            username: user.sub,
+                            email: user.email,
+                            role: user.scope,
+                            accountId: user.accountId,
+                            restaurantId: res.data.result.id
+                        };
+                        localStorage.setItem("user", JSON.stringify(userStorage))
                     })
                     .catch(err => {
                         if (err.response) {

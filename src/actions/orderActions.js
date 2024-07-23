@@ -5,3 +5,10 @@ export const saveOrderId = (orderId)  => {
         payload: orderId
     }
 }
+
+export const clearOrderId = () => {
+    return{
+        type: "CLEAR_ORDER_ID",
+        payload: null
+    }
+}

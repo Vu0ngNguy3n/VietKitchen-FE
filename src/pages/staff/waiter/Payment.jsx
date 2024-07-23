@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import NavBarStaff from "../../../components/staffComponent/NavBarStaff";
 import SidebarStaff from "../../../components/staffComponent/SidebarStaff";
 import { FaUserCircle } from "react-icons/fa";
@@ -11,12 +11,19 @@ import axiosInstance from "../../../utils/axiosInstance";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import { getUser } from "../../../utils/constant";
+import {clearTable} from "../../../actions/tableActions"
+import {clearOrderId} from "../../../actions/orderActions"
+import {clearCart} from "../../../actions/cartActions"
+import {clearCustomer} from "../../../actions/customerActions"
+import axios from "axios";
 
 
 function Payment() {
  
     const table = useSelector(state => state.table)
     const orderId = useSelector(state => state.orderId);
+    const user = getUser();
     const [customerPay, setCustomerPay] = useState(0);
     const [remainMoney, setRemainMoney] = useState(0);
     const [discountMoney, setDiscountMoney] = useState(0);
@@ -25,28 +32,84 @@ function Payment() {
     const [isQR, setIsQR] = useState(true);
     const [orderDetail, setOrderDetail] = useState();
     const customerDetail = useSelector(state => state.customer);
+    const [managerInformation, setManagerInformation] = useState();
+    const [QRCodeImg, setQRCodeImg] = useState();
+    const [isOpenPopUp, setIsOpenPopUp] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(()=>{
         axiosInstance
-        .get(`/api/order/${orderId}`)
+            .get(`/api/order/${orderId}`)
+            .then(res => {
+                const data = res.data.result;
+                setOrderDetail(data);
+                setCustomerPoint(data.customer.point)
+                setRequireMoney(data.totalMoney)
+            })
+            .catch((err) => {
+            if (err.response) {
+            const errorRes = err.response.data;
+            toast.error(errorRes.message);
+            } else if (err.request) {
+            toast.error(err.request);
+            } else {
+            toast.error(err.message);
+            }
+        });
+
+         axiosInstance
+        .get(`/api/restaurant/account/${user?.accountId}`)
         .then(res => {
-            const data = res.data.result;
-            setOrderDetail(data);
-            setCustomerPoint(data.customer.point)
-            setRequireMoney(data.totalMoney)
+            const data = res.data.result; 
+            setManagerInformation(data);
         })
-        .catch((err) => {
-        if (err.response) {
-          const errorRes = err.response.data;
-          toast.error(errorRes.message);
-        } else if (err.request) {
-          toast.error(err.request);
-        } else {
-          toast.error(err.message);
-        }
-      });
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })
     },[])
+
+    useEffect(()=>{
+        const dataPayment = {
+            accountNo: managerInformation?.account_NO,
+            accountName: managerInformation?.account_NAME,
+            acqId: managerInformation?.bank_ID,
+            amount: requireMoney,
+            addInfo: "Ung Ho Dinh Hoan",
+            format: "text",
+            template: "compact2"
+        }
+        if(dataPayment?.accountName !== undefined){
+            axios
+            .post(`https://api.vietqr.io/v2/generate`,dataPayment,{
+                headers: { 
+                        'x-client-id': '752aa61c-e3c9-4b9c-8828-ff2711468e66', 
+                        'x-api-key': '630e1ee3-7cf6-4279-9b11-16eae4b8c4e7', 
+                        'Content-Type': 'application/json',
+                    },
+            })
+            .then(res => {
+                setQRCodeImg(res.data.data?.qrDataURL);
+            })
+            .catch(err => {
+                if (err.response) {
+                    const errorRes = err.response.data;
+                    toast.error(errorRes.message);
+                } else if (err.request) {
+                    toast.error("Yêu cầu tạo QR không thành công");
+                } else {
+                    toast.error(err.message);
+                }
+            })
+        }
+    },[requireMoney, managerInformation])
 
     const joinNumber = (value) => {
         setCustomerPay(customerPay+value);
@@ -65,6 +128,47 @@ function Payment() {
     useEffect(() => {
         setRemainMoney(customerPay-requireMoney);
     },[customerPay])
+
+    const handleOpenPopUp = () => {
+        setIsOpenPopUp(true);
+    }
+
+    const handleClosePopUp = () => {
+        setIsOpenPopUp(false);
+    }
+
+    const handleCreateBill = () => {
+        const dataBill = {
+            total: requireMoney,
+            methodPayment: isQR?"BANKING":"MONEY"
+        }
+        
+        axiosInstance
+        .post(`/api/bill/create/order/${orderId}`, dataBill)
+        .then(res => {
+            console.log(res.data);
+            toast.success("Thanh toán thành công");
+            const actionTable = clearTable();
+            dispatch(actionTable);
+            const actionOrder = clearOrderId();
+            dispatch(actionOrder);
+            const actionCart = clearCart();
+            dispatch(actionCart);
+            const actionCustomer = clearCustomer();
+            dispatch(actionCustomer);
+            navigate("/waiter/map");
+        })
+        .catch(err => {
+                if (err.response) {
+                    const errorRes = err.response.data;
+                    toast.error(errorRes.message);
+                } else if (err.request) {
+                    toast.error("Yêu cầu tạo QR không thành công");
+                } else {
+                    toast.error(err.message);
+                }
+            })
+    }
 
   return (
     <div className="flex h-screen">
@@ -267,21 +371,81 @@ function Payment() {
 
                     <div className={`w-[33%] h-full bg-white rounded-md  ${isQR ? "flex justify-center items-center" : "hidden"}`}>
                         <div className="">
-                            <div className="border-2 border-black p-3 rounded mb-4">
-                                <FaQrcode className="size-32"/>                                
-                            </div>
                             <div className="flex justify-center">
-                                <span className="font-semibold">Ngân hàng</span>
+                                {/* <FaQrcode className="size-32"/>                                 */}
+                                <img src={QRCodeImg} className='w-[80%]' alt="" />
                             </div>
+                            {/* <div className="flex justify-center">
+                                <span className="font-semibold">Ngân hàng</span>
+                            </div> */}
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-center items-center cursor-pointer h-[12%] bg-secondary">
+                <div className="flex justify-center items-center cursor-pointer h-[12%] bg-secondary" onClick={() => handleOpenPopUp()}>
                     <span className="font-semibold text-white">Xác nhận thanh toán</span>
                 </div>
             </div> 
+            {isOpenPopUp && (
+                <div id="popup-delete" className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
+                                <div className="relative p-4 w-full max-w-md bg-white rounded-lg shadow dark:bg-gray-700 animate-slideIn">
+                                    <button type="button" onClick={handleClosePopUp} className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                        <span className="sr-only">Close modal</span>
+                                    </button>
+                                    <div className="p-4 md:p-5 text-center">
+                                        <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                        </svg>
+                                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Xác nhận thanh toán thành công</h3>
+                                        <button 
+                                            data-modal-hide="popup-modal" 
+                                            type="button" 
+                                            onClick={() => handleCreateBill()}
+                                            className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                                            Có
+                                        </button>
+                                        <button 
+                                            data-modal-hide="popup-modal" 
+                                            type="button" 
+                                            onClick={handleClosePopUp}
+                                            className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                                            Không
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+            )}
         </div>
       </div>
+      <style jsx>{`
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                    }
+                    to {
+                        opacity: 1;
+                    }
+                }
+
+                @keyframes slideIn {
+                    from {
+                        transform: translateY(-20%);
+                    }
+                    to {
+                        transform: translateY(0);
+                    }
+                }
+
+                .animate-fadeIn {
+                    animation: fadeIn 0.3s ease-in-out;
+                }
+
+                .animate-slideIn {
+                    animation: slideIn 0.3s ease-in-out;
+                }
+            `}</style>
     </div>
   );
 }

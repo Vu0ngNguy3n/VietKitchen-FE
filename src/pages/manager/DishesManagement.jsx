@@ -56,7 +56,7 @@ function DishesManagement() {
             const data = res.data.result;
             setCategoryList(data);
             if(data.length > 0){
-                setCurrentCategory(data[0].id);
+                setCurrentCategory(data[0]?.id);
             }
         })
         .catch(err => {
@@ -75,7 +75,7 @@ function DishesManagement() {
         .then(res => {
             const data = res.data.result;
             if(data.length > 0){
-                setCurrentUnit(data[0].id)
+                setCurrentUnit(data[0]?.id)
             }
             setUnitsList(data)
         })
@@ -125,8 +125,8 @@ function DishesManagement() {
         setDescription('');
         setPrice(0);
         setImgDishCreate('');
-        setCurrentCategory(categoryList[0].id);
-        setCurrentUnit(unitsList[0].id)
+        setCurrentCategory(categoryList[0]?.id);
+        setCurrentUnit(unitsList[0]?.id)
     } 
 
   
@@ -163,7 +163,7 @@ function DishesManagement() {
                         toast.success(`Tạo món ăn ${dishName} thành công!`)
                         setIsReRender(!isReRender)
                         handleClosePouUp();
-                        setCurrentCategory(categoryList[0].id)
+                        setCurrentCategory(categoryList[0]?.id)
                     })
                     .catch(err => {
                             if (err.response) {
@@ -199,12 +199,12 @@ function DishesManagement() {
             status: statusDish === 'true' ? false : true,
             description: hideDish?.description,
             price: hideDish?.price,
-            dishCategoryId: hideDish?.dishCategory.id,
+            dishCategoryId: hideDish?.dishCategory?.id,
             imageUrl: hideDish?.imageUrl,
-            unitId: hideDish?.unit.id
+            unitId: hideDish?.unit?.id
         }
         axiosInstance
-        .put(`/api/dish/${+hideDish.id}`, result)
+        .put(`/api/dish/${+hideDish?.id}`, result)
         .then(res => {
             toast.success(`Ẩn món ăn ${hideDish?.name} thành công`)
             setHideDish();

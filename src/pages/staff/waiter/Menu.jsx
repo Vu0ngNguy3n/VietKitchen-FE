@@ -79,9 +79,13 @@ function Menu(){
       onConnect: () => {
         console.log('Connected to WebSocket');
         setConnected(true);
-        stompClient.send('/topic/order', (message) => {
+        stompClient.send(`/topic/order/restaurant/${user?.restaurantId}`, (message) => {
           setMessages(prevMessages => [...prevMessages, message.body]);
         });
+
+        stompClient.send(`/topic/restaurant/${user?.restaurantId}`, (message ) => {
+             console.log('Received status-table message:', message.body);
+        })
       },
       onStompError: (frame) => {
         console.error('Broker reported error: ' + frame.headers['message']);
@@ -129,13 +133,24 @@ function Menu(){
   const addDish = (message) => {
     if (client && connected) {
       client.publish({
-        destination: "/app/addDishes",
+        destination: `/app/restaurant/${user?.restaurantId}/addDishes`,
         body: JSON.stringify(message), 
       });
     } else {
       console.error("Client is not connected");
     }
   };
+
+  const changeStatusTable = (message) => {
+     if (client && connected) {
+      client.publish({
+        destination: `/app/restaurant/${message?.restaurantId}/table/${message?.tableId}/status-table`,
+        body: JSON.stringify(message), 
+      });
+    } else {
+      console.error("Client is not connected");
+    }
+  }
 
   const handleSubmitDish = () => {
      const newCart = cartList?.map((c) => {
@@ -162,7 +177,6 @@ function Menu(){
         .then(res => {
             const data = res.data;
             setDishesList(data.result);
-            console.log(data.result );
         })
         .catch((err) => {
           if (err.response) {
@@ -186,23 +200,23 @@ function Menu(){
         if(!dish?.name){
             dishAdd = {
                 dishId: null,
-                name: dish.comboName,
+                name: dish?.comboName,
                 code: null,
                 weight: null,
-                description: dish.description,
-                price: dish.comboPrice,
-                imageUrl: dish.imageUrl,
-                comboId: dish.id
+                description: dish?.description,
+                price: dish?.comboPrice,
+                imageUrl: dish?.imageUrl,
+                comboId: dish?.id
             }
         }else{
             dishAdd = {
-                dishId: dish.id,
-                name: dish.name,
-                code: dish.code,
-                weight: dish.weight,
-                description: dish.description,
-                price: dish.price,
-                imageUrl: dish.imageUrl,
+                dishId: dish?.id,
+                name: dish?.name,
+                code: dish?.code,
+                weight: dish?.weight,
+                description: dish?.description,
+                price: dish?.price,
+                imageUrl: dish?.imageUrl,
                 comboId: null
             }
         }
@@ -249,10 +263,10 @@ function Menu(){
                     axiosInstance
                     .post(`/create`, requestData)
                     .then((res) => {
-                      const idResult = res.data.result.id;
+                      const idResult = res.data.result?.id;
                       const actionOrder = saveOrderId(idResult);
                       dispatch(actionOrder);
-                      console.log(idResult);
+                      changeStatusTable(requestData);
                     })
                     .catch((err) => {
                       if (err.response) {
@@ -294,11 +308,12 @@ function Menu(){
     const handleCreateCustomer = () => {
       
       const customerAdd = {
-        phoneNumber: phoneNumberAdd,
+        phoneNumber: phoneNumber,
         name: customerName,
         address: address,
         restaurantId: user?.restaurantId
       }
+      console.log(customerAdd);
        axiosInstance
                 .post(`/api/customers/create`, customerAdd)
                 .then(res => {
@@ -317,9 +332,10 @@ function Menu(){
                     axiosInstance
                     .post(`/create`, requestData)
                     .then((res) => {
-                      const idResult = res.data.result.id;
+                      const idResult = res.data.result?.id;
                       const actionOrder = saveOrderId(idResult);
                       dispatch(actionOrder);
+                      changeStatusTable(requestData)
                       console.log(idResult);
                     })
                     .catch((err) => {
@@ -446,8 +462,8 @@ function Menu(){
                                         <input
                                             type="number"
                                             placeholder="Số điện thoại"
-                                            value={phoneNumberAdd}
-                                            onChange={(e) => setPhoneNumberAdd(e.target.value)}
+                                            value={phoneNumber}
+                                            onChange={(e) => setPhoneNumber(e.target.value)}
                                             className={`w-full px-3 py-2 border rounded-md `}
                                         />
                                     </div>
@@ -495,14 +511,15 @@ function Menu(){
                                     href="#"
                                     className="w-full md:w-1/2 flex flex-col items-center md:flex-row"
                                     key={index}
+                                    onClick={() => handleAddDish(d)}
                                 >
                                     <div className="flex-shrink-0 w-full md:w-1/2">
-                                        <img className="object-cover h-full w-full md:h-auto" src={d?.imageUrl} alt=""/>
+                                        <img className="object-cover h-[180px] w-[240px] md:h-[180px]" src={d?.imageUrl} alt=""/>
                                     </div>
-                                    <div className="relative flex flex-col p-4 leading-normal w-full">
+                                    <div className="relative flex flex-col p-4 leading-normal w-full" >
                                         <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{d?.name}</h5>
                                         <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{formatVND(d?.price)}</p>
-                                        <div className="absolute bottom-4 right-4 cursor-pointer" onClick={() => handleAddDish(d)}>
+                                        <div className="absolute bottom-2 right-4 cursor-pointer" >
                                             <FaPlusCircle className="text-red-600 size-7 hover:text-secondary transition ease-in-out duration-300"/>
                                         </div>
                                     </div>

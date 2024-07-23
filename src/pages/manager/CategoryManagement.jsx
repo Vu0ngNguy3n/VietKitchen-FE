@@ -193,7 +193,7 @@ function CategoryManagement() {
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
                                         <th scope="col" className="px-6 py-3">
-                                            Tên món ăn
+                                            Tên loại món ăn
                                         </th>
                                         <th scope="col" className="px-6 py-3">
                                             Mô tả
@@ -251,10 +251,10 @@ function CategoryManagement() {
                             {isCreate ? "Thêm thực đơn" : "Cập nhật thực đơn"}
                         </h2>
                         <div className="mb-4">
-                            <label className="block mb-2">Tên món ăn</label>
+                            <label className="block mb-2">Tên loại món ăn</label>
                             <input
                                 type="text"
-                                placeholder="Tên món ăn"
+                                placeholder="Tên loại món ăn"
                                 value={name}
                                 onChange={e => setName(e.target.value)}
                                 className="w-full px-3 py-2 border rounded-md"

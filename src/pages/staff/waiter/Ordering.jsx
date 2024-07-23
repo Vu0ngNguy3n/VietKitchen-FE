@@ -30,7 +30,6 @@ function Ordering() {
   const navigate = useNavigate();
 
   useEffect(() => {
-     
     const socket = new SockJS("http://localhost:8080/websocket");
     const stompClient = new Client({
       webSocketFactory: () => socket,
@@ -38,8 +37,10 @@ function Ordering() {
         console.log("Connected to WebSocket");
         setConnected(true);
         stompClient.subscribe(`/topic/table/${table?.tableId}`, (message) => {
-          console.log(JSON.parse(message.body));
-          setMessages((prevMessages) => [...prevMessages, JSON.parse(message.body)]);
+          const data = JSON.parse(message.body);
+          setOldCart((prevMessages) => 
+          prevMessages.map(m => (m?.id === data?.id ? data : m))
+        );
         });
       },
       onStompError: (frame) => {
@@ -82,24 +83,27 @@ function Ordering() {
   },[orderIdRedux])
 
   useEffect(() => {
-    toast('Co mon an dc cap nhat')
   },[messages])
  
 
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen relative">
+      <div className="w-full flex justify-center absolute mt-6 bottom-6" onClick={() => navigate("/waiter/payment")}>
+          <button className="ml-[12%] px-4 py-3 border-none rounded-md bg-secondary text-white uppercase font-semibold transition-all duration-300 hover:opacity-[60%]">Thanh toán</button>
+        </div>  
       <div className="basis-[12%]">
         <SidebarStaff />
       </div>
-      <div className="basis-[88%] border overflow-scroll">
+      <div className="basis-[88%] border overflow-scroll ">
         <NavBarStaff />
+        
 
         <div className="flex h-full w-full bg-slate-300">
           
           
             
-              <div class=" overflow-x-auto  sm:rounded-lg w-full relative">
+              <div class=" overflow-x-auto  sm:rounded-lg w-full ">
                                                             
                   <div className="w-full  flex flex-wrap justify-around">
                     
@@ -108,6 +112,7 @@ function Ordering() {
                                     <a href="#" class="w-[40%] mt-8 flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <img class="object-cover ml-2 w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src={d?.dish.imageUrl} alt=""/>
                                         <div class="flex flex-col p-4 leading-normal">
+
                                             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{d?.dish.name}</h5>
                                             <p class=" mb-3 font-normal text-gray-700 dark:text-gray-400">Số lượng: {d?.quantity} {d?.dish.unit.name}</p>
                                             <p class={`mb-3 font-normal text-gray-700 dark:text-gray-400`}>
@@ -148,9 +153,7 @@ function Ordering() {
                                   <div class="w-[40%] "></div>
                                     
                   </div>               
-                  <div className="w-full flex justify-center absolute mt-6" onClick={() => navigate("/waiter/payment")}>
-                      <button className="px-4 py-3 border-none rounded-md bg-secondary text-white uppercase font-semibold transition-all duration-300 hover:opacity-[60%]">Thanh toán</button>
-                  </div>      
+                      
              </div>
         </div>
       </div>
