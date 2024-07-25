@@ -28,7 +28,7 @@ const Table = ({ id, typeTable, positionX, positionY, name, orderCurrent, number
                 top: `${positionY}px`,
                 width: '150px',
                 height: '150px',
-                // border: isDragging ? "5px solid pink" : "0px",
+                border: isDragging ? "5px solid pink" : "0px",
                 opacity: isDragging ? 0.5 : 1,
             }}
         >
@@ -53,6 +53,7 @@ const Table = ({ id, typeTable, positionX, positionY, name, orderCurrent, number
                     width: "100%",
                     zIndex:10,
                     color: orderCurrent === null ? 'white': "red",
+                    border: "black",
                     // color: "white",
                     pointerEvents: "none" // This ensures the text does not interfere with dragging
                 }}

@@ -16,56 +16,8 @@ import SQUARE6 from "../../../assests/square6.png"
 import SQUARE8 from "../../../assests/square8.png"
 
 const Map = () => {
-    const [board, setBoard] = useState();
+    const [board, setBoard] = useState([]);
     const [isEnableSave, setIsEnableSave] = useState(false);
-    const [selectedTable, setSelectedTable] = useState();
-
-
-    const [{ isOver }, drop] = useDrop(() => ({
-        accept: "image",
-        drop: (item, monitor) => {
-            const delta = monitor.getDifferenceFromInitialOffset();
-            const positionX = Math.round(item.positionX + delta.x);
-            const positionY = Math.round(item.positionY + delta.y);
-            moveImageToBoard(item?.id, positionX, positionY);
-        },
-        collect: (monitor) => ({
-            isOver: !!monitor.isOver(),
-        }),
-    }));
-
-    const moveImageToBoard = (id, positionX, positionY) => {
-         const pictureSize = 70; // Kích thước của ảnh
-        const minDistance = 5; // Khoảng cách tối thiểu giữa các ảnh
-        // const isPositionTaken = board.some((picture) => {
-        //     if (picture.id === id) {
-        //         return false; // Bỏ qua so sánh với chính ảnh đang kéo thả
-        //     }
-
-        //     // Tính khoảng cách giữa ảnh đang kéo thả và ảnh trong mảng
-        //     const distanceX = Math.abs(picture.positionX - positionX);
-        //     const distanceY = Math.abs(picture.positionY - positionY);
-
-        //     // Kiểm tra xem ảnh có bị giao nhau với ảnh trong mảng không
-        //     return (
-        //         distanceX < pictureSize + minDistance &&
-        //         distanceY < pictureSize + minDistance
-        //     );
-        // });
-
-        // if (isPositionTaken) {
-        //     toast.warn(
-        //         "Vị trí này đã có ảnh khác hoặc không đủ khoảng cách. Vui lòng chọn vị trí khác."
-        //     );
-        //     return;
-        // }
-        setIsEnableSave(true);
-        setBoard((prevBoard) =>
-            prevBoard.map((b) => (b?.id === id ? { ...b, positionX, positionY } : b))
-        );
-
-    };
-
     const [areaList, setAreaList] = useState([])
     const user = getUser();
     const [currentArea, setCurrentArea] = useState();
@@ -84,6 +36,85 @@ const Map = () => {
     const [isOpenCreateTable, setIsOpenCreateTable] = useState(false);
     const [typeTable, setTypeTable] = useState();
     const [shapeTable, setShapeTable] = useState();
+    const [isSave, setIsSave] = useState(null);
+    
+
+    const [{ isOver }, drop] = useDrop(() => ({
+        accept: "image",
+        drop: (item, monitor) => {
+            const delta = monitor.getDifferenceFromInitialOffset();
+            const positionX = Math.round(item.positionX + delta.x);
+            const positionY = Math.round(item.positionY + delta.y);
+            moveImageToBoard(item?.id, positionX, positionY);
+        },
+        collect: (monitor) => ({
+            isOver: !!monitor.isOver(),
+        }),
+    }));
+
+    const moveImageToBoard = (id, positionX, positionY) => {
+        const pictureSize = 150; // Kích thước của hình ảnh
+        const minDistance = 5; // Khoảng cách tối thiểu giữa các hình ảnh
+        const boardWidth = 0.9 * window.innerWidth; // 90% chiều rộng của container
+        const boardHeight = 600; // Chiều cao của bảng
+
+        // Lưu trữ vị trí cũ
+        const oldBoard = [...board];
+        const oldPosition = board.find(picture => picture.id === id);
+        const oldPositionX = oldPosition?.positionX;
+        const oldPositionY = oldPosition?.positionY;
+
+        // Kiểm tra biên
+        if (positionX < 0 || positionY < 0 || positionX + pictureSize > boardWidth || positionY + pictureSize > boardHeight) {
+            toast.warn("Image is out of bounds. Please choose another position.");
+            return;
+        }
+
+        // Kiểm tra nếu vị trí mới có bị chồng chéo với bất kỳ hình ảnh nào khác không
+        const isPositionTaken = board.some((picture) => {
+            if (picture.id === id) {
+                return false; // Bỏ qua hình ảnh đang bị kéo
+            }
+
+            // Các cạnh của hình ảnh hiện tại và hình ảnh mới
+            const pictureRight = picture.positionX + pictureSize;
+            const pictureBottom = picture.positionY + pictureSize;
+            const newPictureRight = positionX + pictureSize;
+            const newPictureBottom = positionY + pictureSize;
+
+            // Kiểm tra sự chồng chéo giữa hai hình ảnh
+            // return !(
+            //     positionX > pictureRight + minDistance ||
+            //     newPictureRight < picture.positionX - minDistance ||
+            //     positionY > pictureBottom + minDistance ||
+            //     newPictureBottom < picture.positionY - minDistance
+            // );
+            const data =!(
+                positionX > pictureRight + minDistance ||
+                newPictureRight < picture.positionX - minDistance ||
+                positionY > pictureBottom + minDistance ||
+                newPictureBottom < picture.positionY - minDistance
+            )
+            if(data === true){
+                return true;
+            }
+        });
+
+        if (isPositionTaken) {
+            toast.warn("This position is already taken or too close to another image. Please choose another position.");
+            // Khôi phục vị trí cũ
+            // setBoard(oldBoard);
+            return;
+        }
+
+        // Cập nhật trạng thái bảng với vị trí mới
+        setIsEnableSave(true);
+        setBoard((prevBoard) =>
+            prevBoard.map((b) =>
+                b?.id === id ? { ...b, positionX, positionY } : b
+            )
+        );
+    };
 
     useEffect(() => {
         setUserStorage(user);

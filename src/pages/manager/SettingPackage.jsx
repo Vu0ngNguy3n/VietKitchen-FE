@@ -1,17 +1,31 @@
+import axios from "axios";
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import HeaderManagerDashboard from "../../components/managerComponent/HeaderManagerDashboard"
 import SidebarManager from "../../components/managerComponent/SidebarManager"
 import axiosInstance from "../../utils/axiosInstance";
 import { getUser } from "../../utils/constant";
 import { formatVND } from "../../utils/format";
+import CryptoJS from 'crypto-js';
+import { v4 as uuidv4 } from 'uuid'; // Import phương thức tạo UUID
 // import RestaurantPackage from "../../assests/restaurantPackage.jpg"
 
 function SettingPackage(){
 
     const [restaurantInformation, setRestaurantInformation] = useState();
     const [packageAbleToUpdate, setPackageAbleToUpdate] = useState();
+    const [isOpenUpdate, setIsOpenUpdate] = useState(false);
+    const [packageUpdate, setPackageUpdate] = useState();
+    const [monthUpdate, setMonthUpdate] = useState(0);
+    const [requireMoney, setRequireMoney] = useState(0);
+    const [isOpenRequire, setIsOpenRequire] = useState(false);
+    const [responsePayment, setResponsePayment] = useState();
+    const [paymentLink, setPaymentLink] = useState(null);
+    const [status, setStatus] = useState();
+    const [orderCode, setOrderCode] = useState();
     const user = getUser();
+    const navigate = useNavigate();
 
     useEffect(() => {
         axiosInstance
@@ -35,7 +49,6 @@ function SettingPackage(){
         .get(`/api/package/restaurant/${user?.restaurantId}`)
         .then(res => {
             const data =res.data.result?.packages;
-            console.log(data);
             setPackageAbleToUpdate(data)
         })
         .catch(err => {
@@ -48,8 +61,166 @@ function SettingPackage(){
                 toast.error(err.message);
             }
         });
+
+        const queryParams = new URLSearchParams(window.location.search);
+
+        const status = queryParams.get('status');
+        const orderCode = queryParams.get('orderCode');
+        if (status === "PAID" && orderCode) {
+            setStatus(status);
+            setOrderCode(orderCode);
+            const storePackage = JSON.parse(localStorage.getItem("packUpdate"));       
+            const dataSend = {
+                id: orderCode,
+                packageId: storePackage?.packId,
+                restaurantId: user?.restaurantId,
+                totalMoney: storePackage?.totalMoney,
+                months: storePackage?.months
+            }
+            axiosInstance
+            .post(`/api/package-history/create`, dataSend)
+            .then(res => {
+                toast.success("Bạn đã nâng cấp gói thành công")
+                navigate("/manager/setting");
+            })
+            .catch(err => {
+                if (err.response) {
+                    const errorRes = err.response.data;
+                    toast.error(errorRes.message);
+                } else if (err.request) {
+                    toast.error("Request failed");
+                } else {
+                    toast.error(err.message);
+                }
+            });
+        }
     },[])
 
+
+    const handleOpenPackageUpdate = (p) => {
+        setIsOpenUpdate(true);
+        setPackageUpdate(p);
+    }
+
+     const createSignature = (params, secretKey) => {
+        const sortedParams = Object.keys(params).sort().map(key => `${key}=${params[key]}`).join('&');
+
+        return CryptoJS.HmacSHA256(sortedParams, secretKey).toString(CryptoJS.enc.Hex);
+    };
+
+    const handleShowMoneyUpdate =async () => {
+        if(!isOpenRequire){
+            const data = {
+                packId: packageUpdate?.id,
+                months: monthUpdate
+            }
+            axiosInstance
+            .post(`/api/restaurant/${user?.restaurantId}/pack/require-money`, data)
+            .then(res => {
+                const data =res.data.result;
+                console.log(data);
+                setRequireMoney(data);
+                setIsOpenRequire(true);
+            })
+            .catch(err => {
+                if (err.response) {
+                    const errorRes = err.response.data;
+                    toast.error(errorRes.message);
+                } else if (err.request) {
+                    toast.error("Request failed");
+                } else {
+                    toast.error(err.message);
+                }
+            });
+        }else{
+            
+
+            const apiUrl = 'https://api-merchant.payos.vn/v2/payment-requests'; 
+            const apiKey = 'a19ee99f-43c6-4228-b2b3-4c4e6cb450be'; // Thay bằng API Key của bạn
+            const checkSumKey = "fd15ae84d754ae31a13ba466924301bca749ef66f3b6be708ea02d271293fe74";
+            const urlReturn = `http://localhost:3000/manager/packageRestaurant`;
+            const urlCancel = 'http://localhost:3000/manager/packageRestaurant';
+            const des = `${packageUpdate?.packName}`;
+            axiosInstance
+            .get(`/api/package-history/new-id`)
+            .then(res => {
+                const newOrderCode = res.data.result;
+                const payload = {
+                    orderCode: newOrderCode+5,
+                    amount: 5000, 
+                    description: des+des+des,
+                    returnUrl: urlReturn,
+                    cancelUrl: urlCancel,
+                };
+                const signature = createSignature(payload, checkSumKey)
+                axios
+                .post(apiUrl, {...payload, signature}, {
+                    headers: { 
+                        'x-client-id': '04c49f53-5c64-4175-b9a4-74a78656d2c5', 
+                        'x-api-key': 'a19ee99f-43c6-4228-b2b3-4c4e6cb450be', 
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(res => {
+                    const data = res.data;
+                    const dataUpdate = {
+                        packId: packageUpdate?.id,
+                        months: monthUpdate,
+                        totalMoney: requireMoney
+                    }
+                    localStorage.setItem('packUpdate', JSON.stringify(dataUpdate));
+                    setResponsePayment(data)
+                    
+                })
+                .catch(err => {
+                    if (err.response) {
+                        const errorRes = err.response.data;
+                        toast.error(errorRes.message);
+                    } else if (err.request) {
+                        toast.error("Request failed");
+                    } else {
+                        toast.error(err.message);
+                    }
+                });
+            })
+            .catch(err => {
+                if (err.response) {
+                    const errorRes = err.response.data;
+                    toast.error(errorRes.message);
+                } else if (err.request) {
+                    toast.error("Request failed");
+                } else {
+                    toast.error(err.message);
+                }
+            });
+
+            
+            
+        }
+    }
+
+    useEffect(() => {
+        if(responsePayment){
+            const url = responsePayment?.data?.checkoutUrl;
+            setPaymentLink(url);
+            console.log(url);
+             window.location.href = url;
+        }
+    },[responsePayment])
+    
+
+    const handleClosePackageUpdate = () => {
+        setIsOpenUpdate(false);
+        setRequireMoney(0);
+        setIsOpenRequire(false);
+        setMonthUpdate(0);
+    }
+
+    const onChangeMonths = (months) => {
+            setMonthUpdate(months);
+    }
+
+ 
     return (
         <div className="">
             <div className="flex ">
@@ -78,7 +249,7 @@ function SettingPackage(){
                                             <p className="font-semibold text-black"><s>{formatVND(restaurantInformation?.pricePerMonth)} /tháng</s></p>
                                         </div>
                                         <div className="w-full flex justify-center border-b-2 pb-6">
-                                            <p className="flex items-end"><p className="text-blue-700 text-3xl font-extrabold">{formatVND(restaurantInformation?.pricePerYear)}</p> <p className="font-normal">/tháng</p></p>
+                                            <p className="flex items-end"><p className="text-blue-700 text-3xl font-extrabold">{formatVND(restaurantInformation?.pricePerYear)}</p> <p className="font-normal">/năm</p></p>
                                         </div>
                                     </div>
                                     <div className="w-full justify-center">
@@ -94,7 +265,7 @@ function SettingPackage(){
                         <div className="flex justify-center w-full flex-wrap ">
                             <div className="pt-[15px] w-full flex justify-center"><p className="pt-[15px] text-[42px] text-[#42464e] font-light leading-4">Bảng giá gói phần mềm tính tiền, quản lý nhà hàng</p></div>
                             <div className="flex justify-center mt-10 w-full ">
-                                {packageAbleToUpdate?.reverse()?.map((pack, index) => {
+                                {packageAbleToUpdate?.map((pack, index) => {
                                     return (
                                         <div className="relative w-[35%] rounded-lg bg-white p-12 shadow min-h-10 mt-2 mx-2" key={index}>
                                             {pack?.packName.toLowerCase().includes("premium") && <div className="absolute top-0 right-0 bg-blue-500 text-white px-4 py-1 rounded-bl-lg rounded-tr-lg">
@@ -121,7 +292,12 @@ function SettingPackage(){
                                                     </ul>
                                                 </div>
                                                 <div>
-                                                    <button className="bg-blue-500 text-white font-semibold px-4 py-2 rounded-xl ">Nâng cấp</button>
+                                                    <button 
+                                                        className="bg-blue-500 text-white font-semibold px-4 py-2 rounded-xl "
+                                                        onClick={() => handleOpenPackageUpdate(pack)}
+                                                    >
+                                                        Nâng cấp
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -134,6 +310,83 @@ function SettingPackage(){
 
                     </div>
                 </div>
+                {isOpenUpdate && (
+                    <div id="popup-delete" className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
+                        <div className="relative pt-4 w-full max-w-md bg-white rounded-lg shadow dark:bg-gray-700 animate-slideIn">
+                            <div className="w-full flex justify-center mb-4 border-b-2 pb-2">
+                                <h2 className="font-semibold text-lg">Thông tin gói nâng cấp</h2>
+                            </div>
+                            <div className="flex-row">
+                                <div className="flex justify-center">
+                                    <div className="p-4 md:p-5 w-[70%]">
+                                        <div className="w-full flex justify-center mb-3">
+                                            <img src='https://bizweb.dktcdn.net/100/102/351/files/iconpakagesoft.svg?v=1600332100283' alt="" className="w-[60%]"/>
+                                        </div>
+                                        <div className="w-full flex mb-4">
+                                            <div className="w-[60%]">
+                                                <h3 className=" text-lg font-medium text-black dark:text-black">Tên gói:</h3>
+                                            </div>
+                                            <div className="w-[40%]">
+                                                <h3 className=" text-lg font-semibold text-black dark:text-black">{packageUpdate?.packName.toUpperCase()}</h3>
+                                            </div>
+                                        </div>
+                                        <div className="w-full flex mb-4">
+                                            <div className="w-[60%] flex items-center">
+                                                <h3 className=" text-lg font-medium text-black dark:text-black">Giá tiền:</h3>
+                                            </div>
+                                            <div className="w-[40%] flex items-center">
+                                                <h3 className=" font-semibold text-black dark:text-black text-sm flex items-center"><s>{formatVND(packageUpdate?.pricePerMonth)} /tháng</s></h3>
+                                            </div>
+                                        </div>
+                                        <div className="w-full flex mb-4">
+                                            <div className="w-[60%] flex items-center">
+                                                <h3 className=" text-lg font-medium text-black dark:text-black">Giá tiền:</h3>
+                                            </div>
+                                            <div className="w-[40%] flex items-center">
+                                                <h3 className=" font-semibold text-black dark:text-black text-sm">{formatVND(packageUpdate?.pricePerYear)} /năm</h3>
+                                            </div>
+                                        </div>
+                                        <div className="w-full flex mb-4 items-center">
+                                            <div className="w-[60%] flex items-center" >
+                                                <h3 className=" text-lg font-medium text-black dark:text-black">Số tháng:</h3>
+                                            </div>
+                                            <div className="w-[40%] flex items-center">
+                                                <input 
+                                                    type="text" 
+                                                    className="w-[80%] border-b-2 border-black mr-2 outline-none"
+                                                    value={monthUpdate}
+                                                    onChange={(e) => onChangeMonths(e.target.value)}
+                                                />
+                                                <i className="font-medium">tháng</i>
+                                            </div>
+                                        </div>
+                                        {isOpenRequire && (
+                                            <div className="w-full flex mb-4">
+                                                <div className="w-[60%] flex items-center">
+                                                    <h3 className=" text-lg font-medium text-black dark:text-black">Số tiền cần:</h3>
+                                                </div>
+                                                <div className="w-[40%] flex items-center">
+                                                    <h3 className=" font-semibold text-black dark:text-black text-sm">{formatVND(requireMoney)}</h3>
+                                                </div>
+                                            </div>
+                                        )}
+                                        {/* {paymentLink !== null && <a href={paymentLink}>{paymentLink}</a>} */}
+                                    </div>
+                                </div>
+                                <div  className="border-t-2 w-full flex items-center rounded-b-md" >
+                                    <div className="w-[50%] bg-blue-400 py-2 flex justify-center items-center rounded-bl-md cursor-pointer" onClick={() => handleShowMoneyUpdate()}>
+                                        <p className="text-white font-medium" >{!isOpenRequire ? "Kiểm tra" : "Thanh toán"}</p>
+                                    </div>
+                                    <div className="w-[50%] bg-primary py-2 flex justify-center items-center rounded-br-md cursor-pointer" onClick={handleClosePackageUpdate}>
+                                        <p className="text-white font-medium">Huỷ</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                )}
 
 
             </div>
