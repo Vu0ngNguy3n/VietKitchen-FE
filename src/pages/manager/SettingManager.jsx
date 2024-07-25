@@ -6,6 +6,7 @@ import { PiUniteFill } from "react-icons/pi";
 import { RiMoneyDollarCircleFill } from "react-icons/ri";
 import { useNavigate } from "react-router";
 import { MdOutlinePayment } from "react-icons/md";
+import { FiPackage } from "react-icons/fi";
 
 
 function SettingManager() {
@@ -54,7 +55,7 @@ function SettingManager() {
                                         </div>
                                     </div>
                                     <div className='flex items-center gap-[10px] basis-[40%]'>
-                                        <MdOutlinePayment  color='black ' size={35} />
+                                        <FiPackage  color='black ' size={35} />
                                         <div className="flex-row">
                                             <p 
                                                 className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.7] cursor-pointer'

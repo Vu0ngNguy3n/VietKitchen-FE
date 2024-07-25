@@ -15,6 +15,9 @@ function DishPreparation(){
   const [client, setClient] = useState(null);
   const [connected, setConnected] = useState(false);
   const [oldCart, setOldCart] = useState();
+  const [isOpenDecline, setIsOpenDecline] = useState(false);
+  const [currentDish, setCurrentDish] = useState();
+  const [typeDish, setTypeDish] = useState();
   const user = getUser();
   const waiting = "WAITING";
   const confirm = "CONFIRM";
@@ -124,11 +127,21 @@ function DishPreparation(){
     setMessages(newMessages);
   };
 
-  const handleDeclineDish = (dish, type) => {
+  const handleOpenDecline = (d, message) => {
+    setIsOpenDecline(true);
+    setCurrentDish(d);
+    setTypeDish(message);
+  }
+
+  const handleCloseDecline = () =>{
+    setIsOpenDecline(false);
+  }
+
+  const handleDeclineDish = () => {
     const status = decline;
-    if(type === "cart"){
+    if(typeDish === "cart"){
       const newCarts = oldCart.map(c => {
-        if (c?.id === dish?.id) {
+        if (c?.id === currentDish?.id) {
           const updatedDish = { ...c, status: status };
           changeStatusDish(updatedDish); // Send updated status via WebSocket
           return updatedDish;
@@ -136,11 +149,11 @@ function DishPreparation(){
           return c;
         }
       })
-      console.log(newCarts);
       setOldCart(newCarts)
+      handleCloseDecline();
     }else{
       const newMessages = messages.map((c) => {
-        if (c?.id === dish?.id) {
+        if (c?.id === currentDish?.id) {
           const updatedDish = { ...c, status: status };
           changeStatusDish(updatedDish); // Send updated status via WebSocket
           return updatedDish;
@@ -148,7 +161,7 @@ function DishPreparation(){
           return c;
         }
       });
-      console.log(newMessages);
+      handleCloseDecline();
       setMessages(newMessages);
     }
     
@@ -242,7 +255,7 @@ function DishPreparation(){
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 text-center">
-                                                <div className="cursor-pointer" onClick={() => handleDeclineDish(d, "cart")}>
+                                                <div className="cursor-pointer" onClick={() => handleOpenDecline(d, "cart")}>
                                                   <FaTrash className="text-red-500 size-6"/>
                                                 </div>
                                             </td>
@@ -286,7 +299,7 @@ function DishPreparation(){
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 text-center">
-                                                <div className="cursor-pointer" onClick={() => handleDeclineDish(d, "message")}>
+                                                <div className="cursor-pointer" onClick={() => handleOpenDecline(d, "message")}>
                                                   <FaTrash className="text-red-500 size-6"/>
                                                 </div>
                                             </td>
@@ -299,6 +312,36 @@ function DishPreparation(){
                           </table>
                       </div>
                 </div>
+                {isOpenDecline && <div id="popup-delete" className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
+                                <div className="relative p-4 w-full max-w-md bg-white rounded-lg shadow dark:bg-gray-700 animate-slideIn">
+                                    <button type="button" onClick={handleCloseDecline} className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                        <span className="sr-only">Close modal</span>
+                                    </button>
+                                    <div className="p-4 md:p-5 text-center">
+                                        <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                        </svg>
+                                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Xác nhận từ chối món ăn</h3>
+                                        <button 
+                                            data-modal-hide="popup-modal" 
+                                            type="button" 
+                                            onClick={() => handleDeclineDish()}
+                                            className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                                            Có
+                                        </button>
+                                        <button 
+                                            data-modal-hide="popup-modal" 
+                                            type="button" 
+                                            onClick={handleCloseDecline}
+                                            className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                                            Không
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>}
             </div>
         </div>
 

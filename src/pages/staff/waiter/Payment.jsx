@@ -16,6 +16,7 @@ import {clearTable} from "../../../actions/tableActions"
 import {clearOrderId} from "../../../actions/orderActions"
 import {clearCart} from "../../../actions/cartActions"
 import {clearCustomer} from "../../../actions/customerActions"
+import GREEN_CHECK from "../../../assests/greenCheck.png"
 import axios from "axios";
 
 
@@ -35,6 +36,7 @@ function Payment() {
     const [managerInformation, setManagerInformation] = useState();
     const [QRCodeImg, setQRCodeImg] = useState();
     const [isOpenPopUp, setIsOpenPopUp] = useState(false);
+    const [isOpenSuccessPayment, setIsOpenSuccessPayment] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -148,15 +150,9 @@ function Payment() {
         .then(res => {
             console.log(res.data);
             toast.success("Thanh toán thành công");
-            const actionTable = clearTable();
-            dispatch(actionTable);
-            const actionOrder = clearOrderId();
-            dispatch(actionOrder);
-            const actionCart = clearCart();
-            dispatch(actionCart);
-            const actionCustomer = clearCustomer();
-            dispatch(actionCustomer);
-            navigate("/waiter/map");
+            // navigate("/waiter/map");
+            handleClosePopUp();
+            handleOpenSuccessPayment();
         })
         .catch(err => {
                 if (err.response) {
@@ -168,6 +164,23 @@ function Payment() {
                     toast.error(err.message);
                 }
             })
+    }
+
+    const handleOpenSuccessPayment = () => {
+        setIsOpenSuccessPayment(true);
+    }
+
+    const handleCloseSuccessPayment = () => {
+        const actionTable = clearTable();
+        dispatch(actionTable);
+        const actionOrder = clearOrderId();
+        dispatch(actionOrder);
+        const actionCart = clearCart();
+        dispatch(actionCart);
+        const actionCustomer = clearCustomer();
+        dispatch(actionCustomer);
+        setIsOpenSuccessPayment(false)
+        navigate("/waiter/map")
     }
 
   return (
@@ -416,6 +429,36 @@ function Payment() {
                                     </div>
                                 </div>
                             </div>
+            )}
+            {isOpenSuccessPayment && (
+                <div id="popup-delete" className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
+                    <div className="relative pt-4 w-full max-w-md bg-white rounded-lg shadow dark:bg-gray-700 animate-slideIn">
+                        <div className="w-full flex justify-center mb-4 border-b-2 pb-2">
+                            <h2 className="font-semibold text-lg">Hoàn tất hoá đơn -  {table?.areaName} - {table?.tableName}</h2>
+                        </div>
+                        <div className="flex-row">
+                            <div className="flex justify-center">
+                                <div className="p-4 md:p-5 text-center w-[80%]">
+                                    <div className="w-full flex justify-center mb-3">
+                                        <img src={GREEN_CHECK} alt="" className="w-[12%] " />
+                                    </div>
+                                    <h3 className="mb-5 text-lg font-semibold text-black dark:text-black">Thanh toán hoá đơn thành công</h3>
+                                    <div className="flex justify-center w-full mb-8">
+                                        <div className="flex justify-between w-[83%]">
+                                            <p className="font-medium">Tiền khách trả</p>
+                                            <span className="font-semibold ">{formatVND(requireMoney)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="border-t-2 flex justify-center py-2 items-center bg-blue-400 cursor-pointer rounded-b-md" onClick={() => handleCloseSuccessPayment()}>
+                                <p className="text-white font-medium">Hoàn tất</p>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
             )}
         </div>
       </div>

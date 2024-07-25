@@ -143,13 +143,14 @@ function MapHostess() {
                     <div className="relative bg-white border-2 border-gray-300 rounded-lg shadow-lg w-full h-[600px]">
                         {board?.map((picture, index) => (
                             <Table
-                                        url={picture?.tableType.imageUrl}
+                                        typeTable={picture?.tableType?.id}
                                         id={picture?.id}
                                         key={index}
                                         positionX={picture?.positionX}
                                         positionY={picture?.positionY}
                                         name={picture?.name}
                                         orderCurrent={picture?.orderCurrent}
+                                        numberChairs={picture?.numberChairs}
                                     />
                         ))}
                     </div>
