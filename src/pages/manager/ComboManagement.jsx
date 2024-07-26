@@ -79,7 +79,7 @@ function ComboManagement() {
     };
 
     const handleCreateCombo = () => {
-        if (comboName === '' || comboPrice === 0 || description === '' || !imgComboCreate || selectedDishes.length === 0) {
+        if (comboName === '' || comboPrice === 0 || description === '' || selectedDishes.length === 0) {
             toast.warn("Vui lòng điền đầy đủ thông tin");
             return;
         }
@@ -109,7 +109,21 @@ function ComboManagement() {
                     .post(`/api/combos`, resultCombo)
                     .then(res => {
                         toast.success(`Tạo combo ${comboName} thành công!`);
-                        setComboList([...comboList, res.data.result]);
+                        axiosInstance
+                            .get(`/api/combos/getAllCombos`)
+                            .then(res => {
+                                setComboList(res.data);
+                            })
+                            .catch(err => {
+                                if (err.response) {
+                                    const errorRes = err.response.data;
+                                    toast.error(errorRes.message);
+                                } else if (err.request) {
+                                    toast.error("Yêu cầu không thành công");
+                                } else {
+                                    toast.error(err.message);
+                                }
+                            });
                         handleClosePopUp();
                     })
                     .catch(err => {
@@ -156,7 +170,7 @@ function ComboManagement() {
                     updatedCombo.imageUrl = data.url;
 
                     axiosInstance
-                        .put(`/api/combos/update`, updatedCombo)
+                        .put(`/api/combos/update/${currentCombo.id}`, updatedCombo)
                         .then(res => {
                             toast.success(`Cập nhật combo ${comboName} thành công!`);
                             const updatedComboList = comboList.map(combo =>
@@ -179,7 +193,7 @@ function ComboManagement() {
                 .catch(err => console.log(err + "Can not upload image"));
         } else {
             axiosInstance
-                .put(`/api/combos/update`, updatedCombo)
+                .put(`/api/combos/update/${currentCombo.id}`, updatedCombo)
                 .then(res => {
                     toast.success(`Cập nhật combo ${comboName} thành công!`);
                     const updatedComboList = comboList.map(combo =>
@@ -230,14 +244,14 @@ function ComboManagement() {
         setComboName(combo.comboName);
         setComboPrice(combo.comboPrice);
         setDescription(combo.description);
-        setSelectedDishes(combo.dishes);
+        setSelectedDishes(combo.dishes || []);
         setShowImgUpload(combo.imageUrl);
         setIsOpen(true);
     };
 
     const handleViewDetail = (comboId) => {
         axiosInstance
-            .get(`/api/combos/getDetail?comboId=${comboId}`)
+            .get(`/api/combos/getDetail/${comboId}`)
             .then(res => {
                 setComboDetail(res.data.result);
                 setIsDetailOpen(true);
@@ -355,7 +369,9 @@ function ComboManagement() {
                         </button>
                         <h2 className="text-xl font-semibold mb-2">{isUpdateMode ? 'Cập nhật Combo' : 'Thêm Combo'}</h2>
                         <div className="mb-2">
-                            <label htmlFor="combo-name" className="block mb-2">Tên Combo</label>
+                            <label htmlFor="combo-name" className="block mb-2">
+                                Tên Combo <span className="text-red-500">*</span>
+                            </label>
                             <input
                                 id="combo-name"
                                 type="text"
@@ -366,7 +382,9 @@ function ComboManagement() {
                             />
                         </div>
                         <div className="mb-2">
-                            <label htmlFor="combo-price" className="block mb-2">Giá Combo</label>
+                            <label htmlFor="combo-price" className="block mb-2">
+                                Giá Combo <span className="text-red-500">*</span>
+                            </label>
                             <input
                                 id="combo-price"
                                 type="number"
@@ -377,7 +395,9 @@ function ComboManagement() {
                             />
                         </div>
                         <div className="mb-2">
-                            <label htmlFor="combo-description" className="block mb-2">Miêu tả Combo</label>
+                            <label htmlFor="combo-description" className="block mb-2">
+                                Miêu tả Combo <span className="text-red-500">*</span>
+                            </label>
                             <input
                                 id="combo-description"
                                 type="text"
@@ -389,7 +409,9 @@ function ComboManagement() {
                         </div>
                         <div className="mb-2 flex">
                             <div className="w-full">
-                                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" htmlFor="file_input">Ảnh Combo</label>
+                                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    Ảnh Combo 
+                                </label>
                                 <input
                                     className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 
                                     focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
@@ -405,7 +427,9 @@ function ComboManagement() {
                             </div>
                         )}
                         <div className="mb-2">
-                            <label htmlFor="combo-dishes" className="block mb-2">Chọn món ăn</label>
+                            <label htmlFor="combo-dishes" className="block mb-2">
+                                Chọn món ăn <span className="text-red-500">*</span>
+                            </label>
                             <select
                                 id="combo-dishes"
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 

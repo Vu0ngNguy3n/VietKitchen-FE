@@ -286,8 +286,14 @@ function InvoiceManagement() {
                     </div>
 
                     {selectedBill && (
-                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-auto">
-                            <div className="bg-white p-8 rounded-lg shadow-lg w-3/4 max-w-4xl max-h-3/4 overflow-y-auto">
+                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                            <div className="bg-white p-8 rounded-lg shadow-lg w-11/12 max-w-2xl max-h-full overflow-y-auto relative">
+                        <button
+                            className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-2xl"
+                            onClick={closeModal}
+                        >
+                            &times;
+                        </button>
                                 <h2 className="text-2xl font-bold mb-4">Chi tiết hóa đơn #{selectedBill.id}</h2>
                                 <div className="mb-4 border-t border-b border-gray-200">
                                     <h3 className="text-lg font-semibold mt-4 mb-2">Thông tin thanh toán</h3>
