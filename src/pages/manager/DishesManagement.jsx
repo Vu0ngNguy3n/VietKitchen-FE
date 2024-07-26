@@ -6,11 +6,13 @@ import axiosInstance from "../../utils/axiosInstance";
 import { getUser } from "../../utils/constant";
 import { toast } from "react-toastify";
 import {formatVND} from "../../utils/format"
+import { FaSearch } from "react-icons/fa";
 
 
 function DishesManagement() {
 
     const [dishesList, setDishesList] = useState([]);
+    const [dishesListDisplay, setDishesListDisplay] = useState([]);
     const [categoryList, setCategoryList] = useState([]);
     const [unitsList, setUnitsList] = useState([]);
     const [currentUnit, setCurrentUnit] = useState();
@@ -28,6 +30,7 @@ function DishesManagement() {
     const [imgDishCreate, setImgDishCreate] = useState()
     const [isFile, setIsFile] = useState();
     const [showImgUpload, setShowImgUpload] = useState();
+    const [search, setSearch] = useState('');
     
 
     useEffect(() => {
@@ -38,6 +41,7 @@ function DishesManagement() {
         .then(res => {
             const data = res.data.result;
             setDishesList(data);
+            setDishesListDisplay(data);
         })
         .catch(err => {
                     if (err.response) {
@@ -100,6 +104,7 @@ function DishesManagement() {
         .then(res => {
             const data = res.data.result;
             setDishesList(data);
+            setDishesListDisplay(data);
         })
         .catch(err => {
                     if (err.response) {
@@ -127,12 +132,13 @@ function DishesManagement() {
         setImgDishCreate('');
         setCurrentCategory(categoryList[0]?.id);
         setCurrentUnit(unitsList[0]?.id)
+        setShowImgUpload();
     } 
 
   
 
     const handleCreateDish = () => {
-        if(dishName === '' || weight === '' || description === '' || price === '' || imgDishCreate === '' || !imgDishCreate){
+        if(dishName === '' || weight === '' || description === '' || (price/1 <=0 || isNaN(price)) || imgDishCreate === '' || !imgDishCreate){
             toast.warn("Vui lòng điền đầy đủ thông tin")
         }else{
             const data = new FormData();
@@ -242,6 +248,11 @@ function DishesManagement() {
             
     }
 
+    useEffect(() => {
+        const newListDishes = dishesList?.filter(d => (d?.code.includes(search.toLowerCase()) || d?.name.toLowerCase().includes(search.trim().toLowerCase())))
+        setDishesListDisplay(newListDishes)
+    },[search])
+
 
 
     return (
@@ -252,9 +263,22 @@ function DishesManagement() {
                 </div>
                 <div className="basis-[88%] border h-[100vh]">
                     <HeaderManagerDashboard />
-                    <div className="min-w-[40]x rounded-lg bg-white p-16 shadow min-h-[90vh] mt-2">
+                    <div className="min-w-[40]x rounded-lg bg-gray-200 p-10 shadow min-h-[90vh] mt-2 overflow-y-auto max-h-screen">
+                        <h1 className="font-black text-3xl mb-4">Quản lý món ăn</h1>
                         <div className="flex justify-between">
-                            <h1 className="font-black text-3xl">Quản lý món ăn</h1>
+                            <div className="">
+                                <div className="relative grow rounded-md border-2 border-gray-300">
+                                    <FaSearch className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        className="w-full px-4 py-3 pl-10 outline-none italic "
+                                        value={search}
+                                        onChange={e => setSearch(e.target.value)}
+                                        placeholder="Nhập tên món ăn"
+                                    />
+                                </div>
+                            </div>
+
                             <div className="flex items-center">
                                 <form class="max-w-sm mr-4 ">
                                     <select
@@ -314,7 +338,7 @@ function DishesManagement() {
                         ) : ''}
 
                         {isOpen?<div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-                                <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-md z-50">
+                                <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-md z-50 overflow-y-auto max-h-screen">
                                     <button
                                         className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-2xl"
                                         onClick={handleClosePouUp}
@@ -325,7 +349,7 @@ function DishesManagement() {
                                         Thêm món ăn
                                     </h2>
                                     <div className="mb-2">
-                                        <label htmlFor="dish-name" className="block mb-2">Tên món ăn</label>
+                                        <label htmlFor="dish-name" className="block mb-2">Tên món ăn <span className="text-red-600">*</span></label>
                                         <input  
                                             id="dish-name"
                                             type="text"
@@ -336,7 +360,7 @@ function DishesManagement() {
                                         />
                                     </div>
                                     <div className="mb-2">
-                                        <label htmlFor="dish-weight" className="block mb-2">Định lượng món ăn</label>
+                                        <label htmlFor="dish-weight" className="block mb-2">Định lượng món ăn <span className="text-red-600">*</span></label>
                                         <input
                                             id="dish-weight"
                                             type="text"
@@ -347,7 +371,7 @@ function DishesManagement() {
                                         />
                                     </div>
                                     <div className="mb-2">
-                                        <label htmlFor="dish-description" className="block mb-2">Miêu tả món ăn</label>
+                                        <label htmlFor="dish-description" className="block mb-2">Miêu tả món ăn <span className="text-red-600">*</span></label>
                                         <input
                                             id="dish-description"
                                             type="text"
@@ -358,10 +382,10 @@ function DishesManagement() {
                                         />
                                     </div>
                                     <div className="mb-2">
-                                        <label htmlFor="dish-price" className="block mb-2">Giá món ăn</label>
+                                        <label htmlFor="dish-price" className="block mb-2">Giá món ăn <span className="text-red-600">*</span></label>
                                         <input
                                             id="dish-price"
-                                            type="number"
+                                            type="text"
                                             placeholder="Giá món ăn"
                                             value={price}
                                             onChange={e => setPrice(e.target.value)}
@@ -371,7 +395,7 @@ function DishesManagement() {
 
                                     <div className="mb-2 flex" >
                                         <div className={`${showImgUpload ? 'w-[50%]' : 'w-full'}`}>
-                                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Ảnh món ăn</label>
+                                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Ảnh món ăn <span className="text-red-600">*</span></label>
                                             <input className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 
                                             focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" 
                                             onChange={handleFileUpload}
@@ -384,7 +408,7 @@ function DishesManagement() {
                                     </div>
                                     
                                     <div className="mb-2">
-                                        <label htmlFor="dish-type" className="block mb-2">Loại thức ăn</label>
+                                        <label htmlFor="dish-type" className="block mb-2">Loại thức ăn  <span className="text-red-600">*</span></label>
                                         
                                         <select 
                                             id="dish-type" 
@@ -401,7 +425,7 @@ function DishesManagement() {
                                     </div>
 
                                     <div className="mb-2">
-                                        <label htmlFor="dish-unit" className="block mb-2">Đơn vị tính</label>
+                                        <label htmlFor="dish-unit" className="block mb-2">Đơn vị tính  <span className="text-red-600">*</span></label>
                                         
                                         <select 
                                             id="dish-unit" 
@@ -427,7 +451,7 @@ function DishesManagement() {
                                         </button>
                                         <button
                                             onClick={handleCreateDish}
-                                            className="py-2 px-5 bg-lgreen font-semibold text-white rounded hover:bg-green transition-all duration-300"
+                                            className="py-2 px-5 bg-secondary font-semibold text-white rounded hover:bg-green transition-all duration-300"
                                         >
                                             Thêm
                                         </button>
@@ -453,7 +477,7 @@ function DishesManagement() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {dishesList?.map((dish, index) => (
+                                    {dishesListDisplay?.map((dish, index) => (
                                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" key={index}>
                                             <td class="p-4">
                                                 <img src={dish?.imageUrl} class="w-16 md:w-32 max-w-full max-h-full" alt={dish?.code} />
@@ -484,10 +508,26 @@ function DishesManagement() {
                                                 {formatVND(dish?.price)}
                                             </td>
                                             <td class="px-6 py-4">
-                                                <a onClick={() => handleOpenHidePopUp(dish)} class="font-medium text-red-600 dark:text-red-500 hover:underline">{statusDish === 'true'? 'Ẩn' : 'Hiện'}</a>
+                                                <button
+                                                    onClick={() => handleOpenHidePopUp(dish)}
+                                                    className="py-2 px-8 bg-red-600 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
+                                                >
+                                                    {statusDish === 'true'? 'Ẩn' : 'Hiện'}
+                                                </button>
+                                                {/* <a onClick={() => handleOpenHidePopUp(dish)} class="font-medium text-red-600 dark:text-red-500 hover:underline">{statusDish === 'true'? 'Ẩn' : 'Hiện'}</a> */}
                                             </td>
                                         </tr>
                                     ))}
+
+                                    {dishesListDisplay?.length === 0 && (
+                                        <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                            <td className="w-4 p-4"></td>
+                                            <td className="px-6 py-4">
+                                                Không tìm thấy thông tin món ăn tương ứng
+                                            </td>
+                                            <td className="w-8 p-6"></td>
+                                        </tr>
+                                    )}
                                     
                                 </tbody>
                             </table>

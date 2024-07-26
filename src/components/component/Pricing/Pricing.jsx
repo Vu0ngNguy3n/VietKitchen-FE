@@ -17,7 +17,7 @@ const Pricing = () => {
         <div className="md:px-14 p-4 max-w-s mx-auto py-10" id="pricing">
             <div className="text-center">
                 <h2 className="md:text-5xl text-3xl font-extrabold text-primary mb-2">Bảng Giá Dịch Vụ</h2>
-                <p className="text-tartiary md:w-1/3 mx-auto px-4">Các gói dịch vụ linh hoạt và phù hợp với mọi quy mô nhà hàng.</p>
+                <p className="text-tartiary md:w-1/3 mx-auto px-2">Các gói dịch vụ linh hoạt và phù hợp với mọi quy mô nhà hàng.</p>
 
                 {/* <div className="mt-16">
                     <label htmlFor="toggle" className="inline-flex items-center cursor-pointer ">

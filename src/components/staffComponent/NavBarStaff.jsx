@@ -42,7 +42,6 @@ const NavBarStaff = () => {
                         <div className='flex items-center pr-2 justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:text-secondary'
                             onClick={() => navigate("/waiter/ordering")}>
                                 <FaCartShopping  /> <p className='text-[14px] font-semibold leading-[20px]  '>Giỏ hàng</p>
-                                {cartList?.length}
                         </div>
                     </div>
                     <div className='flex items-center gap-[15px] relative' onClick={showProfile} >

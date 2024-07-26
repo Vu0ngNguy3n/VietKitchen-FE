@@ -80,15 +80,15 @@ function SettingManager() {
                                     <div className='flex items-center gap-[10px] basis-[40%]'>
                                         <PiUniteFill  color='black ' size={35} />
                                         <div className="flex-row">
-                                            <p className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.5] cursor-pointer' onClick={() => navigate('/manager/units')}>Thiết lập đơn vị</p>
+                                            <p className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.7] cursor-pointer' onClick={() => navigate('/manager/units')}>Thiết lập đơn vị</p>
                                             <span>Xem và thiết lập đơn vị tính của bạn</span>
                                         </div>
                                     </div>
                                     <div className='flex items-center gap-[10px] basis-[40%]'>
                                         <RiMoneyDollarCircleFill color='black ' size={35} />
                                         <div className="flex-row">
-                                            <p className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.5] cursor-pointer'>Thiết lập bán hàng</p>
-                                            <span>Xem và thiết lập các chế độ bán hàng trong nhà hàng</span>
+                                            <p className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.7] cursor-pointer'>Thiết lập thuế</p>
+                                            <span>Xem và thiết lập thuế bán hàng của nhà hàng</span>
                                         </div>
                                     </div>
                                 </div>

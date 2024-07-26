@@ -201,6 +201,9 @@ function CategoryManagement() {
                                         <th scope="col" className="px-6 py-3">
                                             Hành động
                                         </th>
+                                        {/* <th scope="col" className="px-6 py-3">
+                                            
+                                        </th> */}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -220,6 +223,8 @@ function CategoryManagement() {
                                                     <FaEdit className="mr-1" />
                                                     Cập nhật
                                                 </button>
+                                            </td>
+                                            {/* <td className="px-6 py-4 break-words max-w-xs">
                                                 <button
                                                     className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
                                                     onClick={() => handleOpenDeletePop(category)}
@@ -227,7 +232,7 @@ function CategoryManagement() {
                                                     <FaTrash className="mr-1" />
                                                     Xóa
                                                 </button>
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     ))}
                                 </tbody>

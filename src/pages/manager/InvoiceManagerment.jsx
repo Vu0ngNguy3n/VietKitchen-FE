@@ -166,7 +166,7 @@ function InvoiceManagement() {
             </div>
             <div className="w-5/6 flex flex-col">
                 <HeaderManagerDashboard />
-                <div className="p-8 flex-1 overflow-y-auto">
+                <div className="p-8 flex-1 overflow-y-auto max-h-screen bg-gray-200">
                     <h1 className="font-black text-3xl mb-4">Quản lý hóa đơn</h1>
 
                     <div className="flex flex-col md:flex-row justify-between mb-6">
@@ -189,7 +189,7 @@ function InvoiceManagement() {
 
                     <div className="relative overflow-x-auto shadow-md sm:rounded-lg mb-6">
                         <table className="w-full text-sm text-left text-gray-500">
-                            <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                            <thead className="text-xs text-gray-700 uppercase bg-gray-50 text-center">
                                 <tr>
                                     <th scope="col" className="px-6 py-3">Thời gian thanh toán</th>
                                     <th scope="col" className="px-6 py-3">Khu vực</th>
@@ -199,9 +199,9 @@ function InvoiceManagement() {
                                     <th scope="col" className="px-6 py-3">Chi tiết</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody >
                                 {invoices?.map(invoice => (
-                                    <tr key={invoice.id}>
+                                    <tr key={invoice.id} className='bg-white border-b-2 text-center'>
                                         <td className="px-6 py-4">{invoice?.dateCreated}</td>
                                         <td className="px-6 py-4">{invoice.order.tableRestaurant?.name}</td>
                                         <td className="px-6 py-4">{invoice?.order.customer?.name} - {invoice.order.customer?.phoneNumber}</td>

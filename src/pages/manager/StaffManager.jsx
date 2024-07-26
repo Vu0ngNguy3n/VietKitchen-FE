@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 function StaffManager() {
 
     const [listEmployees, setListEmployees] = useState([])
+    const [listEmployeesDisplay, setListEmployeesDisplay] = useState([]);
     const [openPop, setOpenPop] = useState(false);
     const [accountStorage, setAccountStorage] = useState();
     const [username, setUsername] = useState();
@@ -22,6 +23,9 @@ function StaffManager() {
     const [isCreate, setIsCreate]= useState(true);
     const [isEdit, setIsEdit] = useState(false);
     const [employeeId, setEmployeeId] = useState();
+    const [isOpenDelete, setIsOpenDelete] = useState(false);
+    const [employeeDelete, setEmployeeDelete] = useState();
+    const [search, setSearch] = useState('');
 
     useEffect(() => {
         const account = getUser();
@@ -55,6 +59,8 @@ function StaffManager() {
         .then(res => {
             const data = res.data.result;
             setListEmployees(data);
+            setListEmployeesDisplay(data);
+            setSearch('');
         })
         .catch(err => {
                 if (err.response) {
@@ -166,8 +172,39 @@ function StaffManager() {
     }
 
     const handleDeleteEmployee = (employee) => {
-        
+        setIsOpenDelete(true);
+        setEmployeeDelete(employee)
     }
+
+    const handleSubmitDelete = () => {
+        closePopDelete();
+
+        axiosInstance
+        .delete(`/api/employee/delete/${employeeDelete?.id}`)
+        .then(res => {
+            toast.success(`Xoá nhân viên ${employeeDelete?.employeeName} thành công!`)
+            setIsAddEmployee(!isAddEmployee);
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })
+    }
+
+    const closePopDelete = () => {
+        setIsOpenDelete(false);
+    }
+
+    useEffect(() => {
+        const newListEmployees = listEmployees?.filter(e => (e?.employeeName.includes(search) || e?.username.includes(search) ))
+        setListEmployeesDisplay(newListEmployees);
+    },[search])
 
 
    
@@ -190,6 +227,8 @@ function StaffManager() {
                                     <input
                                         type="text"
                                         className="w-full px-4 py-3 pl-10 outline-none italic "
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
                                         placeholder="Nhập tên nhân viên"
                                     />
                                 </div>
@@ -198,7 +237,7 @@ function StaffManager() {
                             <div className="flex items-center">
                                 <div>
                                     <button
-                                         className="py-2 px-5 bg-lgreen font-semibold text-white rounded hover:bg-green transition-all duration-300 flex items-center"
+                                         className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-blue-500 transition-all duration-300 flex items-center"
                                          onClick={handleOpenPopup}
                                          >
                                         <FaPlus className="mr-1" />
@@ -208,7 +247,7 @@ function StaffManager() {
                             </div>
                         </div>
                         {openPop?<div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-                                <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-md z-50">
+                                <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-md z-50 overflow-y-auto max-h-screen ">
                                     <button
                                         className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-2xl"
                                         onClick={handleClosePopup}
@@ -219,7 +258,7 @@ function StaffManager() {
                                         {isCreate ? "Thêm nhân viên" : "Cập nhật thông tin nhân viên"}
                                     </h2>
                                    { (isCreate && <div className="mb-4">
-                                        <label className="block mb-2">Tên tài khoản nhân viên</label>
+                                        <label className="block mb-2">Tên tài khoản nhân viên <span className="text-red-500">*</span></label>
                                         <input
                                             type="text"
                                             placeholder="Tên tài khoản nhân viên"
@@ -229,7 +268,7 @@ function StaffManager() {
                                         />
                                     </div>)}
                                     <div className="mb-4">
-                                        <label className="block mb-2">Tên nhân viên</label>
+                                        <label className="block mb-2">Tên nhân viên <span className="text-red-500">*</span></label>
                                         <input
                                             type="text"
                                             placeholder="Tên nhân viên"
@@ -239,7 +278,7 @@ function StaffManager() {
                                         />
                                     </div>
                                     <div className="mb-4">
-                                        <label className="block mb-2">Số điện thoại nhân viên</label>
+                                        <label className="block mb-2">Số điện thoại nhân viên <span className="text-red-500">*</span></label>
                                         <input
                                             type="text"
                                             placeholder="Số điện thoại nhân viên"
@@ -249,7 +288,7 @@ function StaffManager() {
                                         />
                                     </div>
                                     <div className="mb-4">
-                                        <label className="block mb-2">Mật khẩu</label>
+                                        <label className="block mb-2">Mật khẩu <span className="text-red-500">*</span></label>
                                         <input
                                             type="password"
                                             placeholder="Mật khẩu"
@@ -259,7 +298,7 @@ function StaffManager() {
                                         />
                                     </div>
                                     <div className="mb-4">
-                                        <label className="block mb-2">Xác nhận mật khẩu</label>
+                                        <label className="block mb-2">Xác nhận mật khẩu <span className="text-red-500">*</span></label>
                                         <input
                                             type="password"
                                             placeholder="Xác nhận mật khẩu"
@@ -270,7 +309,7 @@ function StaffManager() {
                                     </div>
                                     
                                     <div className="mb-4">
-                                        <label className="block mb-2">Loại nhân viên</label>
+                                        <label className="block mb-2">Loại nhân viên <span className="text-red-500">*</span></label>
                                         
                                         <select 
                                             id="countries" 
@@ -295,7 +334,7 @@ function StaffManager() {
                                             Hủy
                                         </button>
                                         <button
-                                            className="py-2 px-5 bg-lgreen font-semibold text-white rounded hover:bg-green transition-all duration-300"
+                                            className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-blue-500 transition-all duration-300"
                                             onClick={handleCreateEmployee}
                                         >
                                             {isCreate ?"Thêm":"Cập nhật"}
@@ -303,6 +342,38 @@ function StaffManager() {
                                     </div>
                                 </div>
                             </div>:""}
+                        {isOpenDelete && (
+                            <div id="popup-delete" className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
+                                <div className="relative p-4 w-full max-w-md bg-white rounded-lg shadow dark:bg-gray-700 animate-slideIn">
+                                    <button type="button" onClick={closePopDelete} className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                        <span className="sr-only">Close modal</span>
+                                    </button>
+                                    <div className="p-4 md:p-5 text-center">
+                                        <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                        </svg>
+                                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muôn xoá nhân viên <span className="font-semibold">{employeeDelete?.employeeName}</span>?</h3>
+                                        <button 
+                                            data-modal-hide="popup-modal" 
+                                            type="button" 
+                                            onClick={() => handleSubmitDelete()}
+                                            className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                                            Có
+                                        </button>
+                                        <button 
+                                            data-modal-hide="popup-modal" 
+                                            type="button" 
+                                            onClick={closePopDelete}
+                                            className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                                            Không
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
                         <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-10">
                             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -327,7 +398,7 @@ function StaffManager() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {listEmployees?.map((e, index) => (
+                                    {listEmployeesDisplay?.map((e, index) => (
                                         <tr key={index} className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {e?.employeeName}
@@ -357,6 +428,13 @@ function StaffManager() {
                                             </td>
                                         </tr>
                                     ))}
+                                    {listEmployeesDisplay?.length === 0 && (
+                                        <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                            <td className="px-6 py-4">
+                                                Không tìm thấy thông tin nhân viên tương ứng
+                                            </td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>
