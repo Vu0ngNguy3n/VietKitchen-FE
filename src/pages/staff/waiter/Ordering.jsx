@@ -90,8 +90,12 @@ function Ordering() {
   return (
     <div className="flex h-screen relative">
       <div className="w-full flex justify-center absolute mt-6 bottom-6" onClick={() => navigate("/waiter/payment")}>
-          <button className="ml-[12%] px-4 py-3 border-none rounded-md bg-secondary text-white uppercase font-semibold transition-all duration-300 hover:opacity-[60%]">Thanh toán</button>
-        </div>  
+          <button className="ml-[12%] px-4 py-3 border-none rounded-md bg-primary text-white uppercase font-semibold transition-all duration-300 hover:opacity-[60%]">Thanh toán</button>
+        </div>
+         <div className="absolute left-[60%] top-4 w-[13%] flex justify-between p-2 rounded-md bg-primary/[0.8] text-white font-semibold">
+                <span>Tổng tiền:</span>
+                <span>{formatVND(200000)}</span>
+            </div>  
       <div className="basis-[12%]">
         <SidebarStaff />
       </div>
@@ -99,13 +103,14 @@ function Ordering() {
         <NavBarStaff />
         
 
-        <div className="flex h-full w-full bg-slate-300">
-          
+        <div className="flex h-full w-full bg-slate-300 ">
+           
           
             
               <div class=" overflow-x-auto  sm:rounded-lg w-full ">
+                  
                                                             
-                  <div className="w-full  flex flex-wrap justify-around">
+                  <div className="w-full  flex flex-wrap justify-around ">
                     
                                 {oldCart?.map((d,index) => {
                                   return (                                                        

@@ -221,7 +221,7 @@ function SignInSide() {
             />
           </div>
 
-          <div className="w-full flex items-center justify-between">
+          <div className={`w-full flex items-center justify-between ${typeLogin === 2 ? "hidden": ""}`}>
             <div className="w-full flex">
               <input type="checkbox" className="w-4 h-4 mr-2" />
               <p className="text-sm">Nhớ mật khẩu</p>
@@ -239,7 +239,7 @@ function SignInSide() {
               Đăng nhập
             </button>
             <button
-              className="w-full text-[#060606] my-2 font-semibold bg-white border-2 border-black-2 rounded-md p-4 text-center flex items-center justify-center"
+              className={`w-full text-[#060606] my-2 font-semibold bg-white border-2 border-black-2 rounded-md p-4 text-center flex items-center justify-center ${typeLogin === 2 ?"hidden" : ""}`}
               onClick={() => navigate('/signUp')}
             >
               Đăng ký
@@ -256,7 +256,7 @@ function SignInSide() {
           </div> */}
         </div>
 
-        <div className="w-full flex  items-center justify-center">
+        <div className={`w-full flex  items-center justify-center ${typeLogin === 2 ? "hidden" : ""}`}>
           <p className="text-sm font-normal text-[#060606]">
             Không có tài khoản?{' '}
             <span className="font-semibold underline underline-offset-2 cursor-pointer" onClick={() => navigate('/signUp')}>

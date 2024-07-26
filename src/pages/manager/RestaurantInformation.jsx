@@ -6,6 +6,7 @@ import provinces from '../../utils/provinces.json'
 import SidebarManager from "../../components/managerComponent/SidebarManager";
 import HeaderManagerDashboard from "../../components/managerComponent/HeaderManagerDashboard";
 import { Select } from "../../components/managerComponent/Select";
+import { IoIosArrowBack } from "react-icons/io";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
 import { getUser } from "../../utils/constant";
@@ -125,8 +126,9 @@ function RestaurantInformation() {
                 <div className="basis-[88%] border h-[100vh]">
                     <HeaderManagerDashboard />
                     <div className="min-w-[40]x rounded-lg bg-primary/[0.1] p-16 shadow min-h-[90vh]  mt-2 flex-row ">
-
-                        <div className="min-w-[40]x rounded-lg bg-white p-16 shadow min-h-[40vh] mt-2 ">
+    
+                        <div className="min-w-[40]x rounded-lg bg-white p-16 shadow min-h-[40vh] mt-2 relative">
+                            <div className="absolute top-2 left-2 cursor-pointer" onClick={() => navigate("/manager/setting")}><IoIosArrowBack className="size-6"/></div>
                             <h1 className="font-black text-3xl mb-8">Thông tin nhà hàng</h1>
 
                             {/* <form class="p-4 md:p-5"> */}

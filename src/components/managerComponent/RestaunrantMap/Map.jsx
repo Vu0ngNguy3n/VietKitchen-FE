@@ -36,6 +36,7 @@ const Map = () => {
     const [isOpenCreateTable, setIsOpenCreateTable] = useState(false);
     const [typeTable, setTypeTable] = useState();
     const [shapeTable, setShapeTable] = useState();
+    const [areaDetail, setAreaDetail] = useState();
     const [isSave, setIsSave] = useState(null);
     
 
@@ -56,7 +57,7 @@ const Map = () => {
         const pictureSize = 150; // Kích thước của hình ảnh
         const minDistance = 5; // Khoảng cách tối thiểu giữa các hình ảnh
         const boardWidth = 0.9 * window.innerWidth; // 90% chiều rộng của container
-        const boardHeight = 600; // Chiều cao của bảng
+        const boardHeight = 500; // Chiều cao của bảng
 
         // Lưu trữ vị trí cũ
         const oldBoard = [...board];
@@ -101,7 +102,8 @@ const Map = () => {
         });
 
         if (isPositionTaken) {
-            toast.warn("This position is already taken or too close to another image. Please choose another position.");
+            // toast.warn("This position is already taken or too close to another image. Please choose another position.");
+            toast.warn("Không thể đặt bàn vào vị trí này Vui lòng chọn vị trí khác.");
             // Khôi phục vị trí cũ
             // setBoard(oldBoard);
             return;
@@ -124,6 +126,7 @@ const Map = () => {
             const data =res.data.result;
             if(data.length > 0){
                 setCurrentArea(data[0]?.id)
+                setAreaDetail(data[0]);
             }
             setAreaList(data)
         })
@@ -215,6 +218,9 @@ const Map = () => {
     
     const handleClosePopTable = () => {
         setIsOpenCreateTable(false);
+         setTableName('');
+        setTypeTable();
+        setShapeTable();
     }
 
     const handleCreateArea = () => {
@@ -248,32 +254,40 @@ const Map = () => {
                         })
                 }
             }else{
-                const table = {
-                    name: tableName,
-                    numberChairs: typeTable,
-                    tableTypeId: shapeTable,
-                    areaId: +currentArea,
-                    positionX: 0,
-                    positionY: 0,
-                }
+                if(tableName === '' || !typeTable || !shapeTable){
+                    toast.warn("Vui lòng nhập đầy đủ thông tin")
+                }else{
+                    const table = {
+                        name: tableName,
+                        numberChairs: typeTable,
+                        tableTypeId: shapeTable,
+                        areaId: +currentArea,
+                        positionX: 0,
+                        positionY: 0,
+                    }
 
-                axiosInstance
-                .post(`/api/table/create/${numberTables}`, table)
-                .then(res => {
-                    toast.success(`Tạo bàn ${tableName} thành công`);
-                    handleClosePopTable();
-                    setIsAddTable(!isAddTable);
-                })
-                .catch(err => {
-                            if (err.response) {
-                                const errorRes = err.response.data;
-                                toast.error(errorRes.message);
-                            } else if (err.request) {
-                                toast.error("Yêu cầu không thành công");
-                            } else {
-                                toast.error(err.message);
-                            }
-                        })
+                    axiosInstance
+                    .post(`/api/table/create/${numberTables}`, table)
+                    .then(res => {
+                        toast.success(`Tạo bàn ${tableName} thành công`);
+                        handleClosePopTable();
+                        setIsAddTable(!isAddTable);
+                        setTableName('');
+                        setTypeTable();
+                        setShapeTable();
+                    })
+                    .catch(err => {
+                                if (err.response) {
+                                    const errorRes = err.response.data;
+                                    toast.error(errorRes.message);
+                                } else if (err.request) {
+                                    toast.error("Yêu cầu không thành công");
+                                } else {
+                                    toast.error(err.message);
+                                }
+                            })
+                }
+                
             }
             
         
@@ -308,56 +322,74 @@ const Map = () => {
         handleCloseSavePopUp();
     }
 
-    return (
-         <div>
-            <div className="flex mt-6 flex-col gap-4 md:flex-row justify-between">
-                            <div className="flex items-center ">
-                                    <select
-                                        id="countries"
-                                        value={currentArea}
-                                        onChange={(e) => setCurrentArea(e.target.value)}
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 
-                                        focus:border-blue-500 block  p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
-                                        dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
-                                        outline-none px-4 py-3 cursor-pointer">
-                                        {
-                                            areaList?.map((area, index) => {
-                                                return <option value={area?.id} key={index}>{area?.name}</option>
-                                            })
-                                        }
-                                    </select>
-                                    <button
-                                         className="py-2 px-5 ml-[10px] bg-lgreen font-semibold text-white rounded hover:bg-green transition-all duration-300 flex items-center"
-                                         onClick={handleOpenPopup}
-                                         >
-                                        <FaPlus className="mr-1" />
-                                        Thêm khu vực
-                                    </button>
-                            </div>
+    const handleChangeAreaDetail = (areaId) => {
+        setCurrentArea(areaId);
+        const areaFind = areaList?.find(a => a?.id == areaId);
+        setAreaDetail(areaFind);
+    }
+ 
+    const handleChangeNumberTable = (number) => {
+        if(!isNaN(number)){
+            if(number > 0 && number < 10){
+                setNumberTables(number)
+            }else{
+                setNumberTables(1)
+            }
+        }
+    }
 
-                            <div className="flex items-center">
-                                <div>
-                                    <button
-                                         className="py-2 px-5 bg-lgreen font-semibold text-white rounded hover:bg-green transition-all duration-300 flex items-center"
-                                         onClick={handleOpenTable}
-                                         >
-                                        <FaPlus className="mr-1" />
-                                        Tạo bàn
-                                    </button>
-                                </div>
-                                <div>
-                                    <button
-                                         className={`py-2 px-5 bg-red-500 ml-[20px] font-semibold text-white rounded hover:bg-red-800 transition-all duration-300 ${isEnableSave ? "flex" : 'hidden'}
-                                         items-center`}
-                                         disabled={!isEnableSave}
-                                         onClick={handleOpenSavePopUp}
-                                         >
-                                        <FaPlus className="mr-1" />
-                                        Lưu
-                                    </button>
-                                </div>
-                            </div>
+    return (
+         <div className="">
+            <div className="w-full flex justify-center">
+                <div className="flex flex-col gap-4 md:flex-row justify-between w-[90%]">
+                    <div className="flex items-center ">
+                            <select
+                                id="countries"
+                                value={currentArea}
+                                onChange={(e) => handleChangeAreaDetail(e.target.value)}
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 
+                                focus:border-blue-500 block  p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
+                                dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
+                                outline-none px-8 py-3 cursor-pointer">
+                                {
+                                    areaList?.map((area, index) => {
+                                        return <option value={area?.id} key={index}>{area?.name}</option>
+                                    })
+                                }
+                            </select>
+                            <button
+                                    className="py-2 px-5 ml-[10px] bg-blue-500 font-semibold text-white rounded hover:bg-blue-700 transition-all duration-300 flex items-center"
+                                    onClick={handleOpenPopup}
+                                    >
+                                <FaPlus className="mr-1" />
+                                Thêm khu vực
+                            </button>
+                    </div>
+
+                    <div className="flex items-center">
+                        <div>
+                            <button
+                                    className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-blue-700 transition-all duration-300 flex items-center"
+                                    onClick={handleOpenTable}
+                                    >
+                                <FaPlus className="mr-1" />
+                                Thêm bàn mới
+                            </button>
                         </div>
+                        <div>
+                            <button
+                                    className={`py-2 px-5 bg-red-500 ml-[20px] font-semibold text-white rounded hover:bg-red-800 transition-all duration-300 ${isEnableSave ? "flex" : 'hidden'}
+                                    items-center`}
+                                    disabled={!isEnableSave}
+                                    onClick={handleOpenSavePopUp}
+                                    >
+                                <FaPlus className="mr-1" />
+                                Lưu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
                         {isOpenSave ?<div id="popup-delete" className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
                                 <div className="relative p-4 w-full max-w-md bg-white rounded-lg shadow dark:bg-gray-700 animate-slideIn">
                                     <button type="button" onClick={handleCloseSavePopUp} className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
@@ -400,7 +432,7 @@ const Map = () => {
                                         {isCreateArea ? 'Thêm khu vực mới' : 'Thêm bàn mới'}
                                     </h2>
                                     {isCreateArea && <div className="mb-4">
-                                        <label className="block mb-2">Tên khu vực</label>
+                                        <label className="block mb-2">Tên khu vực <span className="text-red-500">*</span></label>
                                         <input
                                             type="text"
                                             placeholder="Tên khu vực"
@@ -418,7 +450,7 @@ const Map = () => {
                                         </button>
                                         <button
                                             onClick={() => handleCreateArea()}
-                                            className="py-2 px-5 bg-lgreen font-semibold text-white rounded hover:bg-green transition-all duration-300"
+                                            className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-blue-500 transition-all duration-300"
                                         >
                                             Thêm 
                                         </button>
@@ -459,7 +491,7 @@ const Map = () => {
                                         <div className="w-[52%]">
                                            <div className="border-b-2 pb-2 border-b-gray-400">
                                                 <div className="mb-2">
-                                                    <label className="block mb-2 font-semibold">Tên bàn</label>
+                                                    <label className="block mb-2 font-semibold">Tên bàn <span className="text-red-500">*</span></label>
                                                     <input
                                                         type="text"
                                                         placeholder="Tên bàn"
@@ -469,19 +501,19 @@ const Map = () => {
                                                     />
                                                 </div>
                                                 <div className="mb-2">
-                                                    <label className="block mb-2 font-semibold">Số lượng bàn</label>
+                                                    <label className="block mb-2 font-semibold">Số lượng bàn <span className="text-red-500">*</span></label>
                                                     <input
                                                         type="number"
                                                         placeholder="Số lượng bàn"
                                                         value={numberTables}
-                                                        onChange={(e) => setNumberTables(e.target.value)}
+                                                        onChange={(e) => handleChangeNumberTable(e.target.value)}
                                                         className="w-full px-3 py-2 border rounded-md"
                                                     />
                                                 </div>
                                            </div>
                                            <div className="flex justify-between py-2">
                                                 <div className="w-[45%] ">
-                                                    <label className="block mb-2 font-semibold">Loại bàn</label>
+                                                    <label className="block mb-2 font-semibold">Loại bàn <span className="text-red-500">*</span></label>
                                                     <div className="flex-row">
                                                         <div 
                                                             className={`flex justify-center py-1 border-2 rounded mb-2 shadow-md cursor-pointer duration-300 transition-all ${typeTable === 4 ? "border-blue-500" : "border-gray-400 "}`} 
@@ -504,7 +536,7 @@ const Map = () => {
                                                     </div>
                                                 </div>
                                                 <div className="w-[45%]">
-                                                    <label className="block mb-2 font-semibold">Kiểu dáng</label>
+                                                    <label className="block mb-2 font-semibold">Kiểu dáng <span className="text-red-500">*</span></label>
                                                      <div className="flex-row">
                                                         {typeTableList?.map((t,index) => {
                                                             return (
@@ -546,7 +578,7 @@ const Map = () => {
                                         </button>
                                         <button
                                             onClick={() => handleCreateArea()}
-                                            className="py-2 px-5 bg-lgreen font-semibold text-white rounded hover:bg-green transition-all duration-300"
+                                            className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-blue-500 transition-all duration-300"
                                         >
                                             Thêm 
                                         </button>
@@ -554,24 +586,38 @@ const Map = () => {
                                 </div>
                             </div>
                             : ''}
-                        <div className="flex justify-center my-10">
-                            <div
-                                ref={drop}
-                                className="relative bg-white border-2 border-gray-300 rounded-lg shadow-lg"
-                                style={{ width: "90%", height: "600px" }}
-                            >
-                                {board?.map((picture, index) => (
-                                    <Table
-                                        typeTable={picture?.tableType?.id}
-                                        id={picture?.id}
-                                        key={index}
-                                        positionX={picture?.positionX}
-                                        positionY={picture?.positionY}
-                                        name={picture?.name}
-                                        orderCurrent={picture?.orderCurrent}
-                                        numberChairs={picture?.numberChairs}
-                                    />
-                                ))}
+                        <div className="mt-2">
+                            <div className="w-full flex justify-center items-center">
+                                <div className="w-[90%] bg-white px-6 py-3 border-b-2 flex">
+                                    <div className="w-[40%] flex items-center">
+                                        <span className="font-semibold">Tên khu vực</span>
+                                    </div>
+                                    <div className="w-[60%] ">
+                                        <div className="border-2 px-2 py-2">
+                                            {areaDetail?.name}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex justify-center">
+                                <div
+                                    ref={drop}
+                                    className="relative bg-white border-gray-300 shadow-lg"
+                                    style={{ width: "90%", height: "500px" }}
+                                >
+                                    {board?.map((picture, index) => (
+                                        <Table
+                                            typeTable={picture?.tableType?.id}
+                                            id={picture?.id}
+                                            key={index}
+                                            positionX={picture?.positionX}
+                                            positionY={picture?.positionY}
+                                            name={picture?.name}
+                                            orderCurrent={picture?.orderCurrent}
+                                            numberChairs={picture?.numberChairs}
+                                        />
+                                    ))}
+                                </div>
                             </div>
                         </div>
                         <style jsx>{`

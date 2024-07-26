@@ -12,6 +12,7 @@ function CustomerManager() {
     const [selectAll, setSelectAll] = useState(false);
     const [selectedCustomers, setSelectedCustomers] = useState([]);
     const [listCustomers, setListCustomers] = useState([])
+    const [listCustomersDisplay, setListCustomersDisplay] = useState([]);
     const [restaurantId, setRestaurantId] = useState();
     const [phoneNumber, setPhoneNumber] = useState();
     const [name, setName] = useState();
@@ -21,6 +22,7 @@ function CustomerManager() {
     const [isEdit, setIsEdit] = useState(false);
     const [isUpdate, setIsUpdate] = useState(false);
     const [idCustomer,setIdCustomer] = useState('');    
+    const [search, setSearch] = useState('');
     const navigate = useNavigate();
 
 
@@ -33,6 +35,7 @@ function CustomerManager() {
         .then(res => {
             const data = res.data;
             setListCustomers(data);
+            setListCustomersDisplay(data);
         })
         .catch(err => {
             if (err.response) {
@@ -144,6 +147,11 @@ function CustomerManager() {
         setIdCustomer(customer?.id);
     }
 
+    useEffect(() => {
+        const newListCustomers = listCustomers?.filter(c => (c?.phoneNumber.includes(search) || c?.name.toLowerCase().includes(search.toLowerCase())))
+        setListCustomersDisplay(newListCustomers)
+    },[search])
+
     return (
         <div className="">
             <div className="flex ">
@@ -162,7 +170,9 @@ function CustomerManager() {
                                     <input
                                         type="text"
                                         className="w-full px-4 py-3 pl-10 outline-none italic "
-                                        placeholder="Nhập SĐT khách hàng"
+                                        value={search}
+                                        onChange={e => setSearch(e.target.value)}
+                                        placeholder="Nhập SĐT/Tên khách hàng"
                                     />
                                 </div>
                             </div>
@@ -275,7 +285,7 @@ function CustomerManager() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {listCustomers?.map((c, index) => (
+                                    {listCustomersDisplay?.map((c, index) => (
                                         <tr
                                             key={index}
                                             className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -301,7 +311,7 @@ function CustomerManager() {
                                                 {c.name}
                                             </th>
                                             <td className="px-6 py-4">{c.phoneNumber}</td>
-                                            <td className="px-6 py-4">{c.adress}</td>
+                                            <td className="px-6 py-4">{c.address}</td>
                                             <td className="px-6 py-4">{c.point}</td>
                                             <td className="px-6 py-4 flex space-x-2">
                                                 <button 
@@ -314,6 +324,14 @@ function CustomerManager() {
                                             </td>
                                         </tr>
                                     ))}
+                                    {listCustomersDisplay?.length === 0 && (
+                                        <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                            <td className="w-4 p-4"></td>
+                                            <td className="px-6 py-4">
+                                                Không tìm thấy thông tin nhân viên tương ứng
+                                            </td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>

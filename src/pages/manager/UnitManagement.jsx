@@ -1,6 +1,6 @@
 import SidebarManager from "../../components/managerComponent/SidebarManager"
 import HeaderManagerDashboard from "../../components/managerComponent/HeaderManagerDashboard"
-import { IoMdAdd } from "react-icons/io";
+import { IoIosArrowBack, IoMdAdd } from "react-icons/io";
 import { FaEdit, FaBan } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -165,8 +165,11 @@ function UnitManagement() {
                 <div className="basis-[88%] border overflow-scroll h-[100vh]">
                     <HeaderManagerDashboard />
                     <div className="min-w-[40]x rounded-lg bg-white p-16 shadow min-h-[90vh] mt-2">
-                    <div className="flex justify-between">
-                            <h1 className="font-black text-3xl">Quản lý đơn vị tính</h1>
+                        <div className="flex justify-between">
+                            <div className="flex">
+                                <div className="flex items-center mr-2 cursor-pointer " onClick={() => navigate("/manager/setting")}><IoIosArrowBack className="size-6"/></div>
+                                <h1 className="font-black text-3xl">Quản lý đơn vị tính</h1>
+                            </div>
                             <button 
                                 className="py-2 px-3 bg-secondary font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center" 
                                 onClick={handleOpenPopup}
@@ -256,9 +259,9 @@ function UnitManagement() {
                                         <th scope="col" className="px-6 py-3">
                                             
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
+                                        {/* <th scope="col" className="px-6 py-3">
                                             
-                                        </th>
+                                        </th> */}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -276,7 +279,7 @@ function UnitManagement() {
                                                     Chỉnh sửa
                                                 </button>
                                             </td>
-                                            <td className="px-6 py-4 ">
+                                            {/* <td className="px-6 py-4 ">
                                                 <button
                                                     onClick={() => handleOpenDeletePop(unit)}
                                                     className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
@@ -284,7 +287,7 @@ function UnitManagement() {
                                                     <FaBan className="mr-1" />
                                                     Xoá
                                                 </button>
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     ))}
                                 </tbody>

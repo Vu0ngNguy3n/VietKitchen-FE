@@ -274,7 +274,7 @@ function SignUp() {
                   <span>{counter}s</span>
                 </span>
               ) : (
-                'Gửi mã'
+                'Gửi lại mã'
               )}</button>
             </div>
           </div>
@@ -290,14 +290,14 @@ function SignUp() {
 
           </div>
 
-          <div className="w-full flex items-center justify-center relative py-2">
+          {/* <div className="w-full flex items-center justify-center relative py-2">
             <div className="w-full h-[1px] bg-black/40"></div>
             <p className="text-lg absolute text-black/80 bg-[#f5f5f5]">or</p>
-          </div>
-          <div className="w-full text-[#060606] my-2 font-semibold bg-white border-2 border-black/40 rounded-md p-4 text-center flex items-center justify-center cursor-pointer">
+          </div> */}
+          {/* <div className="w-full text-[#060606] my-2 font-semibold bg-white border-2 border-black/40 rounded-md p-4 text-center flex items-center justify-center cursor-pointer">
             <img className="h-6 mr-2" src={GOOGLE_ICON} alt="" />
             Đăng ký bằng Google
-          </div>
+          </div> */}
         </div>
 
         <div className="w-full flex  items-center justify-center">

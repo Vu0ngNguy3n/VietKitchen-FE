@@ -8,8 +8,8 @@ import axiosInstance from "../../utils/axiosInstance";
 import { getUser } from "../../utils/constant";
 import { formatVND } from "../../utils/format";
 import CryptoJS from 'crypto-js';
-import { v4 as uuidv4 } from 'uuid'; // Import phương thức tạo UUID
-// import RestaurantPackage from "../../assests/restaurantPackage.jpg"
+import { IoIosArrowBack } from "react-icons/io";
+
 
 function SettingPackage(){
 
@@ -146,9 +146,9 @@ function SettingPackage(){
             .then(res => {
                 const newOrderCode = res.data.result;
                 const payload = {
-                    orderCode: newOrderCode+5,
+                    orderCode: newOrderCode,
                     amount: 5000, 
-                    description: des+des+des,
+                    description: des,
                     returnUrl: urlReturn,
                     cancelUrl: urlCancel,
                 };
@@ -230,7 +230,8 @@ function SettingPackage(){
                 <div className="basis-[88%]  h-[100vh]">
                     <HeaderManagerDashboard />
                     <div className="min-w-[40]x rounded-lg bg-primary/[0.1] p-12 shadow min-h-[90vh] mt-2 flex-row overflow-y-scroll">
-                        <div className="flex justify-between pb-3 border-b-2 border-slate-300">
+                        <div className="flex items-center pb-3 border-b-2 border-slate-300">
+                            <div className="flex items-center mr-2 cursor-pointer" onClick={() => navigate("/manager/setting")}><IoIosArrowBack className="size-6"/></div>
                             <h1 className="font-black text-2xl">Thông tin gói dịch vụ</h1>
                         </div>
                         <div className="flex justify-center mt-10 w-full border-b-2 border-b-slate-300 pb-8">
