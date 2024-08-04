@@ -28,17 +28,29 @@ import MapHostess from "../pages/staff/hostess/MapHostess"
 import PaymentSetting from "../pages/manager/PaymentSetting"
 import DashboardManager from "../pages/manager/DashboardManager"
 import SettingPackage from "../pages/manager/SettingPackage"
+import VATSetting from "../pages/manager/VATSetting"
+import PointSetting from "../pages/manager/PointSetting"
+import PackageUpdate from "../pages/admin/PackageUpdate"
+import RestaurantMapMain from "../pages/manager/RestaurantMapMain"
 
 const publicRoutes = [
     {path: '/login', component: SignInSide},
     {path: '/signUp', component: SignUp},
     {path: '/', component: HomePage},
+
+]
+
+const adminRoutes = [
     {path: '/admin/dashboard', component: Dashboard},
     {path: '/admin/permissions', component: Permissions},
     {path: '/admin/packages', component: Packages},
     {path: '/admin/packageDetail', component: PackageDetail},
+    {path: '/admin/packageUpdate/:slug', component: PackageUpdate},
     {path: '/admin/accountsManagement', component: AccountsManagements},
     {path: '/admin/accountDetail/:accountId', component: AccountDetail},
+]
+
+const managerRoutes = [
     {path: '/manager/dashboard', component: DashboardManager},
     {path: '/manager/staffs', component: StaffManager},
     {path: '/manager/customers', component: CustomerManager},
@@ -51,35 +63,26 @@ const publicRoutes = [
     {path: '/manager/setting', component: SettingManager},
     {path: '/manager/restaurantInformation', component: RestaurantInformation},
     {path: '/manager/restaurantMap', component: RestaurantMap},
+    {path: '/manager/restaurantMapMain', component: RestaurantMapMain},
     {path: '/manager/paymentSetting', component: PaymentSetting},
     {path: '/manager/packageRestaurant', component: SettingPackage},
+    {path: '/manager/VATSetting', component: VATSetting},
+    {path: '/manager/PointSetting', component: PointSetting},
+]
+
+const waiterRoutes = [
     {path: '/waiter/ordering', component: Ordering},
     {path: '/waiter/menu/:slug', component: Menu},
     {path: '/waiter/map', component: MapWaiter},
     {path: '/waiter/payment', component: Payment},
-    {path: '/chef/dishPreparation', component: DishPreparation},
-    {path: '/hostess/map', component: MapHostess},
-
-]
-
-const adminRoutes = [
-
-]
-
-const managerRoutes = [
-
-]
-
-const waiterRoutes = [
-
 ]
 
 const hostessRoutes = [
-
+    {path: '/hostess/map', component: MapHostess},
 ]
 
 const chefRoutes = [
-
+    {path: '/chef/dishPreparation', component: DishPreparation},
 ]
 
 export {publicRoutes, adminRoutes, managerRoutes, waiterRoutes, hostessRoutes, chefRoutes}

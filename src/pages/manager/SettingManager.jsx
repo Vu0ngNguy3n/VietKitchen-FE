@@ -7,6 +7,7 @@ import { RiMoneyDollarCircleFill } from "react-icons/ri";
 import { useNavigate } from "react-router";
 import { MdOutlinePayment } from "react-icons/md";
 import { FiPackage } from "react-icons/fi";
+import { BiSolidPurchaseTag } from "react-icons/bi";
 
 
 function SettingManager() {
@@ -21,7 +22,7 @@ function SettingManager() {
                 </div>
                 <div className="basis-[88%] border h-[100vh]">
                     <HeaderManagerDashboard />
-                    <div className="min-w-[40]x rounded-lg bg-primary/[0.1] p-16 shadow min-h-[90vh] mt-2 flex-row ">
+                    <div className="min-w-[40]x rounded-lg bg-primary/[0.1] p-16 shadow min-h-[90vh] mt-2 flex-row overflow-y-auto max-h-screen">
                         <div className="flex justify-between">
                             <h1 className="font-black text-3xl">Thiết lập nhà hàng</h1>
                         </div>
@@ -70,7 +71,7 @@ function SettingManager() {
 
                             </div>
                         </div>
-                        <div className="flex justify-center mt-10">
+                        <div className="flex justify-center mt-10 mb-20">
                             <div className="w-[60%] rounded-lg bg-white p-16 shadow min-h-10 mt-2">
                                 <div className="flex justify-between">
                                     <h1 className="font-black text-xl">Thiết lập chức năng</h1>
@@ -87,10 +88,18 @@ function SettingManager() {
                                     <div className='flex items-center gap-[10px] basis-[40%]'>
                                         <RiMoneyDollarCircleFill color='black ' size={35} />
                                         <div className="flex-row">
-                                            <p className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.7] cursor-pointer'>Thiết lập thuế</p>
+                                            <p className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.7] cursor-pointer' onClick={() => navigate('/manager/VATSetting')}>Thiết lập thuế</p>
                                             <span>Xem và thiết lập thuế bán hàng của nhà hàng</span>
                                         </div>
                                     </div>
+                                    <div className='flex items-center gap-[10px] basis-[40%]'>
+                                        <BiSolidPurchaseTag color='black ' size={35} />
+                                        <div className="flex-row">
+                                            <p className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.7] cursor-pointer' onClick={() => navigate('/manager/PointSetting')}>Thiết lập điểm</p>
+                                            <span>Xem và thiết lập điểm của nhà hàng</span>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
 
                             </div>

@@ -37,6 +37,7 @@ function Packages() {
     };
 
     const handleEditPackageClick = (pkg) => {
+        navigate(`/admin/packageUpdate/${pkg?.id}`)
     };
 
 

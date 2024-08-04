@@ -1,26 +1,40 @@
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import SignInSide from './pages/common/Login/Login';
-import SignUp from './pages/common/SignUp/SignUp';
-import HomePage from './pages/common/HomePage/HomePage';
 import axios from 'axios';
 import { Bounce, ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
-import { publicRoutes } from './routes';
+import { adminRoutes, chefRoutes, hostessRoutes, managerRoutes, publicRoutes, waiterRoutes } from './routes';
 import Page404 from './pages/common/Page404/Page404';
 import Main from './components/adminComponent/Main';
+import { getUser } from './utils/constant';
+import { useEffect } from 'react';
 axios.defaults.baseURL = "http://localhost:8080"
 
 function App() {
+  const user = getUser();
+  useEffect(() => {
+    console.log(user);
+  },[])
   
-
   return (
     <BrowserRouter>
       <Routes>
 
         {publicRoutes.map((route, index) => {
           return (
-            (route?.path.includes('/admin/dashboard'))?
+              <Route
+                path={route.path}
+                element={<route.component />}
+                key={index}
+              />
+           
+            )
+          }
+        )}
+
+        {adminRoutes.map((route, index) => {
+          return (
+            (user?.role?.includes("ROLE_ADMIN")&& (route?.path?.includes('/admin/dashboard'))?
               <Route path={route?.path} element={<route.component/>}>
                   <Route index element={<Main/>}/>
               </Route>
@@ -31,8 +45,63 @@ function App() {
                 key={index}
               />
            
-          )
-        }
+            ))
+        })}
+
+        {managerRoutes.map((route, index) => {
+          return (
+              (user?.role?.includes("MANAGER") && (
+                <Route
+                  path={route.path}
+                  element={<route.component />}
+                  key={index}
+                />
+              ))
+           
+            )
+          }
+        )}
+
+        {waiterRoutes.map((route, index) => {
+          return (
+              (user?.role?.includes("WAITER") && (
+                <Route
+                  path={route.path}
+                  element={<route.component />}
+                  key={index}
+                />
+              ))
+           
+            )
+          }
+        )}
+
+        {chefRoutes.map((route, index) => {
+          return (
+              (user?.role?.includes("CHEF") && (
+                <Route
+                  path={route.path}
+                  element={<route.component />}
+                  key={index}
+                />
+              ))
+           
+            )
+          }
+        )}
+
+        {hostessRoutes.map((route, index) => {
+          return (
+              (user?.role?.includes("HOSTESS") && (
+                <Route
+                  path={route.path}
+                  element={<route.component />}
+                  key={index}
+                />
+              ))
+           
+            )
+          }
         )}
 
         <Route path='*' element={<Page404 />} />

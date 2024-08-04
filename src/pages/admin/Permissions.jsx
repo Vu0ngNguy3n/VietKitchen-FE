@@ -168,7 +168,8 @@ function Permissions() {
                                         <input
                                             type="text"
                                             placeholder="Tên chức năng"
-                                            className="w-full px-3 py-2 border rounded-md"
+                                            className={`w-full px-3 py-2 border rounded-md ${!isCreate&&"cursor-not-allowed"}`}
+                                            disabled={isCreate ? false : true}
                                             value={permissionName}
                                             onChange={(e) => setPermissionName(e.target.value)}
                                         />

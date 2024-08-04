@@ -14,8 +14,9 @@ import ROUND8 from "../../../assests/round8.png"
 import SQUARE4 from "../../../assests/square4.png"
 import SQUARE6 from "../../../assests/square6.png"
 import SQUARE8 from "../../../assests/square8.png"
+import ZEROTABLE from "../../../assests/zeroTable.jpg"
 
-const Map = () => {
+const MapMain = () => {
     const [board, setBoard] = useState([]);
     const [isEnableSave, setIsEnableSave] = useState(false);
     const [areaList, setAreaList] = useState([])
@@ -40,90 +41,7 @@ const Map = () => {
     const [isSave, setIsSave] = useState(null);
     
 
-    const [{ isOver }, drop] = useDrop(() => ({
-        accept: "image",
-        drop: (item, monitor) => {
-            const delta = monitor.getDifferenceFromInitialOffset();
-            const positionX = Math.round(item.positionX + delta.x);
-            const positionY = Math.round(item.positionY + delta.y);
-            moveImageToBoard(item?.id, positionX, positionY);
-        },
-        collect: (monitor) => ({
-            isOver: !!monitor.isOver(),
-        }),
-    }));
-
-    const moveImageToBoard = (id, positionX, positionY) => {
-        const pictureSize = 150; // Kích thước của hình ảnh
-        const minDistance = 5; // Khoảng cách tối thiểu giữa các hình ảnh
-        const boardWidth = 0.9 * window.innerWidth; // 90% chiều rộng của container
-        const boardHeight = 500; // Chiều cao của bảng
-
-        // Kiểm tra biên
-        if (positionX < 0 || positionY < 0 || positionX + pictureSize > boardWidth || positionY + pictureSize > boardHeight) {
-            toast.warn("Image is out of bounds. Please choose another position.");
-            return;
-        }
-
-        // Kiểm tra nếu vị trí mới có bị chồng chéo với bất kỳ hình ảnh nào khác không
-        const isPositionTaken = board.some((picture) => {
-            if (picture.id === id) {
-                return false; // Bỏ qua hình ảnh đang bị kéo
-            }
-
-            // Các cạnh của hình ảnh hiện tại và hình ảnh mới
-            const pictureLeft = picture.positionX;
-            const pictureTop = picture.positionY;
-            const pictureRight = picture.positionX + pictureSize;
-            const pictureBottom = picture.positionY + pictureSize;
-            const newPictureLeft = positionX;
-            const newPictureTop = positionY;
-            const newPictureRight = positionX + pictureSize;
-            const newPictureBottom = positionY + pictureSize;
-
-            // console.log(pictureLeft);
-            // console.log(pictureTop);
-            // console.log(pictureRight);
-            // // console.log(pictureBottom);
-            // console.log(newPictureLeft);
-            // console.log(newPictureTop);
-            // console.log(newPictureRight);
-            // console.log(newPictureBottom);
-
-            // Kiểm tra sự chồng chéo giữa hai hình ảnh
-            const isOverlapping = !(
-                newPictureRight + minDistance <= pictureLeft ||
-                newPictureLeft >= pictureRight + minDistance ||
-                newPictureBottom + minDistance <= pictureTop ||
-                newPictureTop >= pictureBottom + minDistance
-            );
-            console.log(isOverlapping);
-
-            return isOverlapping;
-        });
-
-        if (isPositionTaken) {
-            toast.warn("This position is already taken or too close to another image. Please choose another position.");
-            return;
-        }
-
-      
-
-        // Cập nhật trạng thái bảng với vị trí mới
-        setBoard((prevBoard) => {
-            const updatedBoard = prevBoard.map((b) =>
-                b.id === id ? { ...b, positionX, positionY } : b
-            );
-
-            // Lưu trạng thái cập nhật
-            console.log(updatedBoard);
-            return updatedBoard;
-        });
-
-        if (!isEnableSave) {
-            setIsEnableSave(true);
-        }
-    };
+    
     useEffect(() => {
         setUserStorage(user);
         axiosInstance
@@ -173,6 +91,7 @@ const Map = () => {
             .then(res => {
                 const data = res.data.result;
                 setBoard(data);
+                console.log(data);
             })
             .catch(err => {
                         if (err.response) {
@@ -461,22 +380,6 @@ const Map = () => {
                                             Thêm 
                                         </button>
                                          
-                                   {/* {!isCreateArea && <div className="mb-4">
-                                        <label className="block mb-2">Loại bàn</label>
-                                        
-                                        <select 
-                                            id="countries" 
-                                            value={currentTypeTable}
-                                            onChange={e => setCurrentTypeTable(e.target.value)}
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 
-                                            focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
-                                            dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                            {typeTableList?.map((table, index) =>
-                                                <option value={table?.id} key={index}>{table?.name}</option>
-                                            )}
-                                        </select>
-
-                                    </div>} */}
                                     </div>
                                 </div>
                             </div>
@@ -605,26 +508,55 @@ const Map = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex justify-center">
-                                <div
-                                    ref={drop}
-                                    className="relative bg-white border-gray-300 shadow-lg"
-                                    style={{ width: "90%", height: "500px" }}
-                                >
-                                    {board?.map((picture, index) => (
-                                        <Table
-                                            typeTable={picture?.tableType?.id}
-                                            id={picture?.id}
-                                            key={index}
-                                            positionX={picture?.positionX}
-                                            positionY={picture?.positionY}
-                                            name={picture?.name}
-                                            orderCurrent={picture?.orderCurrent}
-                                            numberChairs={picture?.numberChairs}
-                                        />
-                                    ))}
+                            {board?.length > 0 ? (
+                                <div className="flex justify-center">
+                                    <div
+                                        className="relative bg-white border-gray-300 shadow-lg flex flex-wrap justify-between px-4 pt-4"
+                                        style={{ width: "90%", height: "500px" }}
+                                    >
+                                        {board?.map((table, index) => (
+                                            <div 
+                                                className="flex-row p-8 border-2 border-transparent bg-secondary justify-center w-[15%] h-40 mb-2 rounded-lg shadow-lg cursor-pointer hover:opacity-80 transition-all duration-300" 
+                                                key={index} 
+                                            >
+                                                <div className="text-center">
+                                                    <b className="text-white">{table?.name}</b>
+                                                </div>
+                                                <div className="text-center mt-2">
+                                                    <hr className="w-1/2 mx-auto border-white" />
+                                                    <span className={`block mt-2 text-sm font-semibold text-white`}>{table?.tableType?.id === 1 ? "Bàn tròn" : (table?.tableType?.id === 2 ? "Bàn vuông" : (table?.tableType?.id === 3 &&  "Bàn chữ nhật"))}</span>
+                                                    <span className={`block mt-2 text-sm font-semibold text-white`}>{table?.numberChairs === 4 ? "4 chỗ": (table?.numberChairs === 6 ? "5-8 chỗ" : "9 chỗ trở lên")}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                        <div className=" w-[15%] h-40 " ></div>
+                                        <div className=" w-[15%] h-40 " ></div>
+                                        <div className=" w-[15%] h-40 " ></div>
+                                        <div className=" w-[15%] h-40 " ></div>
+                                        <div className=" w-[15%] h-40 " ></div>
+                                        <div className=" w-[15%] h-40 " ></div>
+                                    </div>
                                 </div>
-                            </div>
+                            ):(
+                                <div className="flex justify-center">
+                                    <div
+                                        className="relative bg-white border-gray-300 shadow-lg flex flex-wrap justify-center px-4 pt-4"
+                                        style={{ width: "90%", height: "500px" }}
+                                    >
+                                        <div className="flex flex-col items-center justify-center">
+                                            <img src={ZEROTABLE} alt="" className="size-28" />
+                                            <h2>Khu vực này chưa có bàn</h2>
+                                            <button
+                                                onClick={() => handleOpenTable()}
+                                                className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-blue-500 transition-all duration-300"
+                                            >
+                                                Thêm bàn 
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            
                         </div>
                         <style jsx>{`
                 @keyframes fadeIn {
@@ -657,4 +589,4 @@ const Map = () => {
     );
 };
 
-export default Map;
+export default MapMain;

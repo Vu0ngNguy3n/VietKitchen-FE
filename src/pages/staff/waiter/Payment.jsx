@@ -144,6 +144,7 @@ function Payment() {
             total: requireMoney,
             methodPayment: isQR?"BANKING":"MONEY"
         }
+        console.log(dataBill);
         
         axiosInstance
         .post(`/api/bill/create/order/${orderId}`, dataBill)

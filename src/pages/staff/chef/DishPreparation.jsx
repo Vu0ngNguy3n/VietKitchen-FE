@@ -3,12 +3,12 @@ import { Client } from "@stomp/stompjs";
 import { useEffect, useState } from "react";
 import SockJS from "sockjs-client";
 import NavBarStaff from "../../../components/staffComponent/NavBarStaff"
-import SidebarStaff from "../../../components/staffComponent/SidebarStaff"
 import axiosInstance from "../../../utils/axiosInstance";
 import { getUser } from "../../../utils/constant";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { RiProgress6Line } from "react-icons/ri";
 import { FaTrash } from "react-icons/fa";
+import SidebarChef from "../../../components/staffComponent/chefComponent/SideBarChef";
 
 function DishPreparation(){
      const [messages, setMessages] = useState([]);
@@ -178,7 +178,7 @@ function DishPreparation(){
         <div className="">
             <div className="flex">
                 <div className="basis-[12%] h-[100vh]">
-                    <SidebarStaff/>
+                    <SidebarChef/>
                 </div>
                 <div className="basis-[88%] border overflow-scroll h-[100vh]">
                     <NavBarStaff />

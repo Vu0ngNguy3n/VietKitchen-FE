@@ -91,7 +91,7 @@ export const SelectBank = ({ options, value, onChange, onChangeBin }) => {
             <div
                 id="options"
                 className={classNames(
-                    "absolute top-10 border-neutral-400 w-full rounded-md overflow-auto transition-all",
+                    "absolute top-10 border-neutral-400 w-full rounded-md overflow-auto transition-all bg-white",
                     open ? "max-h-40 border" : "max-h-0 border-0"
                 )}
             >

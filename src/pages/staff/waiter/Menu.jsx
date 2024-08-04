@@ -590,7 +590,9 @@ function Menu(){
                                 <div className="w-[24%] bg-green h-16 text-white ml-[2px] rounded-sm flex items-center justify-center  cursor-pointer " onClick={() => handleSubmitDish()}>
                                   <span>Xác nhận</span>
                                 </div>
-                                <div className="w-[24%] bg-blue-600 h-16 text-white ml-[2px] rounded-sm flex items-center justify-center cursor-pointer">
+                                <div className="w-[24%] bg-blue-600 h-16 text-white ml-[2px] rounded-sm flex items-center justify-center cursor-pointer"
+                                  onClick={() => navigate('/waiter/payment')}
+                                >
                                   <span>Thanh toán</span>
                                 </div>
                               </div>

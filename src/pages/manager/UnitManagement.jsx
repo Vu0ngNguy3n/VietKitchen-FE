@@ -206,7 +206,7 @@ function UnitManagement() {
                                             Hủy
                                         </button>
                                         <button
-                                            className="py-2 px-5 bg-lgreen font-semibold text-white rounded hover:bg-green transition-all duration-300"
+                                            className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-blue-700 transition-all duration-300"
                                             onClick={handleCreateUnit}
                                         >
                                             {isCreate ? 'Thêm' : 'Cập nhật'}
