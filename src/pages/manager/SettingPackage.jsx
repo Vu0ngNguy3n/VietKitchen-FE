@@ -146,8 +146,8 @@ function SettingPackage(){
             .then(res => {
                 const newOrderCode = res.data.result;
                 const payload = {
-                    orderCode: newOrderCode,
-                    amount: 5000, 
+                    orderCode: newOrderCode+1,
+                    amount: requireMoney, 
                     description: des,
                     returnUrl: urlReturn,
                     cancelUrl: urlCancel,

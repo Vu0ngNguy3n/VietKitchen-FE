@@ -181,7 +181,7 @@ function CustomerManager() {
                                 <div>
                                     <button 
                                         onClick={() => handleOpenCreatePop()}
-                                        className="py-2 px-5 bg-lgreen font-semibold text-white rounded hover:bg-green transition-all duration-300 flex items-center">
+                                        className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-blue-700 transition-all duration-300 flex items-center">
                                         <FaPlus className="mr-1" />
                                         Thêm khách hàng
                                     </button>
@@ -234,13 +234,13 @@ function CustomerManager() {
                                     <div className="flex justify-end gap-2">
                                         <button
                                             onClick={handleCloseCreatePop}
-                                            className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-red-700 transition-all duration-300"
+                                            className="py-2 px-5 bg-white border-2 border-black  font-semibold text-gray-600 rounded  transition-all duration-300"
                                         >
                                             Hủy
                                         </button>
                                         <button
                                             onClick={() => handleSubmitCreateCustomer()}
-                                            className="py-2 px-5 bg-lgreen font-semibold text-white rounded hover:bg-green transition-all duration-300"
+                                            className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-blue-700 transition-all duration-300"
                                         >
                                             {isCreate ? 'Thêm' : 'Cập nhật'}
                                         </button>
@@ -327,7 +327,7 @@ function CustomerManager() {
                                     {listCustomersDisplay?.length === 0 && (
                                         <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                             <td className="w-4 p-4"></td>
-                                            <td className="px-6 py-4">
+                                            <td className="px-6 py-4 text-red-500">
                                                 Không tìm thấy thông tin nhân viên tương ứng
                                             </td>
                                         </tr>

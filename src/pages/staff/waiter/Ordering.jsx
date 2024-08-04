@@ -25,6 +25,7 @@ function Ordering() {
   const [client, setClient] = useState(null);
   const [connected, setConnected] = useState(false);
   const [oldCart, setOldCart] = useState();
+  const [totalMoney, setTotalMoney] = useState();
   const user = getUser();
   const table = useSelector(state => state.table);
   const navigate = useNavigate();
@@ -68,7 +69,6 @@ function Ordering() {
     .then(res => {
       const data = res.data.result;
       setOldCart(data);
-      console.log(data);
     })
     .catch((err) => {
         if (err.response) {
@@ -83,7 +83,11 @@ function Ordering() {
   },[orderIdRedux])
 
   useEffect(() => {
-  },[messages])
+    let requireMoney = 0;
+    oldCart?.forEach(d => requireMoney+=(d?.dish?.price * d?.quantity))
+    console.log(requireMoney);
+    setTotalMoney(requireMoney)
+  },[oldCart])
  
 
 
@@ -94,7 +98,7 @@ function Ordering() {
         </div>
          <div className="absolute left-[60%] top-4 w-[13%] flex justify-between p-2 rounded-md bg-primary/[0.8] text-white font-semibold">
                 <span>Tổng tiền:</span>
-                <span>{formatVND(200000)}</span>
+                <span>{formatVND(totalMoney)}</span>
             </div>  
       <div className="basis-[12%]">
         <SidebarStaff />

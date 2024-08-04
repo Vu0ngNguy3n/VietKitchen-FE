@@ -161,10 +161,10 @@ function InvoiceManagement() {
 
     return (
         <div className="flex h-screen">
-            <div className="w-1/6 bg-gray-100">
+            <div className="basis-[12%] bg-gray-100">
                 <SidebarManager />
             </div>
-            <div className="w-5/6 flex flex-col">
+            <div className="basis-[88%] flex flex-col">
                 <HeaderManagerDashboard />
                 <div className="p-8 flex-1 overflow-y-auto max-h-screen bg-gray-200">
                     <h1 className="font-black text-3xl mb-4">Quản lý hóa đơn</h1>

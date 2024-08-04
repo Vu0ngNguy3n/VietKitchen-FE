@@ -2,18 +2,20 @@ import React, { useEffect, useState } from 'react';
 import SidebarManager from "../../components/managerComponent/SidebarManager";
 import HeaderManagerDashboard from "../../components/managerComponent/HeaderManagerDashboard";
 import { IoMdAdd } from "react-icons/io";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaSearch, FaTrash } from "react-icons/fa";
 import axiosInstance from '../../utils/axiosInstance';
 import { toast } from 'react-toastify';
 
 function CategoryManagement() {
     const [categories, setCategories] = useState([]);
+    const [categoriesDisplay, setCategoriesDisplay] = useState([]);
     const [isOpenCreatePop, setIsOpenCreatePop] = useState(false);
     const [isOpenDeletePop, setIsOpenDeletePop] = useState(false);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [isCreate, setIsCreate] = useState(true);
     const [currentCategoryId, setCurrentCategoryId] = useState(null);
+    const [search, setSearch] = useState('');
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -23,6 +25,7 @@ function CategoryManagement() {
             .then(res => {
                 if (res.data.code === 200) {
                     setCategories(res.data.result);
+                    setCategoriesDisplay(res.data.result)
                 } else {
                     toast.error("Failed to fetch categories");
                 }
@@ -87,6 +90,7 @@ function CategoryManagement() {
                     if (res.data.code === 200) {
                         toast.success("Thêm thực đơn thành công");
                         setCategories([...categories, res.data.result]);
+                        setCategoriesDisplay([...categories, res.data.result])
                         handleCloseCreatePop();
                     } else {
                         toast.error("Thêm mới thực đơn thất bại");
@@ -127,6 +131,7 @@ function CategoryManagement() {
                             cat.id === currentCategoryId ? res.data.result : cat
                         );
                         setCategories(updatedCategories);
+                        setCategoriesDisplay(updatedCategories);
                         handleCloseCreatePop();
                     } else {
                         toast.error("Cập nhật thực đơn thất bại");
@@ -153,6 +158,7 @@ function CategoryManagement() {
                     toast.success("Xóa thực đơn thành công");
                     const updatedCategories = categories.filter(cat => cat.id !== currentCategoryId);
                     setCategories(updatedCategories);
+                    setCategoriesDisplay(updatedCategories);
                     handleCloseDeletePop();
                 } else {
                     toast.error("Xóa thực đơn thất bại");
@@ -170,6 +176,11 @@ function CategoryManagement() {
             });
     };
 
+    useEffect(() => {
+        const newCategories = categories?.filter(c => c?.name.toLowerCase().includes(search.toLowerCase().trim()))
+        setCategoriesDisplay(newCategories);
+    },[search])
+
     return (
         <div className="">
             <div className="flex">
@@ -178,11 +189,23 @@ function CategoryManagement() {
                 </div>
                 <div className="basis-[88%] border overflow-scroll h-[100vh]">
                     <HeaderManagerDashboard />
-                    <div className="min-w-[40]x rounded-lg bg-white p-16 shadow min-h-[90vh] mt-2">
+                    <div className="min-w-[40]x rounded-lg bg-white p-12 shadow min-h-[90vh] mt-2">
+                        <h1 className="font-black text-3xl mb-4">Quản lý thực đơn</h1>
                         <div className="flex justify-between">
-                            <h1 className="font-black text-3xl">Quản lý thực đơn</h1>
+                            <div className="">
+                                <div className="relative grow rounded-md border-2 border-gray-300">
+                                    <FaSearch className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        className="w-full px-4 py-3 pl-10 outline-none italic "
+                                        value={search}
+                                        onChange={e => setSearch(e.target.value)}
+                                        placeholder="Nhập tên thực đơn"
+                                    />
+                                </div>
+                            </div>
                             <button
-                                className="py-2 px-3 bg-lgreen font-semibold text-white rounded hover:bg-green transition-all duration-300 flex items-center"
+                                className="py-2 px-3 bg-blue-500 font-semibold text-white rounded hover:bg-blue-700 transition-all duration-300 flex items-center"
                                 onClick={handleOpenCreatePop}
                             >
                                 <IoMdAdd />Thêm thực đơn
@@ -207,7 +230,7 @@ function CategoryManagement() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {categories?.map((category) => (
+                                    {categoriesDisplay?.map((category) => (
                                         <tr key={category.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                             <td className="px-6 py-4 break-words max-w-xs">
                                                 {category.name}
@@ -235,6 +258,15 @@ function CategoryManagement() {
                                             </td> */}
                                         </tr>
                                     ))}
+                                    {categoriesDisplay?.length===0 && (
+                                        <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                            <td className="px-6 py-4 break-words max-w-xs text-red-500">
+                                                Không tìm thấy thông tin thực đơn tương ứng
+                                            </td>
+                                            <td className="px-6 py-4 break-words max-w-xs"></td>
+                                            <td className="px-6 py-4 break-words max-w-xs"></td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>
@@ -284,7 +316,7 @@ function CategoryManagement() {
                             </button>
                             <button
                                 onClick={isCreate ? handleSubmitCreateCategory : handleSubmitUpdateCategory}
-                                className="py-2 px-5 bg-lgreen font-semibold text-white rounded hover:bg-green transition-all duration-300"
+                                className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-blue-700 transition-all duration-300"
                             >
                                 {isCreate ? "Thêm" : "Cập nhật"}
                             </button>

@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import Dashboardview from "../../components/adminComponent/DashboardView"
 import Sidebar from "../../components/adminComponent/Sidebar"
 import { GrUpdate } from "react-icons/gr";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
 
 
-function PackageDetail() {
+function PackageUpdate() {
 
     const navigate = useNavigate();
+    const [packageDetail, setPackageDetail] = useState();
     const [permissionsList, setPermissionsList] = useState();
     const [isOpenDropDown, setIsOpenDropDown] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState([]);
@@ -17,6 +18,7 @@ function PackageDetail() {
     const [pricePerMonth, setPricePerMonth] = useState('');
     const [pricePerYear, setPricePerYear] = useState('');
     const [isOpenModal, setIsOpenModal] = useState(false);
+    const {slug} = useParams();
 
      const handleChangePriceMonth = (event) => {
         const rawValue = event.target.value.replace(/[^\d]/g, ''); // Loại bỏ các ký tự không phải số
@@ -46,7 +48,36 @@ function PackageDetail() {
                 toast.error(err.message);
             }
         })
+
+        axiosInstance
+        .get(`/api/package/${slug}`)
+        .then(res => {
+            const response = res.data.result;
+            setPackageName(response.packName);
+            setPricePerMonth(response.pricePerMonth);
+            setPricePerYear(response.pricePerYear);
+            setPackageDetail(response);
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })
+
     },[])
+
+    useEffect(() => {
+        let resultPermissions = [];
+        packageDetail?.permissions?.map(pkg => {
+            resultPermissions.push(pkg?.id)
+        })
+        setSelectedOptions(resultPermissions);
+    },[packageDetail])
 
     const handleModal = () => {
         if(isOpenModal === false){
@@ -62,18 +93,18 @@ function PackageDetail() {
         }
     }
 
-    const handleCreatePackage = async() => {
+    const handleUpdatePackage = async() => {
        const newPackage = {
-                    packName:packageName.trim(),
-                    permissions: selectedOptions,
-                    pricePerMonth: pricePerMonth,
-                    pricePerYear: pricePerYear
-                }
+            packName:packageName.trim(),
+            permissions: selectedOptions,
+            pricePerMonth: +pricePerMonth,
+            pricePerYear: +pricePerYear
+        }
         
         axiosInstance
-        .post("/api/package", newPackage)
+        .put(`/api/package/${packageDetail?.id}`, newPackage)
         .then(res => {
-            toast.success("Tạo gói thành công");
+            toast.success("Cập nhật gói thành công");
             navigate('/admin/packages');
         })
         .catch(err => {
@@ -115,7 +146,7 @@ function PackageDetail() {
                 <div className="basis-[88%] border h-[100vh]">
                     <Dashboardview />
                     <div className="min-w-[40]x rounded-lg bg-white p-16 shadow min-h-[90vh] mt-2">
-                        <h1 className="font-black text-3xl">Tạo gói mới</h1>
+                        <h1 className="font-black text-3xl">Cập nhật thông tin gói</h1>
 
                         <htmlForm className="p-4 md:p-5">
                             <div className="grid gap-4 mb-4 grid-cols-2">
@@ -127,8 +158,9 @@ function PackageDetail() {
                                         id="packageName"
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600
                                          block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white 
-                                         dark:focus:ring-primary-500 dark:focus:border-primary-500 "
+                                         dark:focus:ring-primary-500 dark:focus:border-primary-500 cursor-not-allowed"
                                         placeholder="Tên gói"
+                                        disabled={true}
                                         value={packageName}
                                         onChange={e => setPackageName(e.target.value)}
                                         required=""
@@ -176,9 +208,9 @@ function PackageDetail() {
 
                                         <div id="dropdownSearch" className={`z-10  bg-white ${isOpenDropDown ? '' :"hidden"} rounded-lg shadow w-[49%] border-gray-300 dark:bg-gray-700 `}>
                                         
-                                            <ul className="h-48 px-3 pb-3 mt-4 overflow-y-auto text-sm text-gray-700 dark:text-gray-200 flex" aria-labelledby="dropdownSearchButton">
+                                            <ul className="h-48 px-3 pb-3 mt-4 overflow-y-auto text-sm text-gray-700 dark:text-gray-200 flex flex-wrap" aria-labelledby="dropdownSearchButton">
                                                 {permissionsList?.map((permission, index) => (
-                                                    <li key={index}>
+                                                    <li key={index} className='w-[45%]'>
                                                         <div className="flex items-center p-2 mx-4 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                                                             <input 
                                                             type="checkbox" 
@@ -205,7 +237,7 @@ function PackageDetail() {
                                 className="text-white transition ease-in-out duration-300 inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                             >
                                 <GrUpdate className="mr-2" />
-                                Tạo gói
+                                Cập nhật
                             </button>
                         </htmlForm>
                     </div>
@@ -230,14 +262,14 @@ function PackageDetail() {
                                 <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                 </svg>
-                                <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn chắc chắn muốn tạo gói này</h3>
+                                <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn chắc chắn muốn cập nhật thông tin gói </h3>
                                 <button 
                                 data-modal-hide="popup-modal" 
                                 type="button" 
-                                onClick={() => handleCreatePackage()}
+                                onClick={() => handleUpdatePackage()}
                                 className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800
                                  font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
-                                    Tạo gói
+                                    Cập nhật
                                 </button>
                                 <button 
                                 data-modal-hide="popup-modal"
@@ -256,4 +288,4 @@ function PackageDetail() {
     )
 }
 
-export default PackageDetail
+export default PackageUpdate

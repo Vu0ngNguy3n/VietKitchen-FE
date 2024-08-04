@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import GOOGLE_ICON from '../../../assests/Google__G__logo.png';
 import LOGO from '../../../assests/VIET.png';
@@ -14,6 +14,11 @@ function SignInSide() {
   const [password, setPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('') ;
   const [staffUsername, setStaffUsername] = useState('');
+  const [isOpenPop, setIsOpenPop] = useState(false);
+  const [otp, setOtp] = useState(new Array(6).fill(""));
+  const inputs = useRef([]);
+  const initialTime = 60;
+  const [timeLeft, setTimeLeft] = useState(initialTime);
 
   const handleChangeTypeLogin = (type) => {
     setTypeLogin(type);
@@ -21,71 +26,39 @@ function SignInSide() {
     setEmail('');
     setPhoneNumber('');
     setStaffUsername('');
-    console.log(type);
   };
 
-  const handleLogin = async () => {
+  const handleOpenPop = () =>{
+   
+
+    const userLogin = {
+      email: email.trim(),
+      password: password.trim(),
+    };
     
-    if(typeLogin === 1){
-        const userLogin = {
-        email: email.trim(),
-        password: password.trim(),
-      };
-      axios
-        .post('/api/account/login', userLogin)
-        .then((res) => {
-          const data = res.data;
-          if (data.code === 200) {
-            const token = data.result.token;
-            const user = jwtDecode(token);
-            localStorage.setItem('token', token);
-            const userStorage = {
-              username: user.sub,
-              email: user.email,
-              role: user.scope,
-              accountId: user.accountId,
-              restaurantId: user.restaurantId
-            };
-            localStorage.setItem('user', JSON.stringify(userStorage));
-            toast.success('Đăng nhập thành công');
-            if(user.scope === "ADMIN"){
-              navigate("/admin/dashboard");
-            }else if(user.scope.includes("MANAGER")){
+    axios
+    .post('/api/account/login', userLogin)
+    .then(res => {
+      const data = res.data.result.authenticated;
+      if(data === true){
+        setIsOpenPop(true);
+        setTimeLeft(60)
+      }
+    })
+    .catch((err) => {
+      if (err.response) {
+        const errorRes = err.response.data;
+        toast.error(errorRes.message);
+      } else if (err.request) {
+        toast.error(err.request);
+      } else {
+        toast.error(err.message);
+      }
+    });
+  }
 
-              axiosInstance
-              .get(`/api/restaurant/account/${user.accountId}`)
-              .then(res => {
-                if(res.data.result === null){
-                  navigate('/manager/restaurantInformation')
-                }else{
-                  navigate("/manager/dashboard")
-                }
-              })
-              .catch((err) => {
-                if (err.response) {
-                  const errorRes = err.response.data;
-                  toast.error(errorRes.message);
-                } else if (err.request) {
-                  toast.error(err.request);
-                } else {
-                  toast.error(err.message);
-                }
-              })
-            }
-
-          }
-        })
-        .catch((err) => {
-          if (err.response) {
-            const errorRes = err.response.data;
-            toast.error(errorRes.message);
-          } else if (err.request) {
-            toast.error(err.request);
-          } else {
-            toast.error(err.message);
-          }
-        });
-      }else if(typeLogin === 2){
+  const handleLogin = async () => {
+    if(typeLogin === 2){
         const employee = {
           phoneNumberOfRestaurant: phoneNumber,
           username:staffUsername,
@@ -95,7 +68,6 @@ function SignInSide() {
         .post('/api/identify/employee/login', employee)
         .then((res) => {
           const data = res.data;
-          if (data.code === 200) {
             const token = data.result.token;
             const user1 = jwtDecode(token);
             localStorage.setItem('token', token);
@@ -106,7 +78,7 @@ function SignInSide() {
               accountId: user1.accountId
             };
             localStorage.setItem('user', JSON.stringify(userStorage1));
-            console.log(user1);
+            console.log(user1.scope);
             toast.success('Đăng nhập thành công');
             if(user1.scope.includes("CHEF")){
               navigate('/chef/dishPreparation')
@@ -119,7 +91,6 @@ function SignInSide() {
                 }
               }
             }
-          }
         })
         .catch((err) => {
           if (err.response) {
@@ -135,6 +106,136 @@ function SignInSide() {
         
       }
   };
+
+  const anonymizeEmail = (email) => {
+    const [localPart, domain] = email.split('@');
+    const lengthToHide = Math.min(6, localPart.length);
+    const visiblePart = localPart.slice(0, localPart.length - lengthToHide);
+    const hiddenPart = '*'.repeat(lengthToHide);
+    return visiblePart + hiddenPart + '@' + domain;
+  }
+
+  useEffect(() => {
+    // Nếu thời gian còn lại là 0, không làm gì
+    if (timeLeft <= 0) return;
+
+    // Thiết lập bộ đếm ngược
+    const intervalId = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - 1);
+    }, 1000);
+
+    // Xóa bộ đếm khi component bị unmount
+    return () => clearInterval(intervalId);
+  }, [timeLeft]);
+
+   const handleChange = (element, index) => {
+    let newOtp = [...otp];
+    newOtp[index] = element.value;
+    setOtp(newOtp);
+
+    if (element.nextSibling && element.value) {
+      element.nextSibling.focus();
+    }
+  };
+  const handleFocus = (event) => {
+    event.target.select();
+  };
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+
+  const handleResendOTP = () => {
+    axios
+    .post(`/api/account/regenerated-otp/${email.trim()}`)
+    .then(res => {
+      toast.success("Mã xác thực đã được gửi lại")
+      setTimeLeft(initialTime);
+    })
+    .catch((err) => {
+      if (err.response) {
+        const errorRes = err.response.data;
+        toast.error(errorRes.message);
+      } else if (err.request) {
+        toast.error(err.request);
+      } else {
+        toast.error(err.message);
+      }
+    });
+    
+  };
+
+   const handleBackspace = (event, index) => {
+    if (event.key === "Backspace" && !otp[index]) {
+      if (index !== 0) {
+        inputs.current[index - 1].focus();
+      }
+    }
+  };
+
+  
+
+  const handleClosePop = () =>{
+    setIsOpenPop(false);
+  }
+
+  const handleLoginByOTP = () => {
+    let otpString = otp.join('');
+    const otpRequest = {
+      email: email.trim(),
+      otp: otpString
+    }
+    axios
+    .post(`/api/account/verify/otp`, otpRequest)
+    .then(res => {
+      const data = res.data;
+      const token = data.result.token;
+      const user = jwtDecode(token);
+      localStorage.setItem('token', token);
+      const userStorage = {
+        username: user.sub,
+        email: user.email,
+        role: user.scope,
+        accountId: user.accountId,
+        restaurantId: user.restaurantId,
+        packName: user.packName
+      };
+      localStorage.setItem('user', JSON.stringify(userStorage));
+      toast.success('Đăng nhập thành công');
+      if(user.scope.includes("ROLE_ADMIN")){
+        navigate("/admin/dashboard");
+      }else if(user.scope.includes("ROLE_MANAGER")){
+
+        axiosInstance
+        .get(`/api/restaurant/account/${user.accountId}`)
+        .then(res => {
+          if(res.data.result === null){
+            navigate('/manager/restaurantInformation')
+          }else{
+            navigate("/manager/dashboard")
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            const errorRes = err.response.data;
+            toast.error(errorRes.message);
+          } else if (err.request) {
+            toast.error(err.request);
+          } else {
+            toast.error(err.message);
+          }
+        })
+      }
+    })
+    .catch((err) => {
+      if (err.response) {
+        const errorRes = err.response.data;
+        toast.error(errorRes.message);
+      } else if (err.request) {
+        toast.error(err.request);
+      } else {
+        toast.error(err.message);
+      }
+    });
+  }
 
   return (
     <div className="w-full h-screen flex flex-col md:flex-row items-start">
@@ -223,8 +324,8 @@ function SignInSide() {
 
           <div className={`w-full flex items-center justify-between ${typeLogin === 2 ? "hidden": ""}`}>
             <div className="w-full flex">
-              <input type="checkbox" className="w-4 h-4 mr-2" />
-              <p className="text-sm">Nhớ mật khẩu</p>
+              {/* <input type="checkbox" className="w-4 h-4 mr-2" />
+              <p className="text-sm">Nhớ mật khẩu</p> */}
             </div>
             <p className="text-sm font-medium whitespace-nowrap cursor-pointer underline underline-offset-2">
               Quên mật khẩu?
@@ -232,12 +333,22 @@ function SignInSide() {
           </div>
 
           <div className="w-full flex flex-col my-4">
-            <button
-              className="w-full text-white my-2 font-semibold bg-[#060606] rounded-md p-4 text-center flex items-center justify-center cursor-pointer"
-              onClick={() => handleLogin()}
-            >
-              Đăng nhập
-            </button>
+            {typeLogin=== 1 && (
+              <button
+                className="w-full text-white my-2 font-semibold bg-[#060606] rounded-md p-4 text-center flex items-center justify-center cursor-pointer"
+                onClick={() => handleOpenPop()}
+              >
+                Đăng nhập
+              </button>
+            )}
+            {typeLogin === 2 && (
+              <button
+                className="w-full text-white my-2 font-semibold bg-[#060606] rounded-md p-4 text-center flex items-center justify-center cursor-pointer"
+                onClick={() => handleLogin()}
+              >
+                Đăng nhập
+              </button>
+            )}
             <button
               className={`w-full text-[#060606] my-2 font-semibold bg-white border-2 border-black-2 rounded-md p-4 text-center flex items-center justify-center ${typeLogin === 2 ?"hidden" : ""}`}
               onClick={() => navigate('/signUp')}
@@ -265,6 +376,82 @@ function SignInSide() {
           </p>
         </div>
       </div>
+      {isOpenPop && (
+        <div id="popup-delete" className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
+            <div className="relative py-4 w-full max-w-xl bg-white shadow dark:bg-gray-700 animate-slideIn">
+                <button type="button" onClick={handleClosePop} className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                    <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span className="sr-only">Close modal</span>
+                </button>
+                <div className="py-2">
+                    <div className='flex-row px-12'>
+                        <div className="w-full flex items-center">
+                          <h2 className="font-semibold text-xl">Xác thực OTP</h2>
+                        </div>
+                        <div className="w-full flex items-center mb-3">
+                          <span className="py-2 text-sm">Vui lòng nhập mã OTP đã được gửi tới email {anonymizeEmail(email)}.</span>
+                        </div>
+                        <div className="w-full flex items-center my-6 otp justify-center">
+                          {otp.map((data, index) => (
+                            <input
+                              key={index}
+                              ref={(el) => (inputs.current[index] = el)}
+                              type="text"
+                              maxLength="1"
+                              value={data}
+                              onChange={(e) => handleChange(e.target, index)}
+                              onKeyDown={(e) => handleBackspace(e, index)}
+                              onFocus={handleFocus}
+                              className="w-14 h-14 text-center border border-gray-300 rounded mx-3 outline-blue-600"
+                            />
+                          ))}
+                        </div>
+                        <div className="w-full flex items-center mb-3">
+                          <span className="py-2 text-sm w-[70%]">Không nhận được mã? <label className='font-semibold underline text-blue-800 cursor-pointer' onClick={() => handleResendOTP()}>Gửi lại OTP</label></span>
+                          <div className=''>
+                              <span className='font-normal text-sm'>Mã sẽ hết hạn <b className='text-red-600'>{minutes}:{seconds < 10 ? `0${seconds}` : seconds}</b></span>
+                          </div>
+                        </div>
+                        <div className='flex w-full justify-center my-6'>
+                          <div className='w-[80%] flex justify-around'>
+                            <button className='px-3 py-2 bg-gray-400 w-[45%] rounded-full text-black font-semibold duration-300 transition-all hover:opacity-70' onClick={() => handleClosePop()}>Huỷ</button>
+                            <button className='px-3 py-2 bg-blue-700 w-[45%] rounded-full text-white font-semibold duration-300 transition-all hover:opacity-70' onClick={() => handleLoginByOTP()}>Xác nhận</button>
+                          </div>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+        </div>
+      )}
+      <style jsx>{`
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .animate-slideIn {
+            animation: slideIn 0.3s ease-in-out;
+        }
+    `}</style>
     </div>
   );
 }

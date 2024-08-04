@@ -1,18 +1,16 @@
 import { useNavigate } from "react-router";
 import GOOGLE_ICON from "../../../assests/Google__G__logo.png"
 import LOGO from "../../../assests/VIET.png"
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import validator from "validator";
 import axios from "axios";
 
 function SignUp() {
   const navigate = useNavigate()
-  const [codeVerify, setCodeVerify] = useState();
-  const [isVerifying, setIsVerifying] = useState(false);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState();
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSpinning, setIsSpinning] = useState(false);
@@ -20,6 +18,88 @@ function SignUp() {
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [isValidPhone, setIsValidPhone] = useState(true);
   const [counter, setCounter] = useState(60);
+  const [isOpenPop, setIsOpenPop] = useState(false);
+  const [otp, setOtp] = useState(new Array(6).fill(""));
+  const inputs = useRef([]);
+  const initialTime = 60;
+  const [timeLeft, setTimeLeft] = useState(initialTime);
+
+
+  const anonymizeEmail = (email) => {
+    const [localPart, domain] = email.split('@');
+    const lengthToHide = Math.min(6, localPart.length);
+    const visiblePart = localPart.slice(0, localPart.length - lengthToHide);
+    const hiddenPart = '*'.repeat(lengthToHide);
+    return visiblePart + hiddenPart + '@' + domain;
+  }
+
+  useEffect(() => {
+    // Nếu thời gian còn lại là 0, không làm gì
+    if (timeLeft <= 0) return;
+
+    // Thiết lập bộ đếm ngược
+    const intervalId = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - 1);
+    }, 1000);
+
+    // Xóa bộ đếm khi component bị unmount
+    return () => clearInterval(intervalId);
+  }, [timeLeft]);
+
+   const handleChange = (element, index) => {
+    let newOtp = [...otp];
+    newOtp[index] = element.value;
+    setOtp(newOtp);
+
+    if (element.nextSibling && element.value) {
+      element.nextSibling.focus();
+    }
+  };
+  const handleFocus = (event) => {
+    event.target.select();
+  };
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+
+  const handleResendOTP = () => {
+    
+    axios
+      .post(`/api/account/regenerated-otp/${email}`)
+      .then(res => {
+        toast.success("Gửi lại mã xác thực thành công")
+        setIsOpenPop(true);
+        setTimeLeft(60)
+      })
+      .catch(err => {
+        if (err.response) {
+          const errorRes = err.response.data
+          console.log(errorRes.message);
+          toast.error(errorRes.message)
+        } else if (err.request) {
+          console.log("xảy ra lỗi khi gửi yêu cầu");
+          // Yêu cầu đã được gửi nhưng không nhận được phản hồi
+          toast.error(err.request);
+        } else {
+          // Đã xảy ra lỗi khi thiết lập yêu cầu
+          console.log('Error', err.message);
+        }
+      })
+    
+  };
+
+   const handleBackspace = (event, index) => {
+    if (event.key === "Backspace" && !otp[index]) {
+      if (index !== 0) {
+        inputs.current[index - 1].focus();
+      }
+    }
+  };
+
+  
+
+  const handleClosePop = () =>{
+    setIsOpenPop(false);
+  }
 
 
   const handleSignUp = () => {
@@ -52,8 +132,9 @@ function SignUp() {
           .post(`/api/account/register`, userRegister)
           .then(res => {
             if (res.data.code === 200) {
-              setIsVerifying(true)
-              toast("Đăng ký thành công vui lòng xác nhận")
+              setIsOpenPop(true);
+              setTimeLeft(60)
+              toast.success("Đăng ký thành công vui lòng xác nhận")
             }
           })
           .catch(err => {
@@ -81,24 +162,12 @@ function SignUp() {
     }
   }
 
-  useEffect(() => {
-    let timer;
-    if (isSpinning && counter > 0) {
-      timer = setTimeout(() => {
-        setCounter(counter - 1);
-      }, 1000);
-    } else if (counter === 0) {
-      setIsSpinning(false);
-      setIsDisableInput(false);
-      setCounter(60); // Reset counter
-    }
-    return () => clearTimeout(timer);
-  }, [isSpinning, counter]);
 
   const handleSignUpReVerify = async () => {
+    let otpString = otp.join('');
     const verifyAccount = {
       email: email,
-      otp: codeVerify
+      otp: otpString
     }
 
     axios
@@ -143,38 +212,7 @@ function SignUp() {
 
   }
 
-  const handleVerify = async () => {
-    const regeneratedAccount = {
-      email: email
-    }
-    axios
-      .post("/api/account/regenerated-otp", regeneratedAccount)
-      .then(res => {
-        toast.success("Gửi lại mã xác thực thành công")
-        setIsSpinning(true);
-        setIsDisableInput(true);
-        setIsVerifying(true)
 
-        setTimeout(() => {
-          setIsSpinning(false);
-          setIsDisableInput(false);
-        }, 60000); // 60 giây
-      })
-      .catch(err => {
-        if (err.response) {
-          const errorRes = err.response.data
-          console.log(errorRes.message);
-          toast.error(errorRes.message)
-        } else if (err.request) {
-          console.log("xảy ra lỗi khi gửi yêu cầu");
-          // Yêu cầu đã được gửi nhưng không nhận được phản hồi
-          toast.error(err.request);
-        } else {
-          // Đã xảy ra lỗi khi thiết lập yêu cầu
-          console.log('Error', err.message);
-        }
-      })
-  }
 
   return (
     <div className="w-full h-screen flex items-start">
@@ -237,46 +275,6 @@ function SignUp() {
               onChange={e => setConfirmPassword(e.target.value)}
               className="w-full text-black py-2 my-2 bg-transparent border-b border-black  transition duration-500 ease-in-out outline-none focus:outline-none focus:border-blue-700"
             />
-            <div className={`w-full py-2 my-2 ${!isVerifying ? 'hidden' : ''}`}>
-              <input
-                type="text"
-                placeholder="Mã xác thực"
-                value={codeVerify}
-                onChange={(e) => setCodeVerify(e.target.value)}
-                className=" text-black  bg-transparent border-b border-black outline-none  transition duration-500 ease-in-out  focus:outline-none focus:border-blue-700"
-              />
-              <button
-                disabled={isDisableInput}
-                onClick={handleVerify}
-                className={`bg-secondary text-white py-2 px-4 transition-all duration-300 rounded hover:text-white hover:bg-indigo-600 ml-4 ${isDisableInput ? 'opacity-50 cursor-not-allowed' : ''}`}
-              > {isSpinning ? (
-                <span className="flex items-center justify-center space-x-2">
-                  <svg
-                    className="w-5 h-5 text-white animate-spin"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.964 7.964 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  <span>{counter}s</span>
-                </span>
-              ) : (
-                'Gửi lại mã'
-              )}</button>
-            </div>
           </div>
 
 
@@ -284,7 +282,7 @@ function SignUp() {
           <div className="w-full flex flex-col my-4">
             <button
               className="w-full text-white my-2 font-semibold bg-[#060606] rounded-md p-4 text-center flex items-center justify-center cursor-pointer"
-              onClick={isVerifying === false ? handleSignUp : handleSignUpReVerify}>
+              onClick={() => handleSignUp()}>
               Đăng ký
             </button>
 
@@ -313,7 +311,83 @@ function SignUp() {
         </div>
         <img className="w-full h-full object-cover" src="https://i.pinimg.com/736x/68/9c/b4/689cb4f26da487574a61e9af60e889a0.jpg" alt="" />
       </div>
+      {isOpenPop && (
+        <div id="popup-delete" className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
+            <div className="relative py-4 w-full max-w-xl bg-white shadow dark:bg-gray-700 animate-slideIn">
+                <button type="button" onClick={handleClosePop} className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                    <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span className="sr-only">Close modal</span>
+                </button>
+                <div className="py-2">
+                    <div className='flex-row px-12'>
+                        <div className="w-full flex items-center">
+                          <h2 className="font-semibold text-xl">Xác thực OTP</h2>
+                        </div>
+                        <div className="w-full flex items-center mb-3">
+                          <span className="py-2 text-sm">Vui lòng nhập mã OTP đã được gửi tới email {anonymizeEmail(email)}.</span>
+                        </div>
+                        <div className="w-full flex items-center my-6 otp justify-center">
+                          {otp.map((data, index) => (
+                            <input
+                              key={index}
+                              ref={(el) => (inputs.current[index] = el)}
+                              type="text"
+                              maxLength="1"
+                              value={data}
+                              onChange={(e) => handleChange(e.target, index)}
+                              onKeyDown={(e) => handleBackspace(e, index)}
+                              onFocus={handleFocus}
+                              className="w-14 h-14 text-center border border-gray-300 rounded mx-3 outline-blue-600"
+                            />
+                          ))}
+                        </div>
+                        <div className="w-full flex items-center mb-3">
+                          <span className="py-2 text-sm w-[70%]">Không nhận được mã? <label className='font-semibold underline text-blue-800 cursor-pointer' onClick={() => handleResendOTP()}>Gửi lại OTP</label></span>
+                          <div className=''>
+                              <span className='font-normal text-sm'>Mã sẽ hết hạn <b className='text-red-600'>{minutes}:{seconds < 10 ? `0${seconds}` : seconds}</b></span>
+                          </div>
+                        </div>
+                        <div className='flex w-full justify-center my-6'>
+                          <div className='w-[80%] flex justify-around'>
+                            <button className='px-3 py-2 bg-gray-400 w-[45%] rounded-full text-black font-semibold duration-300 transition-all hover:opacity-70' onClick={() => handleClosePop()}>Huỷ</button>
+                            <button className='px-3 py-2 bg-blue-700 w-[45%] rounded-full text-white font-semibold duration-300 transition-all hover:opacity-70' onClick={() => handleSignUpReVerify()}>Xác nhận</button>
+                          </div>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+        </div>
+      )}
 
+      <style jsx>{`
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .animate-slideIn {
+            animation: slideIn 0.3s ease-in-out;
+        }
+    `}</style>
     </div>
   )
 }

@@ -10,6 +10,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
 import { getUser } from "../../utils/constant";
+import { jwtDecode } from "jwt-decode";
 
 function RestaurantInformation() {
 
@@ -42,13 +43,17 @@ function RestaurantInformation() {
                         toast.success("Tạo thông tin cửa hàng thành công!")
                         navigate("/manager/units")
                         localStorage.setItem("token", res.data.result.token);
+                        const token = res.data.result.token;
+                        const dataUser = jwtDecode(token)
                         const userStorage = {
-                            username: user.sub,
-                            email: user.email,
-                            role: user.scope,
+                            username: dataUser.sub,
+                            email: dataUser.email,
+                            role: dataUser.scope,
                             accountId: user.accountId,
-                            restaurantId: res.data.result.id
+                            restaurantId: dataUser.restaurantId,
+                            packName: dataUser.packName
                         };
+                        console.log(userStorage);
                         localStorage.setItem("user", JSON.stringify(userStorage))
                     })
                     .catch(err => {
@@ -128,7 +133,7 @@ function RestaurantInformation() {
                     <div className="min-w-[40]x rounded-lg bg-primary/[0.1] p-16 shadow min-h-[90vh]  mt-2 flex-row ">
     
                         <div className="min-w-[40]x rounded-lg bg-white p-16 shadow min-h-[40vh] mt-2 relative">
-                            <div className="absolute top-2 left-2 cursor-pointer" onClick={() => navigate("/manager/setting")}><IoIosArrowBack className="size-6"/></div>
+                            <div className="absolute top-2 left-2 cursor-pointer flex text-gray-500" onClick={() => navigate("/manager/setting")}><IoIosArrowBack className="size-6"/> <span className="font-medium">Thiết lập nhà hàng</span></div>
                             <h1 className="font-black text-3xl mb-8">Thông tin nhà hàng</h1>
 
                             {/* <form class="p-4 md:p-5"> */}

@@ -150,41 +150,11 @@ function PaymentSetting() {
                     <div className="min-w-[40]x rounded-lg bg-primary/[0.1] p-16 shadow min-h-[90vh]  mt-2 flex-row ">
 
                         <div className="min-w-[40]x rounded-lg bg-white p-16 shadow min-h-[40vh] mt-2 relative">
-                            <div className="absolute top-2 left-2 cursor-pointer" onClick={() => navigate("/manager/setting")}><IoIosArrowBack className="size-6"/></div>
+                            <div className="absolute top-2 left-2 cursor-pointer text-gray-500 flex" onClick={() => navigate("/manager/setting")}><IoIosArrowBack className="size-6"/>  <span className="font-medium">Thiết lập nhà hàng</span></div>
                             <h1 className="font-black text-3xl mb-8">Thiết lập thanh toán</h1>
 
                             <div className="grid gap-4 mb-4 grid-cols-2">
-                                <div className="col-span-2 ">
-                                    <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên tài khoản ngân hàng</label>
-                                    <input
-                                        type="text"
-                                        name="username"
-                                        id="username"
-                                        value={customerBankName}
-                                        onChange={e => setCustomerBankName(e.target.value)}
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                                        focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500
-                                         dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 "
-                                        placeholder="Tên tài khoản ngân hàng"
-                                        required=""
-                                    />
-                                </div>
-                                <div className="col-span-2 sm:col-span-1">
-                                    <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Số tài khoản ngân hàng</label>
-                                    <input
-                                        type="text"
-                                        name="address"
-                                        id="address"
-                                        value={customerBankNumber}
-                                        onChange={e => setCustomerBankNumber(e.target.value)}
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                                        focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500
-                                         dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 "
-                                        placeholder="Số tài khoản ngân hàng"
-                                        required=""
-                                    />
-                                </div>
-                                <div className="col-span-2 sm:col-span-1">
+                                <div className=" col-span-2 ">
                                     <label htmlFor="provinces" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ngân hàng</label>
                                     {/* <select
                                         id="provinces"
@@ -204,6 +174,38 @@ function PaymentSetting() {
                                         options={listBank}
                                     />
                                 </div>
+                                <div className="col-span-2 sm:col-span-1">
+                                    <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Số tài khoản ngân hàng</label>
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        id="address"
+                                        value={customerBankNumber}
+                                        onChange={e => setCustomerBankNumber(e.target.value)}
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                                        focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500
+                                         dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 "
+                                        placeholder="Số tài khoản ngân hàng"
+                                        required=""
+                                    />
+                                </div>
+                                <div className="col-span-2 sm:col-span-1 ">
+                                    <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên tài khoản ngân hàng</label>
+                                    <input
+                                        type="text"
+                                        name="username"
+                                        id="username"
+                                        value={customerBankName}
+                                        onChange={e => setCustomerBankName(e.target.value)}
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
+                                        focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500
+                                         dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 "
+                                        placeholder="Tên tài khoản ngân hàng"
+                                        required=""
+                                    />
+                                </div>
+                                
+                                
 
                             </div>
                             <button
