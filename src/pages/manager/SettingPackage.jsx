@@ -71,16 +71,17 @@ function SettingPackage(){
             setOrderCode(orderCode);
             const storePackage = JSON.parse(localStorage.getItem("packUpdate"));       
             const dataSend = {
-                id: orderCode,
                 packageId: storePackage?.packId,
                 restaurantId: user?.restaurantId,
                 totalMoney: storePackage?.totalMoney,
-                months: storePackage?.months
+                months: storePackage?.months,
+                // accountId: user?.accountId
             }
             axiosInstance
-            .post(`/api/package-history/create`, dataSend)
+            .put(`/api/package-history/${orderCode}/success`,dataSend)
             .then(res => {
                 toast.success("Bạn đã nâng cấp gói thành công")
+                
                 navigate("/manager/setting");
             })
             .catch(err => {
@@ -141,13 +142,20 @@ function SettingPackage(){
             const urlReturn = `http://localhost:3000/manager/packageRestaurant`;
             const urlCancel = 'http://localhost:3000/manager/packageRestaurant';
             const des = `${packageUpdate?.packName}`;
+            const requestPack = {
+                packageId: packageUpdate?.id,
+                restaurantId: user?.restaurantId,
+                totalMoney: requireMoney,
+                months: monthUpdate
+            }
             axiosInstance
-            .get(`/api/package-history/new-id`)
+            .post(`/api/package-history/create`, requestPack)
             .then(res => {
                 const newOrderCode = res.data.result;
+                console.log(newOrderCode);
                 const payload = {
-                    orderCode: newOrderCode+1,
-                    amount: requireMoney, 
+                    orderCode: newOrderCode,
+                    amount: 5000, 
                     description: des,
                     returnUrl: urlReturn,
                     cancelUrl: urlCancel,
@@ -229,7 +237,7 @@ function SettingPackage(){
                 </div>
                 <div className="basis-[88%]  h-[100vh]">
                     <HeaderManagerDashboard />
-                    <div className="min-w-[40]x rounded-lg bg-primary/[0.1] p-12 shadow min-h-[90vh] mt-2 flex-row overflow-y-scroll">
+                    <div className="min-w-[40]x rounded-lg bg-primary/[0.1] p-12 shadow min-h-[90vh] mt-2 flex-row overflow-scroll h-[100vh]">
                         <div className="flex items-center pb-3 border-b-2 border-slate-300">
                             <div className="flex items-center mr-2 cursor-pointer" onClick={() => navigate("/manager/setting")}><IoIosArrowBack className="size-6"/></div>
                             <h1 className="font-black text-2xl">Thông tin gói dịch vụ</h1>
@@ -247,16 +255,21 @@ function SettingPackage(){
                                             <h2 className="text-black uppercase font-semibold text-3xl">Gói {restaurantInformation?.packName}</h2>
                                         </div>
                                         <div className="w-full flex justify-center">
-                                            <p className="font-semibold text-black"><s>{formatVND(restaurantInformation?.pricePerMonth)} /tháng</s></p>
+                                            <p className={`font-semibold text-black ${restaurantInformation?.pricePerMonth === 0 && "opacity-0"}`}>
+                                                <s>{formatVND(restaurantInformation?.pricePerMonth)} /tháng</s>
+                                            </p>
                                         </div>
                                         <div className="w-full flex justify-center border-b-2 pb-6">
-                                            <p className="flex items-end"><p className="text-blue-700 text-3xl font-extrabold">{formatVND(restaurantInformation?.pricePerYear)}</p> <p className="font-normal">/năm</p></p>
+                                            {restaurantInformation?.pricePerYear > 0 ? 
+                                            <p className="flex items-end"><p className="text-blue-700 text-3xl font-extrabold">
+                                                {formatVND(restaurantInformation?.pricePerYear)}
+                                            </p> <p className="font-normal">/năm</p></p> : <p className="text-blue-700 text-3xl font-extrabold">Dùng thử 7 ngày</p>}
                                         </div>
                                     </div>
                                     <div className="w-full justify-center">
                                         <ul className="">
                                             {restaurantInformation?.permissions?.map((p, index) => {
-                                                return <li key={index} className="text-center mb-3">{p?.name}</li>
+                                                return <li key={index} className="text-center mb-3">{p?.description}</li>
                                             })}
                                         </ul>
                                     </div>
@@ -288,7 +301,7 @@ function SettingPackage(){
                                                 <div className="w-full justify-center">
                                                     <ul className="">
                                                         {pack?.permissions?.map((p, index) => {
-                                                            return <li key={index} className="text-center mb-3">{p?.name}</li>
+                                                            return <li key={index} className="text-center mb-3">{p?.description}</li>
                                                         })}
                                                     </ul>
                                                 </div>

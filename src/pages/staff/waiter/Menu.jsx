@@ -386,22 +386,25 @@ function Menu(){
                       <div className="w-full border-r-2">
                         <div className={`h-11 mb-2  flex justify-between ${isExistCustomer?"":'hidden'}`}>
                             <div className="h-full flex items-center justify-between w-[49%] py-2 px-3 bg-slate-300">
-                              <FaUserCircle />
-                              <div className="ml-2 flex items-center">
-                                 <b className="font-semibold">{customerDetail?.name}</b>
+                             <div className="flex items-center"> 
+                                <FaUserCircle className="size-6"/>
+                                <div className="ml-2 flex items-center">
+                                  <span className="font-semibold mr-2">Khách hàng:</span>
+                                  <b className="font-semibold">{customerDetail?.name}</b>
+                                </div>
                               </div>
                               <div className="w-[50%]"></div>
                               <PiPencilSimpleLineBold className="cursor-pointer"/>
 
                             </div>
                             <div className="h-full flex items-center w-[49%] py-2 px-3 bg-slate-300 mr-2 shadow-md rounded-sm">
-                              <FaSearch className="cursor-pointer" />
-                              <input 
+                              {/* <FaSearch className="cursor-pointer" /> */}
+                              {/* <input 
                                 id="inputOrder"
                                 type="text"
                                 className=" bg-slate-300 text-black outline-none ml-2 placeholder-black focus:placeholder-gray-600 w-full px-2"
                                 placeholder="Hãy nhập tên khách hàng"
-                              />
+                              /> */}
                             </div>
                         </div>
                         <div className={`h-11 mb-2  flex justify-between ${isExistCustomer?"hidden":''}`}>

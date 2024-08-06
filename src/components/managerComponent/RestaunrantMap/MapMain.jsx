@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useDrop } from "react-dnd";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
 import { getUser } from "../../../utils/constant";
-import Table from "./Table";
+import { AiTwotoneEdit } from "react-icons/ai";
+import { FaTrashAlt } from "react-icons/fa";
 import {  FaPlus } from "react-icons/fa";
 import REACTANGE4 from "../../../assests/reactange4.png"
 import REACTANGE6 from "../../../assests/reactange6.png"
@@ -263,6 +263,14 @@ const MapMain = () => {
         }
     }
 
+    const handleOpenEdit = (table) => {
+        console.log(table);
+    }
+
+    const handleOpenDelete = (table) => {
+        console.log(table);
+    }
+
     return (
          <div className="">
             <div className="w-full flex justify-center">
@@ -516,18 +524,38 @@ const MapMain = () => {
                                     >
                                         {board?.map((table, index) => (
                                             <div 
-                                                className="flex-row p-8 border-2 border-transparent bg-secondary justify-center w-[15%] h-40 mb-2 rounded-lg shadow-lg cursor-pointer hover:opacity-80 transition-all duration-300" 
-                                                key={index} 
+                                                className="relative flex flex-col p-8 border-2 border-transparent bg-secondary justify-center w-[15%] h-40 mb-2 rounded-lg shadow-lg cursor-pointer hover:opacity-80 transition-all duration-300 group" 
+                                                key={index}
                                             >
+                                                {/* Nút Edit */}
+                                                <button 
+                                                    onClick={() => handleOpenEdit(table)}
+                                                    className="absolute top-2 left-2 p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-all duration-300 opacity-0 group-hover:opacity-100">
+                                                    <AiTwotoneEdit/>
+                                                </button>
+
+                                                {/* Nút Delete */}
+                                                <button
+                                                    onClick={() => handleOpenDelete(table)} 
+                                                    className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-all duration-300 opacity-0 group-hover:opacity-100">
+                                                    <FaTrashAlt/>
+                                                </button>
+
                                                 <div className="text-center">
                                                     <b className="text-white">{table?.name}</b>
                                                 </div>
                                                 <div className="text-center mt-2">
                                                     <hr className="w-1/2 mx-auto border-white" />
-                                                    <span className={`block mt-2 text-sm font-semibold text-white`}>{table?.tableType?.id === 1 ? "Bàn tròn" : (table?.tableType?.id === 2 ? "Bàn vuông" : (table?.tableType?.id === 3 &&  "Bàn chữ nhật"))}</span>
-                                                    <span className={`block mt-2 text-sm font-semibold text-white`}>{table?.numberChairs === 4 ? "4 chỗ": (table?.numberChairs === 6 ? "5-8 chỗ" : "9 chỗ trở lên")}</span>
+                                                    <span className={`block mt-2 text-sm font-semibold text-white`}>
+                                                        {table?.tableType?.id === 1 ? "Bàn tròn" : (table?.tableType?.id === 2 ? "Bàn vuông" : (table?.tableType?.id === 3 && "Bàn chữ nhật"))}
+                                                    </span>
+                                                    <span className={`block mt-2 text-sm font-semibold text-white`}>
+                                                        {table?.numberChairs === 4 ? "4 chỗ" : (table?.numberChairs === 6 ? "5-8 chỗ" : "9 chỗ trở lên")}
+                                                    </span>
                                                 </div>
                                             </div>
+
+
                                         ))}
                                         <div className=" w-[15%] h-40 " ></div>
                                         <div className=" w-[15%] h-40 " ></div>
@@ -544,11 +572,11 @@ const MapMain = () => {
                                         style={{ width: "90%", height: "500px" }}
                                     >
                                         <div className="flex flex-col items-center justify-center">
-                                            <img src={ZEROTABLE} alt="" className="size-28" />
-                                            <h2>Khu vực này chưa có bàn</h2>
+                                            <img src={ZEROTABLE} alt="" className="size-52" />
+                                            <h2 className="font-semibold text-lg mb-3">Khu vực này chưa có bàn</h2>
                                             <button
                                                 onClick={() => handleOpenTable()}
-                                                className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-blue-500 transition-all duration-300"
+                                                className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-blue-700 transition-all duration-300 "
                                             >
                                                 Thêm bàn 
                                             </button>

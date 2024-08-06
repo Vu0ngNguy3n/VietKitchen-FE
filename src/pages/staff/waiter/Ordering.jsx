@@ -68,6 +68,7 @@ function Ordering() {
     .get(`/api/dish-order/${orderIdRedux}`)
     .then(res => {
       const data = res.data.result;
+      console.log(orderIdRedux);
       setOldCart(data);
     })
     .catch((err) => {
@@ -84,10 +85,18 @@ function Ordering() {
 
   useEffect(() => {
     let requireMoney = 0;
-    oldCart?.forEach(d => requireMoney+=(d?.dish?.price * d?.quantity))
+    oldCart?.forEach(d => {
+      if(d?.status !== "DECLINE"){
+        requireMoney+=(d?.dish?.price * d?.quantity)
+      }
+    })
     console.log(requireMoney);
     setTotalMoney(requireMoney)
   },[oldCart])
+
+  const handleNavigatePayment = () => {
+    
+  }
  
 
 

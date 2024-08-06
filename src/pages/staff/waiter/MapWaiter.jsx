@@ -9,8 +9,9 @@ import { useNavigate } from "react-router";
 import { BiSolidDish } from "react-icons/bi";
 import { saveTable } from "../../../actions/tableActions";
 import { useDispatch } from "react-redux";
-import { saveCustomer } from "../../../actions/customerActions";
-import { saveOrderId } from "../../../actions/orderActions";
+import { clearCustomer, saveCustomer } from "../../../actions/customerActions";
+import { clearOrderId, saveOrderId } from "../../../actions/orderActions";
+import { clearState } from "../../../utils/localStorageHelper";
 
 
 function MapWaiter(){
@@ -24,6 +25,12 @@ function MapWaiter(){
     const dispatch = useDispatch();
 
     useEffect(() => {
+        const actionOrder = clearOrderId();
+        dispatch(actionOrder);
+
+        const actionCustomer = clearCustomer();
+        dispatch(actionCustomer);
+        clearState();
         axiosInstance
         .get(`/api/area/${user?.restaurantId}`)
         .then(res =>{ 
@@ -35,15 +42,15 @@ function MapWaiter(){
             setAreaList(data)
         })
         .catch(err => {
-                    if (err.response) {
-                        const errorRes = err.response.data;
-                        toast.error(errorRes.message);
-                    } else if (err.request) {
-                        toast.error("Yêu cầu không thành công");
-                    } else {
-                        toast.error(err.message);
-                    }
-                })   
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })   
     },[])
 
     useEffect(() => {

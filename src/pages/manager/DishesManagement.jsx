@@ -261,9 +261,9 @@ function DishesManagement() {
                 <div className="basis-[12%] h-[100vh]">
                     <SidebarManager />
                 </div>
-                <div className="basis-[88%] border h-[100vh]">
+                <div className="basis-[88%] border overflow-scroll h-[100vh]">
                     <HeaderManagerDashboard />
-                    <div className="min-w-[40]x rounded-lg bg-white p-10 shadow mt-2 overflow-y-auto max-h-screen">
+                    <div className="min-w-[40]x rounded-lg bg-white p-10 shadow mt-2 ">
                         <h1 className="font-black text-3xl mb-4">Quản lý món ăn</h1>
                         <div className="flex justify-between">
                             <div className="">

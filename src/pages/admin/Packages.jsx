@@ -110,7 +110,7 @@ function Packages() {
                                             >
                                                 {pkg?.packName}
                                             </th>
-                                            <td className="px-6 py-4">{formatVND(pkg?.pricePerMonth)}</td>
+                                            <td className="px-6 py-4 ">{formatVND(pkg?.pricePerMonth)}</td>
                                             <td className="px-6 py-4">{formatVND(pkg?.pricePerYear)}</td>
                                             <td className="px-6 py-4 flex justify-center">
                                                 <button
