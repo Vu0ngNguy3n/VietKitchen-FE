@@ -9,9 +9,10 @@ import { FaClockRotateLeft } from "react-icons/fa6";
 import { RiProgress6Line } from "react-icons/ri";
 import { FaTrash } from "react-icons/fa";
 import SidebarChef from "../../../components/staffComponent/chefComponent/SideBarChef";
+import { useParams } from "react-router";
 import NavBarChef from "../../../components/staffComponent/chefComponent/NavBarChef";
 
-function DishPreparation(){
+function DishTable(){
      const [messages, setMessages] = useState([]);
   const [client, setClient] = useState(null);
   const [connected, setConnected] = useState(false);
@@ -20,21 +21,26 @@ function DishPreparation(){
   const [currentDish, setCurrentDish] = useState();
   const [typeDish, setTypeDish] = useState();
   const [currentStatus, setCurrentStatus] = useState("WAITING");
+  const [currentTable, setCurrentTable] = useState({});
   const user = getUser();
   const waiting = "WAITING";
   const confirm = "CONFIRM";
   const decline = "DECLINE";
   const prepare = "PREPARE";
   const listStatus = [waiting, confirm, decline];
+  const {slug} = useParams();
 
 
   useEffect(() => {
     axiosInstance
-    .get(`/api/dish-order/restaurant/${user?.restaurantId}/state/${currentStatus}`)
+    .get(`/api/dish-order/${slug}`)
     .then(res => {
-      const data = res.data.result;
-      console.log(data);
-      setOldCart(data);
+        const data = res.data.result;
+        if(data.length > 0){
+            const table = data[0].order.tableRestaurant;
+            setCurrentTable(table);
+            setOldCart(data);
+        }
     })
     .catch((err) => {
         if (err.response) {
@@ -54,7 +60,7 @@ function DishPreparation(){
       onConnect: () => {
         console.log('Connected to WebSocket');
         setConnected(true);
-        stompClient.subscribe(`/topic/order/restaurant/${user?.restaurantId}`, (message) => {
+        stompClient.subscribe(`/topic/table/${slug}`, (message) => {
           const oldData = JSON.parse(message.body); 
           const newData = [];
           // toast.warn("Có món ăn mới được gọi")
@@ -96,6 +102,8 @@ function DishPreparation(){
       status = prepare;
     } else if (dish?.status === prepare) {
       status = confirm;
+    }else if(dish?.status === confirm || dish?.status === decline){
+      return
     }
 
     const newCart = oldCart.map((c) => {
@@ -194,10 +202,11 @@ function DishPreparation(){
                     <div className="w-full flex justify-center">
                       <div className="flex justify-between w-[90%] items-center">
                         <caption className="p-5 text-lg font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
-                          Danh sách món ăn chuẩn bị
+                          Danh sách món ăn chuẩn bị của bàn {currentTable?.name}
                           <p className="mt-1 text-sm font-normal text-gray-500 dark:text-gray-400">Danh sách các món ăn vùa được khách hàng gọi trong ngày.</p>
                         </caption>
 
+                        
                       </div>
                     </div>
                      <div className="relative overflow-x-auto  sm:rounded-lg flex justify-center ">
@@ -228,7 +237,7 @@ function DishPreparation(){
                               <tbody>
                                 {oldCart?.map((d,index) => {
                                   return (
-                                    <tr className={`bg-white border-b dark:bg-gray-800 dark:border-gray-700 ${(d?.status === confirm || d?.status === decline) && "hidden"}`} key={index}>
+                                    <tr className={`bg-white border-b dark:bg-gray-800 dark:border-gray-700 `} key={index}>
                                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {d?.dish?.name}
                                             </th>
@@ -243,8 +252,8 @@ function DishPreparation(){
                                             </td>
                                             <td className={`px-6 py-4 `} >
                                                 <div 
-                                                  className={` p-2 transition-all duration-300 flex justify-center items-center cursor-pointer hover:opacity-75 rounded-sm w-[80%] ${d?.status === waiting && "bg-yellow-400"} 
-                                                  ${d?.status === confirm && "bg-green"} ${d?.status === prepare && "bg-blue-400"}`} 
+                                                  className={` p-2 transition-all duration-300 flex justify-center items-center cursor-pointer hover:opacity-75 text-white rounded-sm w-[80%] ${d?.status === waiting && "bg-yellow-400"} 
+                                                  ${d?.status === confirm && "bg-green"} ${d?.status === prepare && "bg-blue-400"} ${d?.status === decline && "bg-red-600"}`} 
                                                   onClick={() => handleChangeStatusDishOldCart(d)}
                                                 >
                                                   {d?.status === waiting &&
@@ -262,17 +271,32 @@ function DishPreparation(){
                                                       Đang chuẩn bị
                                                   </span>
                                                   </>}
+
+                                                  {d?.status === confirm && 
+                                                  <>
+                                                    <RiProgress6Line className="mr-2"/> 
+                                                    <span>
+                                                      Đã hoàn thành
+                                                  </span>
+                                                  </>}
+                                                  {d?.status === decline && 
+                                                  <>
+                                                    <RiProgress6Line className="mr-2"/> 
+                                                    <span>
+                                                      Đã từ chối
+                                                  </span>
+                                                  </>}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 text-center">
-                                                <div className="cursor-pointer" onClick={() => handleOpenDecline(d, "cart")}>
+                                                <div className={`cursor-pointer ${(d?.status === confirm  || d?.status === decline) && "hidden"}`} onClick={() => handleOpenDecline(d, "cart")}>
                                                   <FaTrash className="text-red-500 size-6"/>
                                                 </div>
                                             </td>
                                         </tr>
                                   )
                                 })}
-                                 {messages?.map((d, index) => {
+                                 {/* {messages?.map((d, index) => {
                                       return (
                                         <tr className={`bg-white border-b dark:bg-gray-800 dark:border-gray-700 ${(d?.status === confirm || d?.status === decline) && "hidden"}`} key={index}>
                                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -315,19 +339,7 @@ function DishPreparation(){
                                             </td>
                                         </tr>
                                       )
-                                    })}
-
-                                    {(oldCart?.length === 0 && messages?.length === 0)&& (
-                                      <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                        <td className="px-6 py-4 text-red-500">
-                                            Không có món ăn nào được gọi
-                                        </td>
-                                        <td className="px-6 py-4"></td>
-                                        <td className="px-6 p-4"></td>
-                                        <td className="px-6 p-4"></td>
-                                        <td className="px-6 p-4"></td>
-                                    </tr>
-                                    )}
+                                    })} */}
                                   
                                   
                               </tbody>
@@ -371,4 +383,4 @@ function DishPreparation(){
     )
 }
 
-export default DishPreparation
+export default DishTable

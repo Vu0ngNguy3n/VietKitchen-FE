@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, unstable_HistoryRouter, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Bounce, ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,13 +8,20 @@ import Page404 from './pages/common/Page404/Page404';
 import Main from './components/adminComponent/Main';
 import { getUser } from './utils/constant';
 import { useEffect } from 'react';
+import { checkAuth, logoutLocalStorage } from './utils/localStorageHelper';
 axios.defaults.baseURL = "http://localhost:8080"
 
 function App() {
+
+  // const navigate = useNavigate();
   const user = getUser();
-  useEffect(() => {
-    console.log(user);
-  },[])
+
+  // useEffect(() => {
+  //   if(!checkAuth()){
+  //     logoutLocalStorage()
+  //     navigate('/login');
+  //   }
+  // },[navigate])
   
   return (
     <BrowserRouter>
@@ -34,11 +41,7 @@ function App() {
 
         {adminRoutes.map((route, index) => {
           return (
-            (user?.role?.includes("ROLE_ADMIN")&& (route?.path?.includes('/admin/dashboard'))?
-              <Route path={route?.path} element={<route.component/>}>
-                  <Route index element={<Main/>}/>
-              </Route>
-            :
+            (user?.role?.includes("ROLE_ADMIN")&& 
               <Route
                 path={route.path}
                 element={<route.component />}

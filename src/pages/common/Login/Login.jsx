@@ -203,7 +203,7 @@ function SignInSide() {
       if(user.scope.includes("ROLE_ADMIN")){
         navigate("/admin/dashboard");
       }else if(user.scope.includes("ROLE_MANAGER")){
-
+        
         axiosInstance
         .get(`/api/restaurant/account/${user.accountId}`)
         .then(res => {

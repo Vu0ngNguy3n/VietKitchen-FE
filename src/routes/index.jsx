@@ -32,6 +32,10 @@ import VATSetting from "../pages/manager/VATSetting"
 import PointSetting from "../pages/manager/PointSetting"
 import PackageUpdate from "../pages/admin/PackageUpdate"
 import RestaurantMapMain from "../pages/manager/RestaurantMapMain"
+import DishConfirm from "../pages/staff/chef/DishConfirm"
+import DishDecline from "../pages/staff/chef/DishDecline"
+import TableAreaChef from "../pages/staff/chef/TableAreaChef"
+import DishTable from "../pages/staff/chef/DishTable"
 
 const publicRoutes = [
     {path: '/login', component: SignInSide},
@@ -83,6 +87,10 @@ const hostessRoutes = [
 
 const chefRoutes = [
     {path: '/chef/dishPreparation', component: DishPreparation},
+    {path: '/chef/dishConfirm', component: DishConfirm},
+    {path: '/chef/dishDecline', component: DishDecline},
+    {path: '/chef/dishTables', component: TableAreaChef},
+    {path: '/chef/dishesInTable/:slug', component: DishTable},
 ]
 
 export {publicRoutes, adminRoutes, managerRoutes, waiterRoutes, hostessRoutes, chefRoutes}

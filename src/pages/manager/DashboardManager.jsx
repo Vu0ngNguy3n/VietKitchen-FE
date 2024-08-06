@@ -21,6 +21,9 @@ function DashboardManager() {
     const [statisticProfitPerMonth, setStatisticProfitPerMonth] = useState([]);
     const [statisticTimePerMonth, setStatisticTimePerMonth] = useState([]);
     const [statisticBillsPerMonth, setStatisticBillsPerMonth] = useState([]);
+    const [statisticTimeDay, setStatisticTimeDay] = useState([]);
+    const [listTimeDay, setListTimeDay] = useState([]);
+    const [statisticRevenueTimeDay, setStatisticRevenueTimeDay] = useState([]);
     const user = getUser();
 
 
@@ -30,6 +33,23 @@ function DashboardManager() {
         .then(res => {
             const data = res.data.result;
             setDataStatistic(data);
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })
+
+        axiosInstance
+        .get(`/api/statistic/manager/restaurant/${user?.restaurantId}/time`)
+        .then(res => {
+            const data = res.data.result;
+            setStatisticTimeDay(data);
         })
         .catch(err => {
             if (err.response) {
@@ -61,6 +81,37 @@ function DashboardManager() {
         })
     },[typeMonth])
 
+
+
+    useEffect(() => {
+        if(allDataLineChart ){
+            let bills = [];
+            let profits = [];
+            let times = [];
+             allDataLineChart?.map(data => {
+                bills.push(data?.numbersBill);
+                profits.push(data?.profit);
+                times.push(data?.time)
+             })
+            setStatisticBillsPerMonth(bills);
+            setStatisticProfitPerMonth(profits);
+            setStatisticTimePerMonth(times);
+        }
+    },[allDataLineChart])
+
+    useEffect(() => {
+        if(statisticTimeDay){
+            let times = [];
+            let revenue = [];
+            statisticTimeDay?.map(data => {
+                times.push(data?.time);
+                revenue.push(data?.value);
+            })
+            setListTimeDay(times);
+            setStatisticRevenueTimeDay(revenue);
+        }
+    },[statisticTimeDay])
+
     const earning = {
        chart: {
             type: 'line'
@@ -77,7 +128,7 @@ function DashboardManager() {
         },
         yAxis: {
             title: {
-                text: 'VNĐ (Ngàn đồng)'
+                text: 'VNĐ'
             }
         },
         plotOptions: {
@@ -126,22 +177,41 @@ function DashboardManager() {
             data: statisticBillsPerMonth
         }]
     }
+    
+    const revenueTimeChart = {
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'Thống kê doanh thu theo giờ'
+        },
+        subtitle: {
+            text: 'Source: ' +
+                '<a target="_blank">VIETKITCHEN</a>'
+        },
+        xAxis: {
+            categories: listTimeDay
+        },
+        yAxis: {
+            title: {
+                text: 'VNĐ'
+            }
+        },
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: true
+                },
+                enableMouseTracking: false
+            }
+        },
+        series: [{
+            name: 'Doanh thu',
+            data: statisticRevenueTimeDay
+        }]
+    }
 
-    useEffect(() => {
-        if(allDataLineChart ){
-            let bills = [];
-            let profits = [];
-            let times = [];
-             allDataLineChart?.map(data => {
-                bills.push(data?.numbersBill);
-                profits.push(data?.profit);
-                times.push(data?.time)
-             })
-            setStatisticBillsPerMonth(bills);
-            setStatisticProfitPerMonth(profits);
-            setStatisticTimePerMonth(times);
-        }
-    },[allDataLineChart])
+   
 
     const handleExport = () => {
         // console.log(allDataLineChart);        
@@ -176,7 +246,7 @@ function DashboardManager() {
                             <div className='grid grid-cols-4 gap-[30px] mt-[25px] pb-[15px]'>
                                 <div className=' h-[100px] rounded-[8px] bg-white border-l-[4px] border-[#4E73DF] flex items-center justify-between px-[30px] cursor-pointer hover:shadow-lg transform hover:scale-[103%] transition duration-300 ease-out'>
                                     <div>
-                                        <h2 className='text-[#B589DF] text-[11px] leading-[17px] font-bold uppercase'>Doanh thu cả thuế (Tháng)</h2>
+                                        <h2 className='text-[#B589DF] text-[11px] leading-[17px] font-bold uppercase'>Doanh thu gồm thuế (Tháng)</h2>
                                         <h1 className='text-[20px] leading-[24px] font-bold text-[#5a5c69] mt-[5px]'>{formatVND(dataStatistic?.profit)}</h1>
                                     </div>
                                     <FaRegCalendarMinus fontSize={28} color="" />
@@ -207,48 +277,54 @@ function DashboardManager() {
 
                             </div>
                             <div className='flex mt-[22px] w-full gap-[30px]'>
-                                <div className='basis-[50%] border bg-white shadow-md cursor-pointer rounded-[4px]'>
-                                    <div className='bg-[#F8F9FC] flex items-center justify-between py-[15px] px-[20px] border-b-[1px] border-[#EDEDED] mb-[20px]'>
-                                        <h2 className='text-[#4e73df] text-[16px] leading-[19px] font-bold'>Thống kê doanh thu</h2>
-                                        <FaEllipsisV color="gray" className='cursor-pointer' />
-                                    </div>
-
-                                    <div className="w-full">
-                                        <HighchartsReact highcharts={Highcharts} options={earning}/>
-                                    </div>
-
-                                </div>
-                                <div className='basis-[50%] border bg-white shadow-md cursor-pointer rounded-[4px]'>
+                                <div className='basis-[100%] border bg-white shadow-md cursor-pointer rounded-[4px]'>
                                     <div className='bg-[#F8F9FC] flex items-center justify-between py-[15px] px-[20px] border-b-[1px] border-[#EDEDED]'>
-                                        <h2 className='text-[#4e73df] text-[16px] leading-[19px] font-bold'>Thống kê số lượng hoá đơn</h2>
-                                        <FaEllipsisV color="gray" className='cursor-pointer' />
-                                    </div>
-                                    <div className='w-full'>
-                                        <HighchartsReact highcharts={Highcharts} options={billsChart}/>                                       
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='flex mt-[22px] w-full gap-[30px]'>
-                                <div className='basis-[30%] border bg-white shadow-md cursor-pointer rounded-[4px]'>
-                                    <div className='bg-[#F8F9FC] flex items-center justify-between py-[15px] px-[20px] border-b-[1px] border-[#EDEDED]'>
-                                        <h2 className='text-[#4e73df] text-[16px] leading-[19px] font-bold'> Resources</h2>
-                                        <FaEllipsisV color="gray" className='cursor-pointer' />
-                                    </div>
-                                    <div className='pl-[35px] flex items-center justify-center h-[100%]'>
-                                        <div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='basis-[70%] border bg-white shadow-md cursor-pointer rounded-[4px]'>
-                                    <div className='bg-[#F8F9FC] flex items-center justify-between py-[15px] px-[20px] border-b-[1px] border-[#EDEDED]'>
-                                        <h2 className='text-[#4e73df] text-[16px] leading-[19px] font-bold'>Thống kê số lượng hoá đơn</h2>
+                                        <h2 className='text-[#4e73df] text-[16px] leading-[19px] font-bold'>Thống kê doanh thu các giờ trong ngày</h2>
                                         <FaEllipsisV color="gray" className='cursor-pointer' />
                                     </div>
                                     <div className='px-[25px] space-y-[15px] py-[15px]'>
-                                        <HighchartsReact highcharts={Highcharts} options={billsChart}/>                                       
+                                        <HighchartsReact highcharts={Highcharts} options={revenueTimeChart}/>                                       
                                     </div>
                                 </div>
                             </div>
+                            <div className='flex-row mt-[22px] w-full gap-[30px]'>
+                                <div className="flex justify-start my-2 w-[20%]">
+                                    <form className="max-w-sm ">
+                                        <label for="countries" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Chọn khoảng thời gian</label>
+                                        <select id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                            <option value="US" selected>Hôm nay</option>
+                                            <option value="CA">Hôm qua</option>
+                                            <option value="FR">Tuần này</option>
+                                            <option value="current-month">Tháng này</option>
+                                            <option value="last-month">Tháng trước</option>
+                                        </select>
+                                    </form>
+                                </div>
+                                
+                                <div className="w-full flex gap-[10px]">
+                                    <div className='basis-[49%] border bg-white shadow-md cursor-pointer rounded-[4px]'>
+                                        <div className='bg-[#F8F9FC] flex items-center justify-between py-[15px] px-[20px] border-b-[1px] border-[#EDEDED] mb-[20px]'>
+                                            <h2 className='text-[#4e73df] text-[16px] leading-[19px] font-bold'>Thống kê doanh thu</h2>
+                                            <FaEllipsisV color="gray" className='cursor-pointer' />
+                                        </div>
+
+                                        <div className="w-full">
+                                            <HighchartsReact highcharts={Highcharts} options={earning}/>
+                                        </div>
+
+                                    </div>
+                                    <div className='basis-[49%] border bg-white shadow-md cursor-pointer rounded-[4px]'>
+                                        <div className='bg-[#F8F9FC] flex items-center justify-between py-[15px] px-[20px] border-b-[1px] border-[#EDEDED]'>
+                                            <h2 className='text-[#4e73df] text-[16px] leading-[19px] font-bold'>Thống kê số lượng hoá đơn</h2>
+                                            <FaEllipsisV color="gray" className='cursor-pointer' />
+                                        </div>
+                                        <div className='w-full'>
+                                            <HighchartsReact highcharts={Highcharts} options={billsChart}/>                                       
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
 
 
                         </div >

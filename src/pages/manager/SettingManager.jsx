@@ -20,9 +20,9 @@ function SettingManager() {
                 <div className="basis-[12%] h-[100vh]">
                     <SidebarManager />
                 </div>
-                <div className="basis-[88%] border h-[100vh]">
+                <div className="basis-[88%] border overflow-scroll h-[100vh]">
                     <HeaderManagerDashboard />
-                    <div className="min-w-[40]x rounded-lg bg-primary/[0.1] p-16 shadow min-h-[90vh] mt-2 flex-row overflow-y-auto max-h-screen">
+                    <div className="min-w-[40]x rounded-lg bg-primary/[0.1] p-16 shadow min-h-[90vh] mt-2 flex-row ">
                         <div className="flex justify-between">
                             <h1 className="font-black text-3xl">Thiết lập nhà hàng</h1>
                         </div>

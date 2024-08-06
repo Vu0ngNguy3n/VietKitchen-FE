@@ -30,7 +30,7 @@ function Payment() {
     const [discountMoney, setDiscountMoney] = useState(0);
     const [customerPoint, setCustomerPoint] = useState(0);
     const [requireMoney, setRequireMoney] = useState(0);
-    const [isQR, setIsQR] = useState(true);
+    const [isQR, setIsQR] = useState(false);
     const [orderDetail, setOrderDetail] = useState();
     const customerDetail = useSelector(state => state.customer);
     const [managerInformation, setManagerInformation] = useState();
