@@ -1,6 +1,7 @@
 import React from 'react'
 import { FaTachometerAlt, FaRegSun, FaWrench, FaStickyNote, FaRegChartBar, FaRegCalendarAlt, FaChevronRight, FaChevronLeft, FaBolt } from "react-icons/fa"
 import { useNavigate } from 'react-router'
+import LOGO from "../../assests/VIET.png"
 
 const Sidebar = () => {
 
@@ -9,6 +10,7 @@ const Sidebar = () => {
     return (
         <div className='bg-primary px-[25px] h-screen'>
             <div className='px-[15px] py-[30px] flex items-center justify-center border-b-[1px] border-[#EDEDED]/[0.3]'>
+                <img src={LOGO} alt="" className="w-10 inline-block items-center rounded-full mr-2" />
                 <h1 className='text-white text-[20px] leading-[24px] font-extrabold cursor-pointer'>VietKitchen</h1>
             </div>
             <div className='flex items-center gap-[15px] py-[20px] border-b-[1px] transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary border-[#EDEDED]/[0.3] cursor-pointer ' onClick={() => navigate('/admin/dashboard')}>

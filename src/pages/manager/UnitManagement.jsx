@@ -58,7 +58,7 @@ function UnitManagement() {
 
     const handleCreateUnit = () => {
         if(unitName.trim() === ''){
-            toast.warn("Vui lòng điền tên đơn vị")
+            toast.warn("Tên đơn vị không được để trống")
         }else{
              const newUnit = {
                 name: unitName,

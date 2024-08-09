@@ -8,7 +8,7 @@ import { FaPlusCircle } from "react-icons/fa";
 import { formatVND } from "../../../utils/format";
 import { addToCart, clearCart, increaseDishQuantity, reduceDish, removeDish } from "../../../actions/cartActions";
 import { useDispatch, useSelector } from "react-redux";
-import { IoMdAdd } from "react-icons/io";
+import { IoMdAdd, IoMdPhonePortrait } from "react-icons/io";
 import {calculateCartTotal} from '../../../utils/helper'
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
@@ -389,22 +389,25 @@ function Menu(){
                              <div className="flex items-center"> 
                                 <FaUserCircle className="size-6"/>
                                 <div className="ml-2 flex items-center">
-                                  <span className="font-semibold mr-2">Khách hàng:</span>
-                                  <b className="font-semibold">{customerDetail?.name}</b>
+                                  <span className="font-medium text-sm mr-2">Khách hàng:</span>
+                                  <b className="font-medium text-sm">{customerDetail?.name}</b>
                                 </div>
                               </div>
-                              <div className="w-[50%]"></div>
+                              <div className="w-[10%]"></div>
                               <PiPencilSimpleLineBold className="cursor-pointer"/>
 
                             </div>
-                            <div className="h-full flex items-center w-[49%] py-2 px-3 bg-slate-300 mr-2 shadow-md rounded-sm">
-                              {/* <FaSearch className="cursor-pointer" /> */}
-                              {/* <input 
-                                id="inputOrder"
-                                type="text"
-                                className=" bg-slate-300 text-black outline-none ml-2 placeholder-black focus:placeholder-gray-600 w-full px-2"
-                                placeholder="Hãy nhập tên khách hàng"
-                              /> */}
+                            <div className="h-full flex items-center justify-between w-[49%] py-2 px-3 bg-slate-300 mr-2 shadow-md rounded-sm">
+                              <div className="flex items-center"> 
+                                <IoMdPhonePortrait className="size-6"/>
+                                <div className="ml-2 flex items-center">
+                                  <span className="font-medium text-sm mr-2">Số điện thoại:</span>
+                                  <b className="font-medium text-sm">{customerDetail?.phoneNumber}</b>
+                                </div>
+                              </div>
+                              <div className="w-[10%]"></div>
+                              <PiPencilSimpleLineBold className="cursor-pointer"/>
+
                             </div>
                         </div>
                         <div className={`h-11 mb-2  flex justify-between ${isExistCustomer?"hidden":''}`}>
@@ -596,7 +599,7 @@ function Menu(){
                                 <div className="w-[24%] bg-blue-600 h-16 text-white ml-[2px] rounded-sm flex items-center justify-center cursor-pointer"
                                   onClick={() => navigate('/waiter/payment')}
                                 >
-                                  <span>Thanh toán</span>
+                                  <span className="text-center">Thanh toán</span>
                                 </div>
                               </div>
                             </div>

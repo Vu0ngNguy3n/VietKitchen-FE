@@ -13,10 +13,11 @@ function CustomerManager() {
     const [selectedCustomers, setSelectedCustomers] = useState([]);
     const [listCustomers, setListCustomers] = useState([])
     const [listCustomersDisplay, setListCustomersDisplay] = useState([]);
-    const [restaurantId, setRestaurantId] = useState();
-    const [phoneNumber, setPhoneNumber] = useState();
-    const [name, setName] = useState();
-    const [address, setAddress] = useState();
+    const [restaurantId, setRestaurantId] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [isValidPhone, setIsValidPhone] = useState(true);
+    const [name, setName] = useState('');
+    const [address, setAddress] = useState('');
     const [isOpenCreatePop, setIsOpenCreatePop] = useState(false);
     const [isCreate, setIsCreate] = useState(true);
     const [isEdit, setIsEdit] = useState(false);
@@ -80,8 +81,10 @@ function CustomerManager() {
     }
 
     const handleSubmitCreateCustomer = () => {
-        if(phoneNumber.trim() === '' || name.trim() === '' || address.trim() === ''){
-            toast.warn("Vui lòng không được bỏ trống thông tin khách hàng")
+        if(phoneNumber === '' || name?.trim() === '' || address?.trim() === ''){
+            toast.warn("Thông tin khách hàng không được bỏ trống")
+        }else if (!isValidPhone){
+            toast.warn("Số điện thoại sai định dạng")
         }else{
             if(isCreate){
                 const customer = {
@@ -152,6 +155,14 @@ function CustomerManager() {
         setListCustomersDisplay(newListCustomers)
     },[search])
 
+    const handleChangePhone = (phone) => {
+        if(!isNaN(phone)){
+            setPhoneNumber(phone)
+            const phoneRegex = /^(?:\+84|84)?(0[3-9][0-9]{8})$/;
+            setIsValidPhone(phoneRegex.test(phone));
+        }
+    }
+
     return (
         <div className="">
             <div className="flex ">
@@ -203,10 +214,10 @@ function CustomerManager() {
                                     <div className="mb-4">
                                         <label className="block mb-2">Số điện thoại</label>
                                         <input
-                                            type="number"
+                                            type="text"
                                             placeholder="Số điện thoại"
                                             value={phoneNumber}
-                                            onChange={(e) => setPhoneNumber(e.target.value)}
+                                            onChange={(e) => handleChangePhone(e.target.value)}
                                             disabled={isEdit ? true : false}
                                             className={`w-full px-3 py-2 border rounded-md ${isEdit ? 'cursor-not-allowed' : ''}`}
                                         />
@@ -328,7 +339,7 @@ function CustomerManager() {
                                         <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                             <td className="w-4 p-4"></td>
                                             <td className="px-6 py-4 text-red-500">
-                                                Không tìm thấy thông tin nhân viên tương ứng
+                                                Không tìm thấy thông tin khách hàng tương ứng
                                             </td>
                                         </tr>
                                     )}

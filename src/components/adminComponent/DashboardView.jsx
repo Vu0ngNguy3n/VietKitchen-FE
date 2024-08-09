@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { FaSearch, FaEnvelope, FaRegBell } from "react-icons/fa"
 import { useNavigate } from 'react-router'
 import profile from "../../assests/profile-user.svg"
+import LOGO from "../../assests/VIET.png"
+
 
 const Dashboardview = () => {
     const [open, setOpen] = useState(false)
@@ -14,7 +16,7 @@ const Dashboardview = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        // localStorage.removeItem('user');
         navigate('/login')
     }
 
@@ -36,16 +38,16 @@ const Dashboardview = () => {
                     <div className='flex items-center gap-[15px] relative' onClick={showProfile} >
                         <p className='font-semibold'>ADMIN</p>
                         <div className='h-[50px] w-[50px] rounded-full bg-[#4E73DF] cursor-pointer flex items-center justify-center relative z-40' >
-                            <img src={profile} alt="" />
+                            <img src={LOGO} alt="" className='rounded-full w-full' />
 
                         </div>
 
                         {
                             open &&
-                            <div className='bg-white border h-[120px] w-[150px] absolute bottom-[-135px] z-20 right-0 pt-[15px] pl-[15px] space-y-[10px]'>
-                                <p className='cursor-pointer hover:text-[blue] font-semibold'>Profile</p>
-                                <p className='cursor-pointer hover:text-[blue] font-semibold'>Settings</p>
-                                <p className='cursor-pointer hover:text-[blue] font-semibold' onClick={() => handleLogout()}>Log out</p>
+                            <div className='bg-white border h-[120px] w-[180px] absolute bottom-[-135px] z-20 right-0 pt-[15px] pl-[15px] space-y-[10px]'>
+                                <p className='cursor-pointer hover:text-[blue] font-semibold' onClick={() => navigate('/admin/permissions')}>Quản lý chức năng</p>
+                                <p className='cursor-pointer hover:text-[blue] font-semibold' onClick={() => navigate('/admin/packages')}>Quản lý gói</p>
+                                <p className='cursor-pointer hover:text-[blue] font-semibold' onClick={() => handleLogout()}>Đăng xuất</p>
                             </div>
 
                         }

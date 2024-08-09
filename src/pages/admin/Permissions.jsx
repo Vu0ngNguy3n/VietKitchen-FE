@@ -2,12 +2,12 @@ import Dashboardview from "../../components/adminComponent/DashboardView";
 import Sidebar from "../../components/adminComponent/Sidebar";
 import { FaSearch, FaEdit, FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
+import { debounce } from "lodash";
 
 function Permissions() {
-    const [statusTable, setStatusTable] = useState("enable");
     const [permissionSearch, setPermissionSearch] = useState('');
     const [openPop, setOpenPop] = useState(false)
     const [isEdit, setIsEdit] = useState(false);
@@ -17,6 +17,7 @@ function Permissions() {
     const [permissionList, setPermissionList] = useState();
     const [isUpdate, setIsUpdate] = useState(false);
     const [currentPermissionId, setCurrentPermissionId] = useState('');
+    const [permissionShow, setPermissionShow] = useState([]);
 
     const navigate = useNavigate();
 
@@ -25,6 +26,7 @@ function Permissions() {
         .get("/api/permission")
         .then(res => {
             setPermissionList(res.data.result)
+            setPermissionShow(res.data.result)
         })
         .catch(err => {
             if (err.response) {
@@ -52,8 +54,10 @@ function Permissions() {
     }
 
     const handleCreatePermission =async () => {
-        if(permissionName.trim() === '' || permissionDescription.trim() === ''){
-            toast.warn("Vui lòng điền đầy đủ thông tin chức năng")
+        if(permissionName.trim() === '' ){
+            toast.warn("Tên chức năng không được để trống")
+        }else if(permissionDescription.trim() === ''){
+            toast.warn("Miêu tả chức năng không được để trống")
         }else if(isCreate){
             const newPermission = {
                 name: permissionName,
@@ -112,6 +116,20 @@ function Permissions() {
         setIsEdit(true);
     }
 
+    const performSearch = useCallback(
+        debounce((searchTerm) => {
+            const resultPermissions = permissionList?.filter(p => p?.name.toUpperCase().includes(searchTerm.toUpperCase()) || p?.description.toUpperCase().includes(searchTerm.toUpperCase()));
+            setPermissionShow(resultPermissions)
+        },300),
+        []
+    )
+
+    const handleInputChange = (e) => {
+        const { value } = e.target;
+        setPermissionSearch(value);
+        performSearch(value);
+    };
+
 
 
     return (
@@ -134,7 +152,7 @@ function Permissions() {
                                             className="w-full px-4 py-3 pl-10 outline-none italic "
                                             placeholder="Nhập tên chức năng"
                                             value={permissionSearch}
-                                            onChange={(e) => setPermissionSearch(e.target.value)}
+                                            onChange={handleInputChange}
                                         />
                                 </div>
                                 
@@ -221,7 +239,7 @@ function Permissions() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {permissionList?.map((permiss, index) => (
+                                    {permissionShow?.map((permiss, index) => (
                                         <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" key={index}>
                                             <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {index + 1}
@@ -239,6 +257,13 @@ function Permissions() {
                                             </td>
                                         </tr>
                                     ))}
+                                    {permissionShow?.length === 0 && (
+                                        <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                            <td className="px-6 py-4 text-red-500">
+                                                Không tìm thấy chức năng tương ứng
+                                            </td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>

@@ -22,7 +22,7 @@ function DishesManagement() {
     const [dishName, setDishName] = useState();
     const [weight, setWeight] = useState();
     const [description, setDescription] = useState();
-    const [price, setPrice] = useState();
+    const [price, setPrice] = useState(100000);
     const [isOpenHidePopUp, setIsOpenHidePopUp] = useState(false);
     const [isReRender, setIsReRender] = useState(false);
     const [hideDish, setHideDish] = useState();
@@ -127,7 +127,7 @@ function DishesManagement() {
         setDishName('');
         setWeight('');
         setDescription('');
-        setPrice(0);
+        setPrice(100000);
         setImgDishCreate('');
         setCurrentCategory(categoryList[0]?.id);
         setCurrentUnit(unitsList[0]?.id)
@@ -138,7 +138,7 @@ function DishesManagement() {
 
     const handleCreateDish = () => {
         if(dishName === '' || weight === '' || description === '' || (price/1 <=0 || isNaN(price)) || imgDishCreate === '' || !imgDishCreate){
-            toast.warn("Vui lòng điền đầy đủ thông tin")
+            toast.warn("Thông tin món ăn không được để trống")
         }else{
             const data = new FormData();
             data.append("file",imgDishCreate);
@@ -167,6 +167,7 @@ function DishesManagement() {
                     .then(res => {
                         toast.success(`Tạo món ăn ${dishName} thành công!`)
                         setIsReRender(!isReRender)
+                        setShowImgUpload('')
                         handleClosePouUp();
                         setCurrentCategory(categoryList[0]?.id)
                     })
@@ -251,6 +252,12 @@ function DishesManagement() {
         const newListDishes = dishesList?.filter(d => (d?.code.includes(search.toLowerCase()) || d?.name.toLowerCase().includes(search.trim().toLowerCase())))
         setDishesListDisplay(newListDishes)
     },[search])
+
+    const handleChangePrice = (price) => {
+        if(!isNaN(price) && (price >0 )){
+            setPrice(price)
+        }
+    }
 
 
 
@@ -359,7 +366,7 @@ function DishesManagement() {
                                         />
                                     </div>
                                     <div className="mb-2">
-                                        <label htmlFor="dish-weight" className="block mb-2">Định lượng món ăn <span className="text-red-600">*</span></label>
+                                        <label htmlFor="dish-weight" className="block mb-2">Định lượng món ăn (kg)<span className="text-red-600">*</span></label>
                                         <input
                                             id="dish-weight"
                                             type="text"
@@ -387,7 +394,7 @@ function DishesManagement() {
                                             type="text"
                                             placeholder="Giá món ăn"
                                             value={price}
-                                            onChange={e => setPrice(e.target.value)}
+                                            onChange={e => handleChangePrice(e.target.value)}
                                             className="w-full px-3 py-2 border rounded-md"
                                         />
                                     </div>

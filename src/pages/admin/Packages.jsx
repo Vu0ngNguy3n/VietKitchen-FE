@@ -11,6 +11,8 @@ function Packages() {
 
     const [statusTable, setStatusTable] = useState("enable");
     const [listPackage, setListPackage] = useState([]);
+    const [listPackageShow, setListPackageShow] = useState([]);
+    const [search, setSearch] = useState('');
 
     const navigate = useNavigate();
 
@@ -19,6 +21,7 @@ function Packages() {
         .get("/api/package")
         .then(res => {
             setListPackage(res.data.result)
+            setListPackageShow(res.data.result);
         })
         .catch(err => {
             if (err.response) {
@@ -40,6 +43,10 @@ function Packages() {
         navigate(`/admin/packageUpdate/${pkg?.id}`)
     };
 
+    useEffect(() => {
+        const newPackages = listPackage?.filter(p => p?.packName.toLowerCase().includes(search.toLowerCase()));
+        setListPackageShow(newPackages);
+    },[search])
 
    
 
@@ -62,6 +69,8 @@ function Packages() {
                                         type="text"
                                         className="w-full px-4 py-3 pl-10 outline-none italic "
                                         placeholder="Nhập tên gói"
+                                        value={search}
+                                        onChange={e => setSearch(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -102,7 +111,7 @@ function Packages() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {listPackage?.map((pkg, index) => (
+                                    {listPackageShow?.map((pkg, index) => (
                                         <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" key={index}>
                                             <th
                                                 scope="row"
@@ -129,6 +138,13 @@ function Packages() {
                                             </td>
                                         </tr>
                                     ))}
+                                    {listPackageShow?.length === 0 && (
+                                        <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                            <td className="px-6 py-4 text-red-500">
+                                                Không tìm thấy thông tin gói tương ứng
+                                            </td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>

@@ -14,7 +14,7 @@ function ComboManagement() {
     const [isUpdateMode, setIsUpdateMode] = useState(false);
     const [currentCombo, setCurrentCombo] = useState(null);
     const [comboName, setComboName] = useState('');
-    const [comboPrice, setComboPrice] = useState(0);
+    const [comboPrice, setComboPrice] = useState(100000);
     const [description, setDescription] = useState('');
     const [imgComboCreate, setImgComboCreate] = useState(null);
     const [dishesList, setDishesList] = useState([]);
@@ -70,20 +70,32 @@ function ComboManagement() {
     const handleClosePopUp = () => {
         setIsOpen(false);
         setComboName('');
-        setComboPrice(0);
+        setComboPrice(100000);
         setDescription('');
         setImgComboCreate(null);
         setShowImgUpload(null);
         setSelectedDishes([]);
         setCurrentCombo(null);
     };
+    const handleChangePrice = (price) => {
+        if(!isNaN(price) && price > 0){
+            setComboPrice(price)
+        }
+    }
 
     const handleCreateCombo = () => {
-        if (comboName === '' || comboPrice === 0 || description === '' || selectedDishes.length === 0) {
+        if (comboName === '' || comboPrice === 0 || description === '' ) {
             toast.warn("Vui lòng điền đầy đủ thông tin");
             return;
         }
-
+        if(!imgComboCreate){
+            toast.warn("Ảnh của combo không được để trống");
+            return
+        }
+        if(selectedDishes.length === 0){
+            toast.warn("Món ăn của combo không dược để trống");
+        }
+        
         const data = new FormData();
         data.append("file", imgComboCreate);
         data.append("upload_preset", "seafood");
@@ -138,13 +150,22 @@ function ComboManagement() {
                     });
             })
             .catch(err => console.log(err + "Can not upload image"));
+        
+
+        
     };
 
     const handleUpdateCombo = () => {
-        if (comboName === '' || comboPrice === 0 || description === '' || selectedDishes.length === 0) {
+        if (comboName === '' || comboPrice === 0 || description === '' ) {
             toast.warn("Vui lòng điền đầy đủ thông tin");
             return;
         }
+
+        if(selectedDishes.length === 0){
+            toast.warn("Vui lòng chọn món ăn trong combo")
+            return
+        }
+
 
         const updatedCombo = {
             id: currentCombo.id,
@@ -387,10 +408,10 @@ function ComboManagement() {
                             </label>
                             <input
                                 id="combo-price"
-                                type="number"
+                                type="text"
                                 placeholder="Giá Combo"
                                 value={comboPrice}
-                                onChange={e => setComboPrice(e.target.value)}
+                                onChange={e => handleChangePrice(e.target.value)}
                                 className="w-full px-3 py-2 border rounded-md"
                             />
                         </div>
