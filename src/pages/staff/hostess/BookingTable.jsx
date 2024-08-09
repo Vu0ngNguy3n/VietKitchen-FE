@@ -590,7 +590,7 @@ function BookingTable() {
 
     const handleSubmitJoin = () => {
         axiosInstance
-        .put(`/api/schedule/${scheduleIdJoin}/status/ACCEPT`)
+        .put(`/api/schedule/${scheduleIdJoin}/employee/${user?.employeeId}/status/ACCEPT`)
         .then(res => {
             toast.success("Nhập bàn thành công")
             setIsOpenConfirmJoin(false);
