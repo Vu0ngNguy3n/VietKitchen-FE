@@ -37,6 +37,7 @@ function BookingTable() {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [isOpenChooseTable, setIsOpenChooseTable] = useState(false);
     const [tables, setTables] = useState([]);
+    const [tablesEdit, setTablesEdit] = useState([]);
     const [deposit, setDeposit] = useState("");
     const [customerName, setCustomerName] = useState('');
     const [numberCustomer, setNumberCustomer] = useState(1);
@@ -73,7 +74,6 @@ function BookingTable() {
         .get(`/api/schedule/restaurant/${user?.restaurantId}/find-all`)
         .then(res => {
             const data = res.data.result;
-            console.log(data);
             setAllTables(data);
         })
         .catch(err => {
@@ -215,7 +215,6 @@ function BookingTable() {
             .then(res => {
                 const data = res.data.result;
                 setListDishes(data);
-                console.log(data);
             })
             .catch(err => {
                 if (err.response) {
@@ -258,7 +257,6 @@ function BookingTable() {
             .then(res => {
                 const data = res.data.result;
                 setBoard(data);
-                console.log(data);
             })
             .catch(err => {
                 if (err.response) {
@@ -353,8 +351,10 @@ function BookingTable() {
     const handleAddTable = (id) => {
         if(!tables?.includes(id)){
             setTables([...tables, id])
+            setTablesEdit([...tablesEdit, id]);
         }else{
             let listTable = tables?.filter(t => t !== id);
+            setTablesEdit(listTable)
             setTables(listTable)
         }
     }
@@ -500,7 +500,10 @@ function BookingTable() {
         setDeposit(table?.deposit);
         setIntendTime(getMinutesDifference(table?.time,table?.intendTime))
         setNumberCustomer(table?.numbersOfCustomer);
-        setTables(table?.tableRestaurants);
+        let newTables = table?.tableRestaurants.map(t => t?.id)
+        setTables(newTables);
+        let resultTable = table?.tableRestaurants?.map(t => t.id)
+        setTablesEdit(resultTable);
         setPickUpDay(table?.bookedDate);
         setTime(sliceDisplayTime(table?.time));
     }
@@ -514,6 +517,7 @@ function BookingTable() {
         setIntendTime(60);
         setNumberCustomer(1);
         setTables([]);
+        setTablesEdit([]);
         setIsOpenBooking(false);
         setIsBooking(!isBooking)
         setIsOpenShowInformation(false);
@@ -544,6 +548,25 @@ function BookingTable() {
                 }
             })
             setStatusTime("week")
+        }
+
+        if(currentArea?.id !== undefined){
+            axiosInstance
+            .get(`/api/table/area/${currentArea?.id}`)
+            .then(res => {
+                const data = res.data.result;
+                setBoard(data);
+            })
+            .catch(err => {
+                if (err.response) {
+                    const errorRes = err.response.data;
+                    toast.error(errorRes.message);
+                } else if (err.request) {
+                    toast.error("Yêu cầu không thành công");
+                } else {
+                    toast.error(err.message);
+                }
+            })  
         }
 
         getAllTable()
@@ -608,6 +631,44 @@ function BookingTable() {
             }
         })  
         
+    }
+
+    const handleConfirmEdit = () => {
+        const dataRequest = {
+            customerName: customerName,
+            customerPhone: phoneNumber,
+            note: note,
+            bookedDate: pickUpDay,
+            time: time,
+            deposit: deposit,
+            intendTimeMinutes: intendTime,
+            numbersOfCustomer: numberCustomer,
+            tables: tablesEdit,
+            scheduleDishes: dishesChooseSubmit
+        }
+
+        axiosInstance
+        .put(`/api/schedule/${scheduleIdCancel}/update`, dataRequest)
+        .then(res => {
+            const data = res.data.result;
+            if(data === 'success'){
+                toast.success("Cập nhật đặt bàn thành công")
+            }else{
+                toast.warn(data)
+            }
+            handleCloseShowInfor();
+            setIsCancel(!isCancel)
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })
     }
     
 
@@ -758,7 +819,7 @@ function BookingTable() {
                             </div>
                             <div className="flex-row">
                                 <div className="flex justify-center px-4 pb-10">
-                                    <div class="grid gap-6 mb-6 md:grid-cols-2 w-full">
+                                    <div className="grid gap-6 mb-6 md:grid-cols-2 w-full">
                                         <div>
                                             <label htmlFor="dateBooking" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Thời gian nhận bàn<span className="text-red-500">(*)</span></label>
                                             <div className="w-full flex">
@@ -772,7 +833,7 @@ function BookingTable() {
                                                     />
                                                 </div>
                                                 <div className="w-[50%]">
-                                                    <div class="relative ">
+                                                    <div className="relative ">
                                                         <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                                             <GiAlarmClock />
                                                         </div>
@@ -813,7 +874,7 @@ function BookingTable() {
                                         </div>
                                         <div>
                                             <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Số điện thoại <span className="text-red-500">(*)</span></label>
-                                            <div class="relative ">
+                                            <div className="relative ">
                                                 <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                                     <MdOutlinePhoneAndroid />
                                                 </div>
@@ -826,7 +887,7 @@ function BookingTable() {
                                         </div>
                                         <div>
                                             <label htmlFor="customer" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Khách hàng<span className="text-red-500">(*)</span></label>
-                                            <div class="relative ">
+                                            <div className="relative ">
                                                 <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                                     <FaUserCircle />
                                                 </div>
@@ -839,7 +900,7 @@ function BookingTable() {
                                         </div>
                                         <div>
                                             <label htmlFor="table" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Chọn bàn<span className="text-red-500">(*)</span></label>
-                                            <div class="relative ">
+                                            <div className="relative ">
                                                 <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                                     <MdLocationSearching />
                                                 </div>
@@ -853,7 +914,7 @@ function BookingTable() {
                                         </div>  
                                         <div>
                                             <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Đặt trước món</label>
-                                            <div class="relative ">
+                                            <div className="relative ">
                                                 <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                                     <BiSolidDish />
                                                 </div>
@@ -885,7 +946,7 @@ function BookingTable() {
                                         </div>
                                         <div>
                                             <label htmlFor="note" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ghi chú</label>
-                                            <div class="relative ">
+                                            <div className="relative ">
                                                 <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                                     <MdNoteAlt />
                                                 </div>
@@ -922,7 +983,7 @@ function BookingTable() {
                         </div>
                         <div className="flex-row">
                             <div className="flex justify-center px-4 pb-10">
-                                <div class="grid gap-6 mb-6 md:grid-cols-2 w-full">
+                                <div className="grid gap-6 mb-6 md:grid-cols-2 w-full">
                                     <div>
                                         <label htmlFor="dateBooking" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Thời gian nhận bàn<span className="text-red-500">(*)</span></label>
                                         <div className="w-full flex">
@@ -936,7 +997,7 @@ function BookingTable() {
                                                 />
                                             </div>
                                             <div className="w-[50%]">
-                                                <div class="relative ">
+                                                <div className="relative ">
                                                     <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                                         <GiAlarmClock />
                                                     </div>
@@ -977,7 +1038,7 @@ function BookingTable() {
                                     </div>
                                     <div>
                                         <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Số điện thoại <span className="text-red-500">(*)</span></label>
-                                        <div class="relative ">
+                                        <div className="relative ">
                                             <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                                 <MdOutlinePhoneAndroid />
                                             </div>
@@ -990,7 +1051,7 @@ function BookingTable() {
                                     </div>
                                     <div>
                                         <label htmlFor="customer" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Khách hàng<span className="text-red-500">(*)</span></label>
-                                        <div class="relative ">
+                                        <div className="relative ">
                                             <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                                 <FaUserCircle />
                                             </div>
@@ -1003,7 +1064,7 @@ function BookingTable() {
                                     </div>
                                     <div>
                                         <label htmlFor="table" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Chọn bàn<span className="text-red-500">(*)</span></label>
-                                        <div class="relative ">
+                                        <div className="relative ">
                                             <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                                 <MdLocationSearching />
                                             </div>
@@ -1017,7 +1078,7 @@ function BookingTable() {
                                     </div>  
                                     <div>
                                         <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Đặt trước món</label>
-                                        <div class="relative ">
+                                        <div className="relative ">
                                             <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                                 <BiSolidDish />
                                             </div>
@@ -1050,7 +1111,7 @@ function BookingTable() {
                                     </div>
                                     <div>
                                         <label htmlFor="note" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ghi chú</label>
-                                        <div class="relative ">
+                                        <div className="relative ">
                                             <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                                                 <MdNoteAlt />
                                             </div>
@@ -1067,7 +1128,9 @@ function BookingTable() {
                                 <div onClick={() => handleCancelBooking(scheduleIdCancel)} className="border-t-2 flex justify-center py-2 items-center bg-gray-200 cursor-pointer rounded-bl-md w-[50%]" >
                                     <p className="text-red-500 font-medium uppercase">Huỷ đơn đặt bàn</p>
                                 </div>
-                                <div className="border-t-2 flex justify-center py-2 items-center bg-blue-400 cursor-pointer rounded-br-md w-[50%]" >
+                                <div 
+                                    onClick={() => handleConfirmEdit()}
+                                    className="border-t-2 flex justify-center py-2 items-center bg-blue-400 cursor-pointer rounded-br-md w-[50%]" >
                                     <p className="text-white font-medium uppercase">Xác nhận</p>
                                 </div>
                             </div>
@@ -1169,7 +1232,8 @@ function BookingTable() {
                                             </div>
                                             <div className="text-center mt-2">
                                                 <hr className="w-1/2 mx-auto border-gray-400" />
-                                                <span className={`block mt-2 text-sm font-semibold ${checkTable(table?.id) ? "text-white" : "text-gray-500"} `}>Bàn trống</span>
+                                                <span className={`block mt-2 text-sm font-semibold ${table?.orderCurrent === null ? "text-gray-500" : "text-green"} ${checkTable(table?.id) ? "text-white" : "text-gray-500"} `}>{table?.orderCurrent === null ? "Bàn trống" : "Có khách"}</span>
+                                                <span className={`block mt-2 text-sm font-semibold text-red-900`}>{table?.booked === true ? "Đã được đặt" : ""}</span>
                                             </div>
                                         </div>
 
@@ -1255,7 +1319,7 @@ function BookingTable() {
                                 <div className="w-full h-[40px] bg-slate-200 rounded-sm mb-1 flex">
                                     <div className="w-[20%] border-r border-slate-400 flex justify-center items-center"><BiSolidDish /></div>
                                     <div className="w-[60%] flex justify-center items-center border-r border-slate-400">
-                                        <span className="text-sm font-medium">Danh sách món ăn đặt trước</span>
+                                        <span className="text-sm font-medium">Danh sách món ăn</span>
                                     </div>
                                     <div className="w-[20%] flex justify-center items-center"><IoMdMore className="size-8" /></div>
                                 </div>

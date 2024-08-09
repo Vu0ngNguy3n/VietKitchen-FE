@@ -52,9 +52,9 @@ function PackageDetail() {
     const handleModal = () => {
         if(isOpenModal === false){
              if(selectedOptions.length <= 0){
-                toast.warn("Vui lòng chọn chức năng cho gói")
+                toast.warn("Chức năng gói không dược để trống")
             }else if(packageName.trim() === '' || pricePerMonth === '' || pricePerYear === ''){
-                toast.warn("Vui lòng nhập thông tin của gói")
+                toast.warn("Thông tin gói không được để trống")
             }else{
                 setIsOpenModal(true)
             }
@@ -121,7 +121,7 @@ function PackageDetail() {
                         <htmlForm className="p-4 md:p-5">
                             <div className="grid gap-4 mb-4 grid-cols-2">
                                 <div className="col-span-2 ">
-                                    <label for="packageName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên gói</label>
+                                    <label for="packageName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên gói <span className="text-red-500">(*)</span></label>
                                     <input
                                         type="text"
                                         name="packageName"
@@ -136,7 +136,7 @@ function PackageDetail() {
                                     />
                                 </div>
                                 <div className="col-span-2 sm:col-span-1">
-                                    <label for="pricePerMonth" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Giá theo tháng</label>
+                                    <label for="pricePerMonth" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Giá theo tháng <span className="text-red-500">(*)</span></label>
                                     <input
                                         type="text"
                                         name="pricePerMonth"
@@ -149,7 +149,7 @@ function PackageDetail() {
                                         placeholder="Giá theo tháng" required="" />
                                 </div>
                                 <div className="col-span-2 sm:col-span-1">
-                                    <label for="pricePerYear" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Giá theo năm</label>
+                                    <label for="pricePerYear" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Giá theo năm <span className="text-red-500">(*)</span></label>
                                     <input 
                                     type="text" 
                                     name="pricePerYear"
@@ -163,7 +163,7 @@ function PackageDetail() {
                                 </div>
                                
                                 <div className="col-span-2 ">
-                                    <label for="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Loại gói</label>
+                                    <label for="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Loại gói <span className="text-red-500">(*)</span></label>
                                     
                                     <div className="flex justify-between">
                                         <button id="dropdownSearchButton" data-dropdown-toggle="dropdownSearch" 
@@ -177,10 +177,10 @@ function PackageDetail() {
 
                                         <div id="dropdownSearch" className={`z-10  bg-white ${isOpenDropDown ? '' :"hidden"} rounded-lg shadow w-[49%] border-gray-300 dark:bg-gray-700 `}>
                                         
-                                            <ul className="h-48 px-3 pb-3 mt-4 overflow-y-auto text-sm text-gray-700 dark:text-gray-200 flex" aria-labelledby="dropdownSearchButton">
+                                            <ul className="h-48 px-3 pb-3 mt-4 w-full flex flex-wrap overflow-y-auto text-sm text-gray-700 dark:text-gray-200 " aria-labelledby="dropdownSearchButton">
                                                 {permissionsList?.map((permission, index) => (
-                                                    <li key={index}>
-                                                        <div className="flex items-center p-2 mx-4 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                                                    <li key={index} className="w-[50%]">
+                                                        <div className="flex items-center w-full p-2 mx-4 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
                                                             <input 
                                                             type="checkbox" 
                                                             id={`${permission?.id}`}

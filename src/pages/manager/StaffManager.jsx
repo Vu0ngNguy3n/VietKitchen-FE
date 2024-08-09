@@ -35,8 +35,11 @@ function StaffManager() {
         .get("/api/role")
         .then(res => {
             const data = res.data.result;
-            setListRoles(data)
-            setCurrentRole(data[0]?.id)
+            if(data.length > 0){
+                setListRoles(data)
+                setCurrentRole(data[0]?.id)
+                console.log(data);
+            }
         })
         .catch(err => {
                 if (err.response) {
@@ -201,7 +204,7 @@ function StaffManager() {
     }
 
     useEffect(() => {
-        const newListEmployees = listEmployees?.filter(e => (e?.employeeName.includes(search) || e?.username.includes(search) ))
+        const newListEmployees = listEmployees?.filter(e => (e?.employeeName.toLowerCase().includes(search) || e?.username.includes(search.toLowerCase()) || e?.role.name.toLowerCase().includes(search.toLowerCase()) ))
         setListEmployeesDisplay(newListEmployees);
     },[search])
 

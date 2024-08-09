@@ -100,8 +100,8 @@ function RestaurantInformation() {
     }
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        const user = storedUser ? JSON.parse(storedUser) : null
+        // const storedUser = localStorage.getItem('user');
+        // const user = storedUser ? JSON.parse(storedUser) : null
         setAccountStorage(user);
         axiosInstance
         .get(`/api/restaurant/account/${user.accountId}`)

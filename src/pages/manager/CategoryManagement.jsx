@@ -5,6 +5,7 @@ import { IoMdAdd } from "react-icons/io";
 import { FaEdit, FaSearch, FaTrash } from "react-icons/fa";
 import axiosInstance from '../../utils/axiosInstance';
 import { toast } from 'react-toastify';
+import { useUser } from '../../utils/constant';
 
 function CategoryManagement() {
     const [categories, setCategories] = useState([]);
@@ -16,6 +17,7 @@ function CategoryManagement() {
     const [isCreate, setIsCreate] = useState(true);
     const [currentCategoryId, setCurrentCategoryId] = useState(null);
     const [search, setSearch] = useState('');
+    const user = useUser()
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -73,9 +75,10 @@ function CategoryManagement() {
 
     const handleSubmitCreateCategory = () => {
         if (name.trim() === '') {
-            toast.warn("Vui lòng không được bỏ trống tên món ăn");
-        } else {
-            const user = JSON.parse(localStorage.getItem('user'));
+            toast.warn("Tên thực đơn không dược để trống");
+        } else if(description.trim() === ''){
+            toast.warn('Miêu tả thực đơn không dược để trống')
+        }else {
             const accountId = user?.accountId;
 
             const category = {
@@ -111,9 +114,10 @@ function CategoryManagement() {
 
     const handleSubmitUpdateCategory = () => {
         if (name.trim() === '') {
-            toast.warn("Vui lòng không được bỏ trống tên món ăn");
-        } else {
-            const user = JSON.parse(localStorage.getItem('user'));
+            toast.warn("Tên thực đơn không được bỏ trống");
+        } else if(description.trim() === ''){
+            toast.warn("Miêu tả thực đơn không được bỏ trống")
+        }else{
             const accountId = user?.accountId;
 
             const category = {

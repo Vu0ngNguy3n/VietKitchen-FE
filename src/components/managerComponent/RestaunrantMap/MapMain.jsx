@@ -152,7 +152,7 @@ const MapMain = () => {
         
             if(isCreateArea){
                 if(areaName.trim() === ''){
-                    toast.warn('Vui lòng điền tên khu vực!')   
+                    toast.warn('Tên khu vực không dược để trống!')   
                 }else{
                     const area = {
                         name: areaName,
@@ -179,7 +179,7 @@ const MapMain = () => {
                         })
                 }
             }else{
-                if(tableName === '' || !typeTable || !shapeTable){
+                if(tableName === '' || numberTables === ''|| !typeTable || !shapeTable){
                     toast.warn("Vui lòng nhập đầy đủ thông tin")
                 }else{
                     const table = {
@@ -255,7 +255,7 @@ const MapMain = () => {
  
     const handleChangeNumberTable = (number) => {
         if(!isNaN(number)){
-            if(number > 0 && number < 10){
+            if(number > 0 && number < 20){
                 setNumberTables(number)
             }else{
                 setNumberTables(1)

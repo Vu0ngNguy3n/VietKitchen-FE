@@ -65,26 +65,30 @@ function VATSetting() {
     }
 
     const handleUpdateVAT = () => {
-        const request = {
-            taxName: vatName,
-            taxValue: vat
+        if(vatName.trim() === '' || vat.trim() === ''){
+            toast.warn("Thông tin thuế không dược để trống")
+        }else{
+            const request = {
+                taxName: vatName,
+                taxValue: vat
+            }
+            axiosInstance
+            .put(`/api/vat/${restaurantInformation?.id}/tax`,request)
+            .then(res => {
+                toast.success("Cập nhật dữ liệu thuế thành công")
+                navigate('/manager/setting')
+            })
+            .catch((err) => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error(err.request);
+            } else {
+                toast.error(err.message);
+            }
+            });
         }
-        axiosInstance
-        .put(`/api/vat/${restaurantInformation?.id}/tax`,request)
-        .then(res => {
-            toast.success("Cập nhật dữ liệu thuế thành công")
-            navigate('/manager/setting')
-        })
-        .catch((err) => {
-          if (err.response) {
-            const errorRes = err.response.data;
-            toast.error(errorRes.message);
-          } else if (err.request) {
-            toast.error(err.request);
-          } else {
-            toast.error(err.message);
-          }
-        });
     }
    
     const handleChangeVAT = (value) => {
@@ -121,6 +125,10 @@ function VATSetting() {
     }
 
     const handleSubmitRestaurantVerify = () => {
+        if(nameRestaurant.trim() === '' || taxCode.trim() === '' || address.trim() === ''){
+            toast.warn("Thông tin doanh nghiệp không được bỏ trống")
+            return 
+        }
         const request = {
             name: nameRestaurant,
             taxCode: taxCode,
