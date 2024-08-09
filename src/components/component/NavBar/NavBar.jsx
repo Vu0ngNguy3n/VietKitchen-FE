@@ -5,6 +5,8 @@ import { FaBars, FaXmark } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import { Link } from "react-scroll";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { clearUser } from "../../../actions/userActions";
 
 
 
@@ -12,6 +14,7 @@ const NavBar = () => {
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [userStorage, setUserStorage] = useState();
+    const dispatch = useDispatch();
 
     useEffect(() =>{
         const storedUser = localStorage.getItem('user');
@@ -20,7 +23,9 @@ const NavBar = () => {
     },[])
 
     const hanldeLogout = () => {
-        localStorage.removeItem('user');
+        // localStorage.removeItem('user');
+        const action = clearUser();
+        dispatch(action);
         localStorage.removeItem('token');
         setUserStorage(null);
         toast.success("Đăng xuất thành công")

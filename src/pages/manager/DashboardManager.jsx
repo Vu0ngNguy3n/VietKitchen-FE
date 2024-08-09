@@ -5,7 +5,7 @@ import { Progress } from "antd"
 import { BiExport } from "react-icons/bi";
 import axiosInstance from "../../utils/axiosInstance";
 import { useEffect, useState } from "react";
-import { getUser } from "../../utils/constant";
+import {  useUser } from "../../utils/constant";
 import {formatVND} from "../../utils/format"
 import { toast } from "react-toastify";
 import HighchartsReact from "highcharts-react-official";
@@ -24,7 +24,7 @@ function DashboardManager() {
     const [statisticTimeDay, setStatisticTimeDay] = useState([]);
     const [listTimeDay, setListTimeDay] = useState([]);
     const [statisticRevenueTimeDay, setStatisticRevenueTimeDay] = useState([]);
-    const user = getUser();
+    const user = useUser();
 
 
     useEffect(()=>{

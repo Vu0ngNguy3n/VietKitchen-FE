@@ -11,7 +11,7 @@ import axiosInstance from "../../../utils/axiosInstance";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
-import { getUser } from "../../../utils/constant";
+import { useUser } from "../../../utils/constant";
 import {clearTable} from "../../../actions/tableActions"
 import {clearOrderId} from "../../../actions/orderActions"
 import {clearCart} from "../../../actions/cartActions"
@@ -24,7 +24,7 @@ function Payment() {
  
     const table = useSelector(state => state.table)
     const orderId = useSelector(state => state.orderId);
-    const user = getUser();
+    const user = useUser();
     const [customerPay, setCustomerPay] = useState(0);
     const [remainMoney, setRemainMoney] = useState(0);
     const [discountMoney, setDiscountMoney] = useState(0);

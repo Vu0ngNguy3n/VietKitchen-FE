@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
-import { getUser } from "../../../utils/constant";
+import { useUser } from "../../../utils/constant";
 import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "react-toastify";
 import { IoMdAdd } from "react-icons/io";
@@ -26,7 +26,7 @@ function Ordering() {
   const [connected, setConnected] = useState(false);
   const [oldCart, setOldCart] = useState();
   const [totalMoney, setTotalMoney] = useState();
-  const user = getUser();
+  const user = useUser();
   const table = useSelector(state => state.table);
   const navigate = useNavigate();
 

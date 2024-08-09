@@ -5,10 +5,13 @@ import { toast } from "react-toastify";
 import HeaderManagerDashboard from "../../components/managerComponent/HeaderManagerDashboard"
 import SidebarManager from "../../components/managerComponent/SidebarManager"
 import axiosInstance from "../../utils/axiosInstance";
-import { getUser } from "../../utils/constant";
+import {  useUser } from "../../utils/constant";
 import { formatVND } from "../../utils/format";
 import CryptoJS from 'crypto-js';
 import { IoIosArrowBack } from "react-icons/io";
+import { jwtDecode } from "jwt-decode";
+import { useDispatch } from "react-redux";
+import { saveUser } from "../../actions/userActions";
 
 
 function SettingPackage(){
@@ -24,7 +27,8 @@ function SettingPackage(){
     const [paymentLink, setPaymentLink] = useState(null);
     const [status, setStatus] = useState();
     const [orderCode, setOrderCode] = useState();
-    const user = getUser();
+    const user = useUser();
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -75,13 +79,26 @@ function SettingPackage(){
                 restaurantId: user?.restaurantId,
                 totalMoney: storePackage?.totalMoney,
                 months: storePackage?.months,
-                // accountId: user?.accountId
+                accountId: user?.accountId
             }
             axiosInstance
             .put(`/api/package-history/${orderCode}/success`,dataSend)
             .then(res => {
                 toast.success("Bạn đã nâng cấp gói thành công")
-                
+                const token = res.data.result;
+                const user = jwtDecode(token);
+                localStorage.setItem('token', token);
+                const userStorage = {
+                    username: user.sub,
+                    email: user.email,
+                    role: user.scope,
+                    accountId: user.accountId,
+                    restaurantId: user.restaurantId,
+                    packName: user.packName
+                };
+                // localStorage.setItem('user', JSON.stringify(userStorage));
+                const action = saveUser(userStorage);
+                dispatch(action);
                 navigate("/manager/setting");
             })
             .catch(err => {

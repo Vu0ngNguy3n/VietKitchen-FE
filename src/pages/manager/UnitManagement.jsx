@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axiosInstance from "../../utils/axiosInstance";
 import { useNavigate } from "react-router";
-import { getUser } from "../../utils/constant";
+import { useUser } from "../../utils/constant";
 
 function UnitManagement() {
 
@@ -20,12 +20,11 @@ function UnitManagement() {
     const [unitId, setUnitId] = useState();
     const [isOpenDeletePop, setIsOpenDeletePop] = useState(false);
     const [unitDeleteName, setUnitDeleteName] = useState();
-
+    const account = useUser();
     const navigate = useNavigate();
 
     useEffect(() =>{
 
-        const account = getUser();
         setAccountStorage(account)
 
         axiosInstance

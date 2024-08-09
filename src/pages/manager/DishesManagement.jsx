@@ -3,7 +3,7 @@ import HeaderManagerDashboard from "../../components/managerComponent/HeaderMana
 import { IoMdAdd } from "react-icons/io";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
-import { getUser } from "../../utils/constant";
+import { useUser } from "../../utils/constant";
 import { toast } from "react-toastify";
 import {formatVND} from "../../utils/format"
 import { FaSearch } from "react-icons/fa";
@@ -31,10 +31,10 @@ function DishesManagement() {
     const [isFile, setIsFile] = useState();
     const [showImgUpload, setShowImgUpload] = useState();
     const [search, setSearch] = useState('');
+    const user = useUser();
     
 
     useEffect(() => {
-        const user = getUser();
         setUserStorage(user);
         axiosInstance
         .get(`/api/dish/account/${user.accountId}/${statusDish}`)
@@ -97,7 +97,6 @@ function DishesManagement() {
 
 
     useEffect(() => {
-        const user = getUser();
         setUserStorage(user);
         axiosInstance
         .get(`/api/dish/account/${user.accountId}/${statusDish}`)

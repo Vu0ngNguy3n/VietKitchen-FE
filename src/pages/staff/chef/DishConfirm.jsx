@@ -3,7 +3,7 @@ import { Client } from "@stomp/stompjs";
 import { useEffect, useState } from "react";
 import SockJS from "sockjs-client";
 import axiosInstance from "../../../utils/axiosInstance";
-import { getUser } from "../../../utils/constant";
+import { useUser } from "../../../utils/constant";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { RiProgress6Line } from "react-icons/ri";
 import { FaTrash } from "react-icons/fa";
@@ -12,7 +12,7 @@ import NavBarChef from "../../../components/staffComponent/chefComponent/NavBarC
 
 function DishConfirm(){
   const [oldCart, setOldCart] = useState();
-  const user = getUser();
+  const user = useUser();
   const confirm = "CONFIRM";
 
 

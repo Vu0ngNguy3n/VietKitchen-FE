@@ -6,7 +6,7 @@ import { BiSolidDish } from "react-icons/bi";
 import { useNavigate } from 'react-router'
 import { PiUniteFill } from "react-icons/pi";
 import { IoSettings } from "react-icons/io5";
-import { getUser } from '../../utils/constant';
+import { useUser } from '../../utils/constant';
 import axiosInstance from '../../utils/axiosInstance';
 import { toast } from 'react-toastify';
 
@@ -16,9 +16,9 @@ const SidebarStaff = () => {
     const navigate = useNavigate();
     const [category, setCategory] = useState([]);
     const [userId, setUserId] = useState();
+    const user = useUser();
 
     useEffect(() => {
-        const user = getUser();
         setUserId(user.accountId)
         axiosInstance
         .get(`/api/dish-category/${user.accountId}`)
