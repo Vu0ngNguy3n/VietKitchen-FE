@@ -7,7 +7,7 @@ import HeaderManagerDashboard from "../../components/managerComponent/HeaderMana
 import { IoIosArrowBack } from "react-icons/io";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
-import { getUser } from "../../utils/constant";
+import { useUser } from "../../utils/constant";
 
 function VATSetting() {
 
@@ -22,7 +22,7 @@ function VATSetting() {
     const [branch, setBranch] = useState('');
     const [numberRegister, setNumberRegister] = useState('');
     const [restaurantInformation, setRestaurantInformation] = useState();
-    const user = getUser();
+    const user = useUser();
 
     useEffect(() => {
         axiosInstance

@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../utils/axiosInstance";
-import { getUser } from "../../../utils/constant";
+import { useUser } from "../../../utils/constant";
 import ZEROTABLE from "../../../assests/zeroTable.jpg"
 import SidebarChef from "../../../components/staffComponent/chefComponent/SideBarChef";
 import { useNavigate } from "react-router";
@@ -9,7 +9,7 @@ import NavBarChef from "../../../components/staffComponent/chefComponent/NavBarC
 
 function TableAreaChef(){
 
-    const user = getUser();
+    const user = useUser();
     const [areaList, setAreaList] = useState([]);
     const [board, setBoard] = useState([]);
     const [currentArea, setCurrentArea] = useState();

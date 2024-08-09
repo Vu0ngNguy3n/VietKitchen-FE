@@ -18,7 +18,7 @@ import { FaSearch } from "react-icons/fa";
 import { GrRestaurant } from "react-icons/gr";
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import { CiEdit } from "react-icons/ci";
-import { getUser } from "../../../utils/constant";
+import { useUser } from "../../../utils/constant";
 import { saveCustomer } from "../../../actions/customerActions";
 import { saveTable } from "../../../actions/tableActions";
 import { saveOrderId } from "../../../actions/orderActions";
@@ -47,7 +47,7 @@ function Menu(){
   const [phoneNumberAdd, setPhoneNumberAdd] = useState();
   const [customerName, setCustomerName] = useState();
   const [address, setAddress] = useState();
-  const user = getUser();
+  const user = useUser();
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -3,7 +3,7 @@ import SidebarManager from "../../components/managerComponent/SidebarManager";
 import HeaderManagerDashboard from "../../components/managerComponent/HeaderManagerDashboard";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
-import { getUser } from "../../utils/constant";
+import {  useUser } from "../../utils/constant";
 
 function InvoiceManagement() {
     const [invoices, setInvoices] = useState([]);
@@ -17,19 +17,10 @@ function InvoiceManagement() {
     const [billDetailsPage, setBillDetailsPage] = useState(1);
     const [billDetailsTotalRecords, setBillDetailsTotalRecords] = useState(0);
     const [billDetailsSize, setBillDetailsSize] = useState(5);
+    const user =  useUser();
 
     useEffect(() => {
-        const fetchUserInfo = async () => {
-            try {
-                const user = await getUser();
-                setRestaurantId(user.restaurantId);
-            } catch (error) {
-                console.error("Lỗi khi lấy thông tin người dùng:", error);
-                toast.error("Có lỗi xảy ra khi lấy thông tin người dùng.");
-            }
-        };
-
-        fetchUserInfo();
+        setRestaurantId(user?.restaurantId);
     }, []);
 
     useEffect(() => {

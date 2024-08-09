@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
-import { getUser } from "../../../utils/constant";
+import { useUser } from "../../../utils/constant";
 import { AiTwotoneEdit } from "react-icons/ai";
 import { FaTrashAlt } from "react-icons/fa";
 import {  FaPlus } from "react-icons/fa";
@@ -20,7 +20,7 @@ const MapMain = () => {
     const [board, setBoard] = useState([]);
     const [isEnableSave, setIsEnableSave] = useState(false);
     const [areaList, setAreaList] = useState([])
-    const user = getUser();
+    const user = useUser();
     const [currentArea, setCurrentArea] = useState();
     const [userStorage, setUserStorage] = useState();
     const [areaName, setAreaName] = useState('');

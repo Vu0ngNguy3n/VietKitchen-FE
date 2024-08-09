@@ -4,7 +4,7 @@ import Map from "../../../components/managerComponent/RestaunrantMap/Map"
 import NavBarStaff from "../../../components/staffComponent/NavBarStaff"
 import axiosInstance from "../../../utils/axiosInstance";
 import LOGO from "../../../assests/VIET.png"
-import { getUser } from "../../../utils/constant";
+import { useUser } from "../../../utils/constant";
 import { useNavigate } from "react-router";
 import { BiSolidDish } from "react-icons/bi";
 import { saveTable } from "../../../actions/tableActions";
@@ -20,7 +20,7 @@ function MapWaiter(){
     const [currentArea, setCurrentArea] = useState();
     const [board, setBoard] = useState([]);
     const [currentAreaName, setCurrentAreaName] = useState();
-    const user = getUser();
+    const user = useUser();
     const navigate = useNavigate();
     const dispatch = useDispatch();
 

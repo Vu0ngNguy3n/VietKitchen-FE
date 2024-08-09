@@ -3,7 +3,7 @@ import HeaderManagerDashboard from "../../components/managerComponent/HeaderMana
 import { FaSearch, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import axiosInstance from "../../utils/axiosInstance";
-import { getUser } from "../../utils/constant";
+import { useUser } from "../../utils/constant";
 import { toast } from "react-toastify";
 
 function StaffManager() {
@@ -26,9 +26,9 @@ function StaffManager() {
     const [isOpenDelete, setIsOpenDelete] = useState(false);
     const [employeeDelete, setEmployeeDelete] = useState();
     const [search, setSearch] = useState('');
+    const account = useUser();
 
     useEffect(() => {
-        const account = getUser();
         setAccountStorage(account);
 
         axiosInstance
@@ -52,7 +52,6 @@ function StaffManager() {
     },[])
 
     useEffect(() => {
-         const account = getUser();
         setAccountStorage(account);
         axiosInstance
         .get(`/api/employee/restaurant/${account?.accountId}`)

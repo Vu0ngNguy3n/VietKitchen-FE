@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { FaSearch, FaEnvelope, FaRegBell } from "react-icons/fa"
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router'
+import { clearUser } from '../../actions/userActions'
 import profile from "../../assests/profile-user.svg"
+import { useUser } from '../../utils/constant'
 
 const HeaderManagerDashboard = () => {
     const [open, setOpen] = useState(false)
     const navigate = useNavigate();
     const [userStorage, setUserStorage] = useState();
+    const dispatch = useDispatch();
+    const user = useUser();
 
     useEffect(() =>{
-        const storedUser = localStorage.getItem('user');
-        const user = storedUser ? JSON.parse(storedUser) : null
+        // const storedUser = localStorage.getItem('user');
+        // const user = storedUser ? JSON.parse(storedUser) : null
         setUserStorage(user);
     },[])
 
@@ -21,7 +26,9 @@ const HeaderManagerDashboard = () => {
 
     const handleLogout = ( ) => {
         localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        // localStorage.removeItem('user');
+        const action = clearUser();
+        dispatch(action);
         navigate('/login')
     }
 

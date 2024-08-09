@@ -1,24 +1,30 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { ForbiddenIcon } from '../../../icons'
 import { useNavigate } from 'react-router'
-import { getUser } from '../../../utils/constant';
+import { useUser } from '../../../utils/constant';
 
 function Page404() {
     const navigate = useNavigate();
-    const user = getUser();
+    const user = useUser();
+
+    
 
     const handleBack = () => {
-        const role = user.role;
-        if(role?.includes("ADMIN")){
+        const role = user?.role;
+        if(role?.toUpperCase()?.includes("ROLE_ADMIN")){
             navigate('/admin/dashboard')
-        }else if(role?.includes("MANAGER")){
+        }else if(role?.toUpperCase()?.includes("ROLE_MANAGER")){
+            console.log("manager");
             navigate('/manager/dashboard')
-        }else if(role?.includes("WAITER")){
+        }else if(role?.toUpperCase()?.includes("ROLE_WAITER")){
+            console.log("waiter");
             navigate('/waiter/map')
-        }else if(role?.includes("CHEF")){
+        }else if(role?.toUpperCase()?.includes("ROLE_CHEF")){
+            console.log("chef");
             navigate('/chef/dishPreparation')
-        }else if(role?.includes("HOSTESS")){
+        }else if(role?.toUpperCase()?.includes("ROLE_HOSTESS")){
+            console.log("hoss");
             navigate('/hostess/map')
         }
     }

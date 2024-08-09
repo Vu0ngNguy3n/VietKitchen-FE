@@ -6,6 +6,8 @@ import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
 import { toast } from 'react-toastify';
 import axiosInstance from '../../../utils/axiosInstance';
+import { useDispatch } from 'react-redux';
+import { clearUser, saveUser } from '../../../actions/userActions';
 
 function SignInSide() {
   const navigate = useNavigate();
@@ -19,6 +21,15 @@ function SignInSide() {
   const inputs = useRef([]);
   const initialTime = 60;
   const [timeLeft, setTimeLeft] = useState(initialTime);
+  const dispatch = useDispatch();
+
+  useEffect(()=> {
+    localStorage.removeItem('token');
+    // localStorage.removeItem('user');
+    const action = clearUser()
+    dispatch(action);
+
+  },[])
 
   const handleChangeTypeLogin = (type) => {
     setTypeLogin(type);
@@ -77,8 +88,10 @@ function SignInSide() {
               employeeId: user1.employeeId,
               accountId: user1.accountId
             };
-            localStorage.setItem('user', JSON.stringify(userStorage1));
-            console.log(user1.scope);
+            // console.log(userStorage1);
+            const action = saveUser(userStorage1);
+            dispatch(action);
+            // localStorage.setItem('user', JSON.stringify(userStorage1));
             toast.success('Đăng nhập thành công');
             if(user1.scope.includes("CHEF")){
               navigate('/chef/dishPreparation')

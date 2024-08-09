@@ -36,6 +36,7 @@ import DishConfirm from "../pages/staff/chef/DishConfirm"
 import DishDecline from "../pages/staff/chef/DishDecline"
 import TableAreaChef from "../pages/staff/chef/TableAreaChef"
 import DishTable from "../pages/staff/chef/DishTable"
+import BookingTable from "../pages/staff/hostess/BookingTable"
 
 const publicRoutes = [
     {path: '/login', component: SignInSide},
@@ -83,6 +84,8 @@ const waiterRoutes = [
 
 const hostessRoutes = [
     {path: '/hostess/map', component: MapHostess},
+    {path: '/hostess/map/:slug', component: MapHostess},
+    {path: '/hostess/bookingTable', component: BookingTable},
 ]
 
 const chefRoutes = [

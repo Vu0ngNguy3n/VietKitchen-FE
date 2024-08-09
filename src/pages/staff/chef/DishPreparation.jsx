@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import SockJS from "sockjs-client";
 import NavBarStaff from "../../../components/staffComponent/NavBarStaff"
 import axiosInstance from "../../../utils/axiosInstance";
-import { getUser } from "../../../utils/constant";
+import {  useUser } from "../../../utils/constant";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { RiProgress6Line } from "react-icons/ri";
 import { FaTrash } from "react-icons/fa";
@@ -20,7 +20,7 @@ function DishPreparation(){
   const [currentDish, setCurrentDish] = useState();
   const [typeDish, setTypeDish] = useState();
   const [currentStatus, setCurrentStatus] = useState("WAITING");
-  const user = getUser();
+  const user = useUser();
   const waiting = "WAITING";
   const confirm = "CONFIRM";
   const decline = "DECLINE";

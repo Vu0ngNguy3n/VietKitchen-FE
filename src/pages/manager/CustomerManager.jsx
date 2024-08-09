@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
-import { getUser } from "../../utils/constant";
+import { useUser } from "../../utils/constant";
 
 function CustomerManager() {
     const [statusTable, setStatusTable] = useState("enable");
@@ -24,10 +24,10 @@ function CustomerManager() {
     const [idCustomer,setIdCustomer] = useState('');    
     const [search, setSearch] = useState('');
     const navigate = useNavigate();
+    const user = useUser();
 
 
     useEffect(() =>{ 
-        const user = getUser();
         setRestaurantId(user.restaurantId);
 
         axiosInstance

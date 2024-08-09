@@ -4,7 +4,7 @@ import { FaEllipsisV, FaRegCalendarMinus } from "react-icons/fa"
 import { BiExport } from "react-icons/bi";
 import axiosInstance from "../../utils/axiosInstance";
 import { useEffect, useState } from "react";
-import { getUser } from "../../utils/constant";
+import {  useUser } from "../../utils/constant";
 import {formatVND} from "../../utils/format"
 import { toast } from "react-toastify";
 import HighchartsReact from "highcharts-react-official";
@@ -23,7 +23,7 @@ function Dashboard() {
     const [listTime, setListTime] = useState([])
     const [statisticRevenue, setStatisticRevenue] = useState([]);
     const [statisticRestaurant, setStatisticRestaurant] = useState([]);
-    const user = getUser();
+    const user = useUser();
 
     useEffect(() => {
         axiosInstance

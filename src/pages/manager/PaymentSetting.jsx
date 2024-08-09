@@ -8,7 +8,7 @@ import HeaderManagerDashboard from "../../components/managerComponent/HeaderMana
 import { Select } from "../../components/managerComponent/Select";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
-import { getUser } from "../../utils/constant";
+import {  useUser } from "../../utils/constant";
 import { IoIosArrowBack } from "react-icons/io";
 import { SelectBank } from "../../components/managerComponent/SelectBank";
 import _ from "lodash";
@@ -17,7 +17,7 @@ function PaymentSetting() {
 
     const navigate = useNavigate();
     const [binBank, setBinBank] = useState();
-    const user = getUser();
+    const user = useUser();
     const [listBank, setListBank] = useState([]);
     const [currentBank, setCurrentBank] = useState();
     const [customerBankName, setCustomerBankName] = useState();

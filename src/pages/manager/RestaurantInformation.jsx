@@ -9,8 +9,10 @@ import { Select } from "../../components/managerComponent/Select";
 import { IoIosArrowBack } from "react-icons/io";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
-import { getUser } from "../../utils/constant";
+import {  useUser } from "../../utils/constant";
 import { jwtDecode } from "jwt-decode";
+import { useDispatch } from "react-redux";
+import { saveUser } from "../../actions/userActions";
 
 function RestaurantInformation() {
 
@@ -20,7 +22,8 @@ function RestaurantInformation() {
     const [accountStorage, setAccountStorage] = useState();
     const [restaurantInformation, setRestaurantInformation] = useState('');
     const [address, setAddress] = useState('')
-    const user = getUser();
+    const user = useUser();
+    const dispatch = useDispatch();
 
     function handleUpdate() {
       
@@ -53,8 +56,9 @@ function RestaurantInformation() {
                             restaurantId: dataUser.restaurantId,
                             packName: dataUser.packName
                         };
-                        console.log(userStorage);
-                        localStorage.setItem("user", JSON.stringify(userStorage))
+                        // localStorage.setItem("user", JSON.stringify(userStorage))
+                        const action = saveUser(userStorage);
+                        dispatch(action);
                     })
                     .catch(err => {
                         if (err.response) {

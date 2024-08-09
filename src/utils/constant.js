@@ -1,16 +1,17 @@
+import { useSelector } from "react-redux"
+
 const TOKEN_KEY = "token"
-const USER_KEY = 'user'
 
 
 const getToken = () => {
     return localStorage.getItem(TOKEN_KEY)
 }
 
-const getUser = () => {
-    const storedUser = localStorage.getItem(USER_KEY);
-    return (storedUser ? JSON.parse(storedUser) : null)
-
+const useUser = () => {
+    // const storedUser = localStorage.getItem(USER_KEY);
+    // return (storedUser ? JSON.parse(storedUser) : null)
+    return useSelector(state => state?.user);
 }
 
 
-export {getToken, getUser}
+export {getToken, useUser}

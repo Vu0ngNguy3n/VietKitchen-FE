@@ -6,15 +6,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import { adminRoutes, chefRoutes, hostessRoutes, managerRoutes, publicRoutes, waiterRoutes } from './routes';
 import Page404 from './pages/common/Page404/Page404';
 import Main from './components/adminComponent/Main';
-import { getUser } from './utils/constant';
+import {  useUser } from './utils/constant';
 import { useEffect } from 'react';
 import { checkAuth, logoutLocalStorage } from './utils/localStorageHelper';
 axios.defaults.baseURL = "http://localhost:8080"
 
 function App() {
 
-  // const navigate = useNavigate();
-  const user = getUser();
+  const user = useUser();
 
   // useEffect(() => {
   //   if(!checkAuth()){
@@ -22,16 +21,17 @@ function App() {
   //     navigate('/login');
   //   }
   // },[navigate])
-  
+
   return (
     <BrowserRouter>
       <Routes>
 
         {publicRoutes.map((route, index) => {
+          const Page = route.component;
           return (
               <Route
-                path={route.path}
-                element={<route.component />}
+                path={route?.path}
+                element={<Page />}
                 key={index}
               />
            
@@ -40,11 +40,12 @@ function App() {
         )}
 
         {adminRoutes.map((route, index) => {
+          const Page = route.component;
           return (
             (user?.role?.includes("ROLE_ADMIN")&& 
               <Route
-                path={route.path}
-                element={<route.component />}
+                path={route?.path}
+                element={<Page />}
                 key={index}
               />
            
@@ -52,11 +53,12 @@ function App() {
         })}
 
         {managerRoutes.map((route, index) => {
+          const Page = route.component;
           return (
-              (user?.role?.includes("MANAGER") && (
+              (user?.role?.includes("ROLE_MANAGER") && (
                 <Route
-                  path={route.path}
-                  element={<route.component />}
+                  path={route?.path}
+                  element={<Page />}
                   key={index}
                 />
               ))
@@ -66,11 +68,12 @@ function App() {
         )}
 
         {waiterRoutes.map((route, index) => {
+          const Page = route.component;
           return (
-              (user?.role?.includes("WAITER") && (
+              (user?.role?.includes("ROLE_WAITER") && (
                 <Route
-                  path={route.path}
-                  element={<route.component />}
+                  path={route?.path}
+                  element={<Page />}
                   key={index}
                 />
               ))
@@ -80,11 +83,12 @@ function App() {
         )}
 
         {chefRoutes.map((route, index) => {
+          const Page = route.component;
           return (
-              (user?.role?.includes("CHEF") && (
+              (user?.role?.includes("ROLE_CHEF") && (
                 <Route
-                  path={route.path}
-                  element={<route.component />}
+                  path={route?.path}
+                  element={<Page />}
                   key={index}
                 />
               ))
@@ -94,11 +98,12 @@ function App() {
         )}
 
         {hostessRoutes.map((route, index) => {
+          const Page = route.component;
           return (
-              (user?.role?.includes("HOSTESS") && (
+              (user?.role?.includes("ROLE_HOSTESS") && (
                 <Route
-                  path={route.path}
-                  element={<route.component />}
+                  path={route?.path}
+                  element={<Page />}
                   key={index}
                 />
               ))

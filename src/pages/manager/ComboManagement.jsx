@@ -5,7 +5,7 @@ import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axiosInstance from "../../utils/axiosInstance";
-import { getUser } from "../../utils/constant";
+import { useUser } from "../../utils/constant";
 import { toast } from "react-toastify";
 
 function ComboManagement() {
@@ -24,9 +24,9 @@ function ComboManagement() {
     const [comboList, setComboList] = useState([]);
     const [comboDetail, setComboDetail] = useState(null);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const user = useUser();
 
     useEffect(() => {
-        const user = getUser();
         setUserStorage(user);
         axiosInstance
             .get(`/api/dish/account/${user.accountId}/true`)

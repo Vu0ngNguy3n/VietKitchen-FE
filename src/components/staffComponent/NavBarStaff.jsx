@@ -3,15 +3,17 @@ import { FaSearch, FaEnvelope, FaRegBell } from "react-icons/fa"
 import { useNavigate } from 'react-router'
 import profile from "../../assests/profile-user.svg"
 import { FaCartShopping } from "react-icons/fa6";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import WAITERAVATAR from "../../assests/waiterAvatar.png"
+import { clearUser } from '../../actions/userActions';
 
 
 const NavBarStaff = () => {
     const [open, setOpen] = useState(false)
     const navigate = useNavigate();
     const [userStorage, setUserStorage] = useState();
-    const cartList = useSelector(state => state.cart)
+    // const cartList = useSelector(state => state.cart)
+    const dispatch = useDispatch();
 
     useEffect(() =>{
         const storedUser = localStorage.getItem('user');
@@ -26,7 +28,9 @@ const NavBarStaff = () => {
 
     const handleLogout = ( ) => {
         localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        // localStorage.removeItem('user');
+        const action = clearUser();
+        dispatch(action);
         navigate('/login')
     }
 

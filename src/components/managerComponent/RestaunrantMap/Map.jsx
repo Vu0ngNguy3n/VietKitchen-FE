@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDrop } from "react-dnd";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
-import { getUser } from "../../../utils/constant";
+import { useUser } from "../../../utils/constant";
 import Table from "./Table";
 import {  FaPlus } from "react-icons/fa";
 import REACTANGE4 from "../../../assests/reactange4.png"
@@ -19,7 +19,7 @@ const Map = () => {
     const [board, setBoard] = useState([]);
     const [isEnableSave, setIsEnableSave] = useState(false);
     const [areaList, setAreaList] = useState([])
-    const user = getUser();
+    const user = useUser();
     const [currentArea, setCurrentArea] = useState();
     const [userStorage, setUserStorage] = useState();
     const [areaName, setAreaName] = useState('');
