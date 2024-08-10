@@ -41,12 +41,16 @@ function SignInSide() {
   };
 
   const handleOpenPop = () =>{
-   
+    if(email.trim() === '' || password.trim() === ''){
+      toast.warn("Email hoặc mật khẩu không dược để trống")
+      return
+    }
 
     const userLogin = {
       email: email.trim(),
       password: password.trim(),
     };
+   
     
     axios
     .post('/api/account/login', userLogin)
