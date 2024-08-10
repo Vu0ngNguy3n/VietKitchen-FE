@@ -212,7 +212,7 @@ function DishesManagement() {
         axiosInstance
         .put(`/api/dish/${+hideDish?.id}`, result)
         .then(res => {
-            toast.success(`Ẩn món ăn ${hideDish?.name} thành công`)
+            toast.success(`${statusDish === true ? "Ẩn" : "Hiện"} món ăn ${hideDish?.name} thành công`)
             setHideDish();
             setIsReRender(!isReRender)
             handleCloseHidePopUp();

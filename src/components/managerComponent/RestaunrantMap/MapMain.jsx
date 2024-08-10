@@ -521,7 +521,7 @@ const MapMain = () => {
                                 <div className="flex justify-center">
                                     <div
                                         className="relative bg-white border-gray-300 shadow-lg flex flex-wrap justify-between px-4 pt-4"
-                                        style={{ width: "90%", height: "500px" }}
+                                        style={{ width: "90%"}}
                                     >
                                         {board?.map((table, index) => (
                                             <div 
