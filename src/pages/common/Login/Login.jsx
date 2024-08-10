@@ -7,6 +7,7 @@ import {jwtDecode} from 'jwt-decode';
 import { toast } from 'react-toastify';
 import axiosInstance from '../../../utils/axiosInstance';
 import { useDispatch } from 'react-redux';
+import Cookies from 'js-cookie';
 import { clearUser, saveUser } from '../../../actions/userActions';
 
 function SignInSide() {
@@ -33,10 +34,10 @@ function SignInSide() {
 
   const handleChangeTypeLogin = (type) => {
     setTypeLogin(type);
+    if(type === 1){
+      setEmail('');
+    }
     setPassword('');
-    setEmail('');
-    setPhoneNumber('');
-    setStaffUsername('');
   };
 
   const handleOpenPop = () =>{
@@ -68,6 +69,15 @@ function SignInSide() {
     });
   }
 
+  useEffect(() => {
+    if(typeLogin === 2){
+      const restaurantPhoneCookies = Cookies.get(`restaurantPhone`);
+      setPhoneNumber(restaurantPhoneCookies || '');
+      const staffUsernameCookies = Cookies.get(`staffUsername`);
+      setStaffUsername(staffUsernameCookies || '');
+    }
+  },[typeLogin])
+
   const handleLogin = async () => {
     if(typeLogin === 2){
         const employee = {
@@ -91,6 +101,8 @@ function SignInSide() {
             // console.log(userStorage1);
             const action = saveUser(userStorage1);
             dispatch(action);
+            Cookies.set("restaurantPhone", phoneNumber, {expires: 7});
+            Cookies.set("staffUsername", staffUsername, {expires: 7});
             // localStorage.setItem('user', JSON.stringify(userStorage1));
             toast.success('Đăng nhập thành công');
             if(user1.scope.includes("CHEF")){

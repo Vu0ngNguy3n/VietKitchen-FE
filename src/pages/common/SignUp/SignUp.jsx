@@ -13,17 +13,14 @@ function SignUp() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [isSpinning, setIsSpinning] = useState(false);
-  const [isDisableInput, setIsDisableInput] = useState(false)
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [isValidPhone, setIsValidPhone] = useState(true);
-  const [counter, setCounter] = useState(60);
   const [isOpenPop, setIsOpenPop] = useState(false);
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const inputs = useRef([]);
   const initialTime = 60;
   const [timeLeft, setTimeLeft] = useState(initialTime);
-
+  const [isShow, setIsShow] = useState(false);
 
   const anonymizeEmail = (email) => {
     const [localPart, domain] = email.split('@');
@@ -107,7 +104,7 @@ function SignUp() {
     setIsValidEmail(isValidEmailSpan)
     const isValidPhoneSpan = validator.isMobilePhone(phoneNumber, 'vi-VN');
     setIsValidPhone(isValidPhoneSpan)
-
+    setIsShow(true);
     if (isValidEmail && isValidPhone) {
       if (username.trim() === '') {
         toast.warn("Họ và tên đang để trống")
@@ -237,6 +234,11 @@ function SignUp() {
               onChange={(e) => setUsername(e.target.value)}
               className="w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none  transition duration-500 ease-in-out  focus:outline-none focus:border-blue-700"
             />
+            {isShow && username?.length === 0 && (
+              <p className="mt-2 text-sm text-red-500" id="email-error">
+                Họ và tên không được để trống.
+              </p>
+            )}
             <input
               type="email"
               placeholder="Email"
@@ -268,6 +270,11 @@ function SignUp() {
               onChange={e => setPassword(e.target.value)}
               className="w-full text-black py-2 my-2 bg-transparent border-b border-black  transition duration-500 ease-in-out outline-none focus:outline-none focus:border-blue-700"
             />
+            {isShow &&password?.length === 0 && (
+              <p className="mt-2 text-sm text-red-500" id="email-error">
+                Mật khẩu không được để trống.
+              </p>
+            )}
             <input
               type="password"
               placeholder="Xác nhận mật khẩu"
@@ -275,6 +282,11 @@ function SignUp() {
               onChange={e => setConfirmPassword(e.target.value)}
               className="w-full text-black py-2 my-2 bg-transparent border-b border-black  transition duration-500 ease-in-out outline-none focus:outline-none focus:border-blue-700"
             />
+            {(isShow && password !== confirmPassword) && (
+              <p className="mt-2 text-sm text-red-500" id="email-error">
+                Mật khẩu không trùng khớp.
+              </p>
+            )}
           </div>
 
 

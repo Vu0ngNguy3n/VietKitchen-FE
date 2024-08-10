@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { clearCustomer, saveCustomer } from "../../../actions/customerActions";
 import { clearOrderId, saveOrderId } from "../../../actions/orderActions";
 import { clearState } from "../../../utils/localStorageHelper";
+import { FaLocationDot } from "react-icons/fa6";
 
 
 function MapWaiter(){
@@ -134,7 +135,7 @@ function MapWaiter(){
                                         onClick={() => handleChangeArea(area)}
                                         key={index}>
                                         <div className='flex items-center gap-[10px]'>
-                                            <BiSolidDish color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>{area?.name}</p>
+                                            <FaLocationDot color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>{area?.name}</p>
                                         </div>
                                         {/* <FaChevronRight color='white' /> */}
                                     </div>
