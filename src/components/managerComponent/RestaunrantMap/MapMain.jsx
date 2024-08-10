@@ -189,6 +189,7 @@ const MapMain = () => {
                         areaId: +currentArea,
                         positionX: 0,
                         positionY: 0,
+                        restaurantId: user?.restaurantId
                     }
 
                     axiosInstance
