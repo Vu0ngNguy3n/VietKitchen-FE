@@ -394,7 +394,7 @@ function Menu(){
                                 </div>
                               </div>
                               <div className="w-[10%]"></div>
-                              <PiPencilSimpleLineBold className="cursor-pointer"/>
+                              {/* <PiPencilSimpleLineBold className="cursor-pointer"/> */}
 
                             </div>
                             <div className="h-full flex items-center justify-between w-[49%] py-2 px-3 bg-slate-300 mr-2 shadow-md rounded-sm">
@@ -406,7 +406,7 @@ function Menu(){
                                 </div>
                               </div>
                               <div className="w-[10%]"></div>
-                              <PiPencilSimpleLineBold className="cursor-pointer"/>
+                              {/* <PiPencilSimpleLineBold className="cursor-pointer"/> */}
 
                             </div>
                         </div>

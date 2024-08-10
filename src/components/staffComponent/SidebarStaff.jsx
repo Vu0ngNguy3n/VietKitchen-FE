@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import LOGO from "../../assests/VIET.png"
-import { FaFileInvoiceDollar, FaUserAlt, FaWrench, FaListAlt , FaStickyNote, FaRegChartBar, FaRegCalendarAlt, FaChevronRight, FaChevronLeft, FaBolt, FaUserFriends, FaMap } from "react-icons/fa"
-import { MdCategory } from "react-icons/md";
-import { BiSolidDish } from "react-icons/bi";
 import { useNavigate } from 'react-router'
-import { PiUniteFill } from "react-icons/pi";
-import { IoSettings } from "react-icons/io5";
 import { useUser } from '../../utils/constant';
 import axiosInstance from '../../utils/axiosInstance';
 import { toast } from 'react-toastify';
+import { FaLocationDot } from 'react-icons/fa6';
 
 
 const SidebarStaff = () => {
@@ -44,6 +40,7 @@ const SidebarStaff = () => {
                 <h1 className='text-white text-[20px] leading-[24px] font-extrabold cursor-pointer'> VietKitchen</h1>
             </div>
             
+            
             <div className='pt-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
                 <p className='text-[10px] font-extrabold leading-[16px] text-white/[0.4]'> Mặt hàng</p>
                 {category?.map((cate, index) => {
@@ -52,7 +49,7 @@ const SidebarStaff = () => {
                             onClick={() => navigate(`/waiter/menu/${cate?.code}`)} 
                             key={index}>
                             <div className='flex items-center gap-[10px]'>
-                                <BiSolidDish color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>{cate?.name}</p>
+                                <FaLocationDot color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>{cate?.name}</p>
                             </div>
                             {/* <FaChevronRight color='white' /> */}
                         </div>
@@ -60,23 +57,8 @@ const SidebarStaff = () => {
                 })}
 
                 
-                
-                {/* <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'
-                    onClick={() => navigate("/manager/categories")}>
-                    <div className='flex items-center gap-[10px]'>
-                        <MdCategory color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Thực đơn</p>
-                    </div>
-                    {/* <FaChevronRight color='white' /> */}
-                {/* </div> */}
-                {/* <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'
-                    onClick={() => navigate("/manager/combos")}>
-                    <div className='flex items-center gap-[10px]'>
-                        <FaListAlt  color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Combo</p>
-                    </div>
-                </div> 
-                */}
-                
             </div>
+            
             
         </div>
     )
