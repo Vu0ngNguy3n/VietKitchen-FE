@@ -179,10 +179,6 @@ function SignUp() {
           toast.success("Đăng ký thành công");
           navigate("/login")
         }
-        // if (data.code === 200) {
-        //   toast.success("Đăng ký thành công");
-        //   navigate("/login")
-        // }
       })
       .catch(err => {
         if (err.response) {
