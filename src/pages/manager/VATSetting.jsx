@@ -65,7 +65,7 @@ function VATSetting() {
     }
 
     const handleUpdateVAT = () => {
-        if(vatName.trim() === '' || vat.trim() === ''){
+        if(vatName.trim() === '' || vat === ''){
             toast.warn("Thông tin thuế không dược để trống")
         }else{
             const request = {
