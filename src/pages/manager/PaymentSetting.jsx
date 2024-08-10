@@ -19,9 +19,9 @@ function PaymentSetting() {
     const [binBank, setBinBank] = useState();
     const user = useUser();
     const [listBank, setListBank] = useState([]);
-    const [currentBank, setCurrentBank] = useState();
-    const [customerBankName, setCustomerBankName] = useState();
-    const [customerBankNumber, setCustomerBankNumber] = useState();
+    const [currentBank, setCurrentBank] = useState('');
+    const [customerBankName, setCustomerBankName] = useState('');
+    const [customerBankNumber, setCustomerBankNumber] = useState('');
     const [restaurantData, setRestaurantData] = useState();
 
     useEffect(() => {
@@ -110,6 +110,10 @@ function PaymentSetting() {
 
 
     const handleUpdateBank = () => {
+        if(customerBankName.trim() === '' || customerBankNumber.trim() === '' || !binBank){
+            toast.warn("Thông tin thanh toán không được để trống!")
+            return
+        }
         const data = {
             account_NO: customerBankNumber,
             account_NAME: customerBankName,

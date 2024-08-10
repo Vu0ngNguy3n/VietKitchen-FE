@@ -21,7 +21,7 @@ function VATSetting() {
     const [address, setAddress] = useState('');
     const [branch, setBranch] = useState('');
     const [numberRegister, setNumberRegister] = useState('');
-    const [restaurantInformation, setRestaurantInformation] = useState();
+    const [restaurantInformation, setRestaurantInformation] = useState('');
     const user = useUser();
 
     useEffect(() => {
