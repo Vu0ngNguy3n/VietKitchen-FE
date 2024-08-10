@@ -167,14 +167,22 @@ function SignUp() {
       otp: otpString
     }
 
-    axios
+    if(otpString?.length === 6 ){
+      axios
       .post("/api/account/verify", verifyAccount)
       .then(res => {
         const data = res.data;
-        if (data.code === 200) {
+        console.log(data);
+        if(data.message === "Verify failed"){
+          toast.error("Mã xác thực sai!")
+        }else{
           toast.success("Đăng ký thành công");
           navigate("/login")
         }
+        // if (data.code === 200) {
+        //   toast.success("Đăng ký thành công");
+        //   navigate("/login")
+        // }
       })
       .catch(err => {
         if (err.response) {
@@ -193,6 +201,9 @@ function SignUp() {
         }
       })
 
+    }else{
+      toast.error("Mã xác nhận không được để trống")
+    }
   }
 
 
