@@ -128,11 +128,11 @@ function Ordering() {
                                 {oldCart?.map((d,index) => {
                                   return (                                                        
                                     <a href="#" class="w-[40%] mt-8 flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
-                                        <img class="object-cover ml-2 w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src={d?.dish.imageUrl} alt=""/>
+                                        <img class="object-cover ml-2 w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src={d?.dish?.imageUrl || d?.combo?.imageUrl} alt=""/>
                                         <div class="flex flex-col p-4 leading-normal">
 
-                                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{d?.dish.name}</h5>
-                                            <p class=" mb-3 font-normal text-gray-700 dark:text-gray-400">Số lượng: {d?.quantity} {d?.dish.unit.name}</p>
+                                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{d?.dish?.name || d?.combo?.name}</h5>
+                                            <p class=" mb-3 font-normal text-gray-700 dark:text-gray-400">Số lượng: {d?.quantity} {d?.dish?.unit?.name ? d?.dish?.unit?.name : "combo"}</p>
                                             <p class={`mb-3 font-normal text-gray-700 dark:text-gray-400`}>
                                               {/* Trạng thái: {d?.status}  */}
                                                 {d?.status === "WAITING" && <span class="flex items-center bg-[#F6FB7A]  px-2 py-1 rounded-lg">
@@ -159,10 +159,10 @@ function Ordering() {
                                  {messages?.map((d, index) =>  {
                                     return (
                                       <a key={index} class="w-[40%] mt-8 flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
-                                        <img class="object-cover ml-2 w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src={d?.dish?.imageUrl} alt=""/>
+                                        <img class="object-cover ml-2 w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src={d?.dish?.imageUrl || d?.combo?.imageUrl} alt=""/>
                                         <div class="flex flex-col p-4 leading-normal">
-                                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{d?.dish?.name}</h5>
-                                            <p class=" mb-3 font-normal text-gray-700 dark:text-gray-400">Số lượng: {d?.quantity} {d?.dish?.unit.name}</p>
+                                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{d?.dish?.name || d?.combo?.name}</h5>
+                                            <p class=" mb-3 font-normal text-gray-700 dark:text-gray-400">Số lượng: {d?.quantity} {d?.dish?.unit?.name ? d?.dish?.unit?.name  : "combo"}</p>
                                             <p class=" mb-3 font-normal dark:text-gray-400 text-green">Trạng thái: {d?.status} </p>
                                         </div>
                                     </a>

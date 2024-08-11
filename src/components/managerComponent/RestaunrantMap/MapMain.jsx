@@ -44,6 +44,7 @@ const MapMain = () => {
     
     useEffect(() => {
         setUserStorage(user);
+        console.log(user);
         axiosInstance
         .get(`/api/area/${user?.restaurantId}`)
         .then(res =>{ 
@@ -70,7 +71,7 @@ const MapMain = () => {
         .then(res => {
             const data = res.data.result;
             setTypeTableList(data);
-            setCurrentTypeTable(data[0].id)
+            setCurrentTypeTable(data[0]?.id)
         })
         .catch(err => {
                     if (err.response) {

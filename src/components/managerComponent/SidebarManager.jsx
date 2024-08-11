@@ -75,12 +75,12 @@ const SidebarManager = () => {
                     </div>
                     {/* <FaChevronRight color='white' /> */}
                 </div>
+                
                 <div className={`flex items-center justify-between gap-[10px] ${path?.includes('/manager/combos')&&"bg-secondary"} py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
                     onClick={() => navigate("/manager/combos")}>
                     <div className='flex items-center gap-[10px]'>
                         <FaListAlt  color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Combo</p>
                     </div>
-                    {/* <FaChevronRight color='white' /> */}
                 </div>
                
                 

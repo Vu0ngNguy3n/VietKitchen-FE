@@ -15,8 +15,11 @@ const cartReducer = (state = [], action) => {
 
         case "INCREASE_DISH_QUANTITY": {
             const dishes = [...state];
-            const index = dishes.findIndex((dish) => dish.dishId === action.payload);
-
+            // const index = dishes.findIndex((dish) => (dish.dishId === action.payload));
+            const data = action.payload;
+            const index = dishes.findIndex(dish => {
+                return dish.dishId === data.dishId && dish.comboId === data.comboId
+            })
             if (index !== -1) {
                 dishes[index].quantity += 1;
             }
@@ -26,7 +29,10 @@ const cartReducer = (state = [], action) => {
         
         case "REDUCE_DISH_QUANTITY": {
             const dishes = [...state];
-            const index = dishes.findIndex((dish) => dish.dishId === action.payload.dishId);
+            const data = action.payload;
+            const index = dishes.findIndex(dish => {
+                return dish.dishId === data.dishId && dish.comboId === data.comboId
+            })
 
             if (index !== -1 && dishes[index].quantity > 1) {
                 dishes[index].quantity -= 1;
@@ -36,7 +42,10 @@ const cartReducer = (state = [], action) => {
         }
 
          case "REMOVE_DISH": {
-             return state.filter((dish) => dish.dishId !== action.payload);
+            const data = action.payload;
+             return state.filter((dish) => {
+                 return dish.dishId === data.dishId && dish.comboId === data.comboId
+             });
         }
 
         case "CLEAR_CART": {
