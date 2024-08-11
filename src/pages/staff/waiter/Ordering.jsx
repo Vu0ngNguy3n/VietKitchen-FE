@@ -163,7 +163,7 @@ function Ordering() {
                                         <div class="flex flex-col p-4 leading-normal">
                                             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{d?.dish?.name}</h5>
                                             <p class=" mb-3 font-normal text-gray-700 dark:text-gray-400">Số lượng: {d?.quantity} {d?.dish?.unit.name}</p>
-                                            <p class=" mb-3 font-normal text-gray-700 dark:text-gray-400 text-green">Trạng thái: {d?.status} </p>
+                                            <p class=" mb-3 font-normal dark:text-gray-400 text-green">Trạng thái: {d?.status} </p>
                                         </div>
                                     </a>
                                     )

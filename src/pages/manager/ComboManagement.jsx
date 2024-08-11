@@ -5,8 +5,10 @@ import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axiosInstance from "../../utils/axiosInstance";
+import {formatVND} from "../../utils/format"
 import { useUser } from "../../utils/constant";
 import { toast } from "react-toastify";
+import { NumericFormat } from "react-number-format";
 
 function ComboManagement() {
     const navigate = useNavigate();
@@ -79,7 +81,8 @@ function ComboManagement() {
     };
     const handleChangePrice = (price) => {
         if(!isNaN(price) && price > 0){
-            setComboPrice(price)
+             const numericValue = price.replace(/[^0-9]/g, '');
+            setComboPrice(numericValue);
         }
     }
 
@@ -320,16 +323,16 @@ function ComboManagement() {
                                             <span className="sr-only">Image</span>
                                         </th>
                                         <th scope="col" className="px-6 py-3">
-                                            Product
+                                            Tên món ăn
                                         </th>
                                         <th scope="col" className="px-6 py-3">
-                                            Price
+                                            Giá
                                         </th>
                                         <th scope="col" className="px-6 py-3">
-                                            Description
+                                            Miêu tả
                                         </th>
                                         <th scope="col" className="px-6 py-3">
-                                            Action
+                                            
                                         </th>
                                     </tr>
                                 </thead>
@@ -343,7 +346,7 @@ function ComboManagement() {
                                                 {combo?.comboName}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {combo?.comboPrice}
+                                                {formatVND(combo?.comboPrice)}
                                             </td>
                                             <td className="px-6 py-4">
                                                 {combo?.description}
@@ -406,14 +409,23 @@ function ComboManagement() {
                             <label htmlFor="combo-price" className="block mb-2">
                                 Giá Combo <span className="text-red-500">*</span>
                             </label>
-                            <input
+                            <NumericFormat
+                                value={comboPrice}
+                                thousandSeparator=","
+                                displayType="input"
+                                placeholder="Giá combo"
+                                suffix=" VNĐ"
+                                onValueChange={(values) => handleChangePrice(values.value)}
+                                className="w-full px-3 py-2 border rounded-md"
+                            />
+                            {/* <input
                                 id="combo-price"
                                 type="text"
                                 placeholder="Giá Combo"
                                 value={comboPrice}
                                 onChange={e => handleChangePrice(e.target.value)}
                                 className="w-full px-3 py-2 border rounded-md"
-                            />
+                            /> */}
                         </div>
                         <div className="mb-2">
                             <label htmlFor="combo-description" className="block mb-2">
