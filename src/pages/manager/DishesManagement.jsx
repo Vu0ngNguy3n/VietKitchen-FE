@@ -7,6 +7,7 @@ import { useUser } from "../../utils/constant";
 import { toast } from "react-toastify";
 import {formatVND} from "../../utils/format"
 import { FaSearch } from "react-icons/fa";
+import { NumericFormat } from "react-number-format";
 
 
 function DishesManagement() {
@@ -255,7 +256,8 @@ function DishesManagement() {
 
     const handleChangePrice = (price) => {
         if(!isNaN(price) && (price >0 )){
-            setPrice(price)
+            const numericValue = price.replace(/[^0-9]/g, '');
+            setPrice(numericValue);
         }
     }
 
@@ -389,14 +391,23 @@ function DishesManagement() {
                                     </div>
                                     <div className="mb-2">
                                         <label htmlFor="dish-price" className="block mb-2">Giá món ăn <span className="text-red-600">*</span></label>
-                                        <input
+                                        <NumericFormat
+                                            value={price}
+                                            thousandSeparator=","
+                                            displayType="input"
+                                            placeholder="Giá món ăn"
+                                            suffix=" VNĐ"
+                                            onValueChange={(values) => handleChangePrice(values.value)}
+                                            className="w-full px-3 py-2 border rounded-md"
+                                        />
+                                        {/* <input
                                             id="dish-price"
                                             type="text"
                                             placeholder="Giá món ăn"
                                             value={price}
                                             onChange={e => handleChangePrice(e.target.value)}
                                             className="w-full px-3 py-2 border rounded-md"
-                                        />
+                                        /> */}
                                     </div>
 
                                     <div className="mb-2 flex" >
@@ -486,7 +497,7 @@ function DishesManagement() {
                                     {dishesListDisplay?.map((dish, index) => (
                                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" key={index}>
                                             <td class="p-4">
-                                                <img src={dish?.imageUrl} class="w-16 md:w-32 max-w-full max-h-full" alt={dish?.code} />
+                                                <img src={dish?.imageUrl} class=" w-16 h-16 object-cover rounded-md" alt={dish?.code} />
                                             </td>
                                             <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
                                                 {dish?.name}
