@@ -67,6 +67,7 @@ function PaymentSetting() {
     useEffect(() => {
         const currentBankName = listBank?.find(b => b?.bin === binBank);
         setCurrentBank(currentBankName?.name);
+        console.log(binBank);
     },[binBank])
 
     const handleDebouncedChange = useCallback(
@@ -110,16 +111,16 @@ function PaymentSetting() {
 
 
     const handleUpdateBank = () => {
-        if(customerBankName.trim() === '' || customerBankNumber.trim() === '' || !binBank){
+        if(customerBankName === '' || customerBankNumber === '' || !binBank){
             toast.warn("Thông tin thanh toán không được để trống!")
             return
         }
         const data = {
             account_NO: customerBankNumber,
             account_NAME: customerBankName,
-            bank_ID: binBank?.bin
+            bank_ID: binBank
         }
-        
+        console.log(data);
         axiosInstance
         .put(`/api/restaurant/manager/payment/${user?.accountId}`, data)
         .then(res => {

@@ -58,6 +58,7 @@ function DishPreparation(){
           const oldData = JSON.parse(message.body); 
           const newData = [];
           // toast.warn("Có món ăn mới được gọi")
+          console.log(message);
           oldData.forEach(data => newData.push(data));
           setMessages(prevMessages => [...prevMessages, ...newData]);
         });
@@ -230,7 +231,7 @@ function DishPreparation(){
                                   return (
                                     <tr className={`bg-white border-b dark:bg-gray-800 dark:border-gray-700 ${(d?.status === confirm || d?.status === decline) && "hidden"}`} key={index}>
                                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {d?.dish?.name}
+                                                {d?.dish?.name || d?.combo?.name}
                                             </th>
                                             <td className="px-6 py-4">
                                                 {d?.order?.tableRestaurant?.name}
@@ -239,7 +240,7 @@ function DishPreparation(){
                                                 {d?.quantity}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {d?.dish?.unit?.name}
+                                                {d?.dish?.unit?.name }
                                             </td>
                                             <td className={`px-6 py-4 `} >
                                                 <div 

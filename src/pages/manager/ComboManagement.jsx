@@ -111,8 +111,8 @@ function ComboManagement() {
             .then((res) => res.json())
             .then((data) => {
                 const resultCombo = {
-                    comboName,
-                    comboPrice,
+                    name: comboName,
+                    price: comboPrice,
                     description,
                     imageUrl: data.url,
                     status: true,
@@ -172,8 +172,8 @@ function ComboManagement() {
 
         const updatedCombo = {
             id: currentCombo.id,
-            comboName,
-            comboPrice,
+            name: comboName,
+            price: comboPrice,
             description,
             status: true,
             dishIds: selectedDishes.map(dish => dish.id)
@@ -343,10 +343,10 @@ function ComboManagement() {
                                                 <img src={combo?.imageUrl} alt={combo?.comboName} className="w-16 h-16 object-cover rounded-md" />
                                             </td>
                                             <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                                                {combo?.comboName}
+                                                {combo?.name}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {formatVND(combo?.comboPrice)}
+                                                {formatVND(combo?.price)}
                                             </td>
                                             <td className="px-6 py-4">
                                                 {combo?.description}

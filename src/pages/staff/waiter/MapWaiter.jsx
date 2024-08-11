@@ -99,9 +99,9 @@ function MapWaiter(){
                 dispatch(actionCustomer);
                 const actionOrderId = saveOrderId(dataOrderId);
                 dispatch(actionOrderId)
-                navigate("/waiter/menu/hai-san")
+                navigate("/waiter/menu/all")
            }else{
-                navigate("/waiter/menu/hai-san")
+                navigate("/waiter/menu/all")
            }
             
         })

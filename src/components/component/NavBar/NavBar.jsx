@@ -7,6 +7,7 @@ import { Link } from "react-scroll";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { clearUser } from "../../../actions/userActions";
+import { useUser } from "../../../utils/constant";
 
 
 
@@ -15,10 +16,11 @@ const NavBar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [userStorage, setUserStorage] = useState();
     const dispatch = useDispatch();
+    const user = useUser();
 
     useEffect(() =>{
-        const storedUser = localStorage.getItem('user');
-        const user = storedUser ? JSON.parse(storedUser) : null
+        // const storedUser = localStorage.getItem('user');
+        // const user = storedUser ? JSON.parse(storedUser) : null
         setUserStorage(user);
     },[])
 

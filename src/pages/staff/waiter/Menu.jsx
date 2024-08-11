@@ -172,22 +172,41 @@ function Menu(){
 
 
     useEffect(() => {
-        axiosInstance
-        .get(`/api/dish/category/${slug}`)
-        .then(res => {
-            const data = res.data;
-            setDishesList(data.result);
-        })
-        .catch((err) => {
-          if (err.response) {
-            const errorRes = err.response.data;
-            toast.error(errorRes.message);
-          } else if (err.request) {
-            toast.error(err.request);
-          } else {
-            toast.error(err.message);
-          }
-        });
+        if(slug === "combo"){
+          axiosInstance
+          .get(`/api/combos/getAllCombos`)
+          .then(res => {
+              const data = res.data;
+              setDishesList(data);
+          })
+          .catch((err) => {
+            if (err.response) {
+              const errorRes = err.response.data;
+              toast.error(errorRes.message);
+            } else if (err.request) {
+              toast.error(err.request);
+            } else {
+              toast.error(err.message);
+            }
+          });
+        }else{
+          axiosInstance
+          .get(`/api/dish/category/${slug}`)
+          .then(res => {
+              const data = res.data;
+              setDishesList(data.result);
+          })
+          .catch((err) => {
+            if (err.response) {
+              const errorRes = err.response.data;
+              toast.error(errorRes.message);
+            } else if (err.request) {
+              toast.error(err.request);
+            } else {
+              toast.error(err.message);
+            }
+          });
+        }
 
 
 
@@ -197,14 +216,14 @@ function Menu(){
 
     const handleAddDish = (dish) => {
         let dishAdd;
-        if(!dish?.name){
+        if(dish?.dishes){
             dishAdd = {
                 dishId: null,
-                name: dish?.comboName,
+                name: dish?.name,
                 code: null,
                 weight: null,
                 description: dish?.description,
-                price: dish?.comboPrice,
+                price: dish?.price,
                 imageUrl: dish?.imageUrl,
                 comboId: dish?.id
             }
@@ -223,25 +242,21 @@ function Menu(){
 
         const action = addToCart(dishAdd);
         dispatch(action);
-        toast.success('add success')
     }
 
     const handleIncreaseDish = (id) => {
         const action = increaseDishQuantity(id);
         dispatch(action);
-        toast("Increase success")
     }
 
     const handleDecreaseDish = (dish) => {
         const action = reduceDish(dish);
         dispatch(action);
-        toast("decrease success")
     }
 
     const handleRemoveDish = (id) => {
       const action = removeDish(id);
       dispatch(action);
-      toast("Remove success");
     }
 
     const handleEnterTable = () => {
@@ -279,7 +294,7 @@ function Menu(){
                       }
                     });
         } else {
-          toast("User not exist");
+          toast("Khách hàng không tồn tại, vui lòng tạo thông tin!");
         }
       })
       .catch((err) => {
@@ -313,7 +328,6 @@ function Menu(){
         address: address,
         restaurantId: user?.restaurantId
       }
-      console.log(customerAdd);
        axiosInstance
                 .post(`/api/customers/create`, customerAdd)
                 .then(res => {
@@ -366,6 +380,7 @@ function Menu(){
     const handleClearCart = ( ) => {
       const action = clearCart();
       dispatch(action);
+
     }
 
     const handleCloseCreatePop = () => {
@@ -514,7 +529,6 @@ function Menu(){
                           {dishesList?.map((d, index) => {
                               return (
                                 <a 
-                                    href="#"
                                     className="w-full md:w-1/2 flex flex-col items-center md:flex-row"
                                     key={index}
                                     onClick={() => handleAddDish(d)}
@@ -563,16 +577,16 @@ function Menu(){
                                       <div className="w-full flex justify-around mt-2 items-center pb-2">
                                         <div 
                                             className="w-1/4 p-2 border-2 flex justify-center bg-white shadow-sm mb cursor-pointer"
-                                            onClick={() => handleDecreaseDish(cart)}
+                                            onClick={() => handleDecreaseDish({dishId: cart?.dishId, comboId: cart?.comboId})}
                                             ><FaMinus className="size-3" /></div>
                                         <div
                                             className="w-1/4 p-2 border-2 flex justify-center bg-white shadow-sm mb cursor-pointer"
-                                            onClick={() => handleIncreaseDish(cart?.dishId)}
+                                            onClick={() => handleIncreaseDish({dishId: cart?.dishId, comboId: cart?.comboId})}
                                         ><FaPlus className="size-3"/></div>
                                         {/* <div className="w-1/6 p-2 border-2 flex justify-center bg-white shadow-sm mb cursor-pointer"><CiEdit/></div> */}
                                         <div 
                                           className="w-1/4 p-2 border-2 flex justify-center bg-white shadow-sm mb cursor-pointer"
-                                          onClick={() => handleRemoveDish(cart?.dishId)}
+                                          onClick={() => handleRemoveDish({dishId: cart?.dishId, comboId: cart?.comboId})}
                                           ><FaTrash className="size-3"/></div>
                                       </div>
                                     </div>

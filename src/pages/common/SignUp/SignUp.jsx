@@ -202,6 +202,7 @@ function SignUp() {
     }
   }
 
+  
 
   const handleEmailChange = (e) => {
     const inputEmail = e.target.value;

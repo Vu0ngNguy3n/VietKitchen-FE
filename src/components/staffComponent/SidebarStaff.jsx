@@ -5,6 +5,7 @@ import { useUser } from '../../utils/constant';
 import axiosInstance from '../../utils/axiosInstance';
 import { toast } from 'react-toastify';
 import { FaLocationDot } from 'react-icons/fa6';
+import { BiSolidDish } from 'react-icons/bi';
 
 
 const SidebarStaff = () => {
@@ -43,18 +44,30 @@ const SidebarStaff = () => {
             
             <div className='pt-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
                 <p className='text-[10px] font-extrabold leading-[16px] text-white/[0.4]'> Mặt hàng</p>
+                <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'
+                    onClick={() => navigate(`/waiter/menu/all`)}>
+                    <div className='flex items-center gap-[10px]'>
+                        <BiSolidDish color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Tất cả</p>
+                    </div>
+                </div>
                 {category?.map((cate, index) => {
                     return (
                         <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'
                             onClick={() => navigate(`/waiter/menu/${cate?.code}`)} 
                             key={index}>
                             <div className='flex items-center gap-[10px]'>
-                                <FaLocationDot color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>{cate?.name}</p>
+                                <BiSolidDish color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>{cate?.name}</p>
                             </div>
                             {/* <FaChevronRight color='white' /> */}
                         </div>
                     )
                 })}
+                <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'
+                    onClick={() => navigate(`/waiter/menu/combo`)}>
+                    <div className='flex items-center gap-[10px]'>
+                        <BiSolidDish color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Combo</p>
+                    </div>
+                </div>
 
                 
             </div>

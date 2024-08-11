@@ -76,6 +76,9 @@ function StaffManager() {
             })
     },[isAddEmployee])
 
+    const handleChangePhoneNumber = (value) => {
+        
+    }
     
     const handleOpenPopup = () => {
         setIsCreate(true);
