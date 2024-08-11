@@ -48,6 +48,7 @@ function Payment() {
                 setOrderDetail(data);
                 setCustomerPoint(data.customer.point)
                 setRequireMoney(data.totalMoney)
+                console.log(data);
             })
             .catch((err) => {
             if (err.response) {
@@ -144,7 +145,6 @@ function Payment() {
             total: requireMoney,
             methodPayment: isQR?"BANKING":"MONEY"
         }
-        console.log(dataBill);
         
         axiosInstance
         .post(`/api/bill/create/order/${orderId}`, dataBill)
@@ -248,7 +248,7 @@ function Payment() {
                         <div className="p-2">
                             <div className="bg-slate-300 w-full rounded-sm py-4 font-semibold opacity-60 mb-2">
                                 <div className="flex justify-between px-2 items-center">
-                                    <span>Tổng tiền {'('}5{')'}</span>
+                                    <span>Tổng tiền {'('}{orderDetail?.totalDish}{')'}</span>
                                     <span>{formatVND(requireMoney)}</span>
                                 </div>
                             </div>

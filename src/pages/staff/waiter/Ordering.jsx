@@ -28,6 +28,7 @@ function Ordering() {
   const [totalMoney, setTotalMoney] = useState();
   const user = useUser();
   const table = useSelector(state => state.table);
+  const [isEnablePayment, setIsEnablePayment] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -85,26 +86,34 @@ function Ordering() {
 
   useEffect(() => {
     let requireMoney = 0;
+    let statusConfirm = true;
     oldCart?.forEach(d => {
       if(d?.status !== "DECLINE"){
-        requireMoney+=(d?.dish?.price * d?.quantity)
+        requireMoney+=((d?.dish?.price || d?.combo?.price) * d?.quantity)
+      }
+      if(d?.status === "WAITING" || d?.status === "PREPARE"){
+        statusConfirm = false;
       }
     })
-    console.log(requireMoney);
+    setIsEnablePayment(statusConfirm)
     setTotalMoney(requireMoney)
   },[oldCart])
 
-  const handleNavigatePayment = () => {
-    
+  const handlePayment = () => {
+    if(isEnablePayment){
+      navigate("/waiter/payment")
+    }else{
+      toast.warn("Có món ăn chưa được hoàn thành")
+    }
   }
  
 
 
   return (
     <div className="flex h-screen relative">
-      <div className="w-full flex justify-center absolute mt-6 bottom-6" onClick={() => navigate("/waiter/payment")}>
-          <button className="ml-[12%] px-4 py-3 border-none rounded-md bg-primary text-white uppercase font-semibold transition-all duration-300 hover:opacity-[60%]">Thanh toán</button>
-        </div>
+      <div className="w-full flex justify-center absolute mt-6 bottom-6" onClick={() => handlePayment()}>
+        <button className="ml-[12%] px-4 py-3 border-none rounded-md bg-primary text-white uppercase font-semibold transition-all duration-300 hover:opacity-[60%]">Thanh toán</button>
+      </div>
          <div className="absolute left-[60%] top-4 w-[13%] flex justify-between p-2 rounded-md bg-primary/[0.8] text-white font-semibold">
                 <span>Tổng tiền:</span>
                 <span>{formatVND(totalMoney)}</span>
