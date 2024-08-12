@@ -235,7 +235,7 @@ function DishesManagement() {
 
          const fileImg = e.target.files[0];
 
-         if(fileImg.type === 'image/jpeg' || fileImg.type === 'image/png'){
+         if(fileImg?.type === 'image/jpeg' || fileImg?.type === 'image/png'){
              toast.success("Upload image successfully!")
             fileImg.preview = URL.createObjectURL(fileImg)
             setIsFile(true)
@@ -249,15 +249,24 @@ function DishesManagement() {
             
     }
 
+    const handleChangeWeight = (value) => {
+         if(value >= 0){
+            setWeight(value);
+         }
+    }
+
     useEffect(() => {
         const newListDishes = dishesList?.filter(d => (d?.code.includes(search.toLowerCase()) || d?.name.toLowerCase().includes(search.trim().toLowerCase())))
         setDishesListDisplay(newListDishes)
     },[search])
 
     const handleChangePrice = (price) => {
-        if(!isNaN(price) && (price >0 )){
+        if(!isNaN(price) ){
             const numericValue = price.replace(/[^0-9]/g, '');
-            setPrice(numericValue);
+            const numericValueAsNumber = Number(numericValue);
+            if (numericValueAsNumber > 0 && Number.isSafeInteger(numericValueAsNumber)) {
+                setPrice(numericValue);
+            }
         }
     }
 
@@ -346,132 +355,100 @@ function DishesManagement() {
                         ) : ''}
 
                         {isOpen?<div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-                                <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-md z-50 overflow-y-auto max-h-screen">
-                                    <button
-                                        className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-2xl"
-                                        onClick={handleClosePouUp}
-                                    >
-                                        &times;
-                                    </button>
-                                    <h2 className="text-xl font-semibold mb-2">
-                                        Thêm món ăn
-                                    </h2>
-                                    <div className="mb-2">
-                                        <label htmlFor="dish-name" className="block mb-2">Tên món ăn <span className="text-red-600">*</span></label>
-                                        <input  
-                                            id="dish-name"
-                                            type="text"
-                                            placeholder="Tên món ăn"
-                                            value={dishName}
-                                            onChange={e => setDishName(e.target.value)}
-                                            className="w-full px-3 py-2 border rounded-md"
-                                        />
-                                    </div>
-                                    <div className="mb-2">
-                                        <label htmlFor="dish-weight" className="block mb-2">Định lượng món ăn (kg)<span className="text-red-600">*</span></label>
-                                        <input
-                                            id="dish-weight"
-                                            type="text"
-                                            placeholder="Định lượng món ăn (kg)"
-                                            value={weight}
-                                            onChange={e => setWeight(e.target.value)}
-                                            className="w-full px-3 py-2 border rounded-md"
-                                        />
-                                    </div>
-                                    <div className="mb-2">
-                                        <label htmlFor="dish-description" className="block mb-2">Miêu tả món ăn <span className="text-red-600">*</span></label>
-                                        <input
-                                            id="dish-description"
-                                            type="text"
-                                            value={description}
-                                            onChange={e => setDescription(e.target.value)}
-                                            placeholder="Miêu tả món ăn"
-                                            className="w-full px-3 py-2 border rounded-md"
-                                        />
-                                    </div>
-                                    <div className="mb-2">
-                                        <label htmlFor="dish-price" className="block mb-2">Giá món ăn <span className="text-red-600">*</span></label>
-                                        <NumericFormat
-                                            value={price}
-                                            thousandSeparator=","
-                                            displayType="input"
-                                            placeholder="Giá món ăn"
-                                            suffix=" VNĐ"
-                                            onValueChange={(values) => handleChangePrice(values.value)}
-                                            className="w-full px-3 py-2 border rounded-md"
-                                        />
-                                        {/* <input
-                                            id="dish-price"
-                                            type="text"
-                                            placeholder="Giá món ăn"
-                                            value={price}
-                                            onChange={e => handleChangePrice(e.target.value)}
-                                            className="w-full px-3 py-2 border rounded-md"
-                                        /> */}
-                                    </div>
-
-                                    <div className="mb-2 flex" >
-                                        <div className={`${showImgUpload ? 'w-[50%]' : 'w-full'}`}>
-                                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" for="file_input">Ảnh món ăn <span className="text-red-600">*</span></label>
-                                            <input className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 
-                                            focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" 
-                                            onChange={handleFileUpload}
-                                            id="file_input" 
-                                            type="file"/>
+                                <div className="relative bg-white rounded-lg shadow-lg w-full max-w-2xl z-50 overflow-y-auto max-h-screen">
+                                    <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 p-4">
+                                        <div className="flex items-center justify-between  border-b rounded-t dark:border-gray-600">
+                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                                Thêm món ăn
+                                            </h3>
+                                            <button type="button"  onClick={handleClosePouUp}  className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="crud-modal">
+                                                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                                </svg>
+                                                <span className="sr-only">Close modal</span>
+                                            </button>
                                         </div>
-                                        {showImgUpload && (
-                                            <img src={showImgUpload.preview} alt='' width={"50%"}/>
-                                        )}
-                                    </div>
-                                    
-                                    <div className="mb-2">
-                                        <label htmlFor="dish-type" className="block mb-2">Loại thức ăn  <span className="text-red-600">*</span></label>
-                                        
-                                        <select 
-                                            id="dish-type" 
-                                            value={currentCategory}
-                                            onChange={e => setCurrentCategory(e.target.value)}
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 
-                                            focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
-                                            dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                                {categoryList?.map((cate, index) => (
-                                                    <option value={cate?.id} selected={currentCategory === cate?.id ? true : false} key={index}>{cate?.name}</option>
-                                                ))}
-                                        </select>
-
-                                    </div>
-
-                                    <div className="mb-2">
-                                        <label htmlFor="dish-unit" className="block mb-2">Đơn vị tính  <span className="text-red-600">*</span></label>
-                                        
-                                        <select 
-                                            id="dish-unit" 
-                                            value={currentUnit}
-                                            onChange={e => setCurrentUnit(e.target.value)}
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 
-                                            focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
-                                            dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                                {unitsList?.map((unit, index) => (
-                                                    <option value={unit?.id} selected={currentUnit === unit?.id ? true : false} key={index}>{unit?.name}</option>
-                                                ))}
-                                        </select>
-
-                                    </div>
-                                   
-                                    
-                                    <div className="flex justify-end gap-2">
-                                        <button
-                                            onClick={handleClosePouUp}
-                                            className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-red-700 transition-all duration-300"
-                                        >
-                                            Hủy
-                                        </button>
-                                        <button
-                                            onClick={handleCreateDish}
-                                            className="py-2 px-5 bg-secondary font-semibold text-white rounded hover:bg-green transition-all duration-300"
-                                        >
-                                            Thêm
-                                        </button>
+                                        <from className="p-4 md:p-5">
+                                            <div className="grid gap-4 mb-4 grid-cols-2">
+                                                <div className="col-span-2">
+                                                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên món ăn <span className="text-red-600">*</span></label>
+                                                    <input type="text" name="name" id="name" 
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                    placeholder="Tên món ăn"
+                                                    value={dishName}
+                                                    onChange={e => setDishName(e.target.value)}/>
+                                                </div>
+                                                <div className="col-span-2 sm:col-span-1">
+                                                    <label htmlFor="weight" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Định lượng món ăn (kg)<span className="text-red-600">*</span></label>
+                                                    <input type="text"  id="weight" 
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                                                    placeholder="Định lượng món ăn (kg)"
+                                                    value={weight}
+                                                    onChange={e => handleChangeWeight(e.target.value)}/>
+                                                </div>
+                                                <div className="col-span-2 sm:col-span-1">
+                                                    <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Giá món ăn <span className="text-red-600">*</span></label>
+                                                    <NumericFormat type="text" name="price" id="price" 
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                                                    value={price}
+                                                    thousandSeparator=","
+                                                    displayType="input"
+                                                    placeholder="Giá món ăn"
+                                                    suffix=" VNĐ"
+                                                    onValueChange={(values) => handleChangePrice(values.value)}/>
+                                                </div>
+                                                <div className="col-span-2 sm:col-span-1">
+                                                    <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Loại đồ ăn  <span className="text-red-600">*</span></label>
+                                                    <select id="category" 
+                                                    value={currentCategory}
+                                                    onChange={e => setCurrentCategory(e.target.value)}
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                    >
+                                                        {categoryList?.map((cate, index) => (
+                                                            <option value={cate?.id} selected={currentCategory === cate?.id ? true : false} key={index}>{cate?.name}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                <div className="col-span-2 sm:col-span-1">
+                                                    <label htmlFor="unit" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Đơn vị tính  <span className="text-red-600">*</span></label>
+                                                    <select id="unit" 
+                                                        value={currentUnit}
+                                                        onChange={e => setCurrentUnit(e.target.value)}
+                                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                                        {unitsList?.map((unit, index) => (
+                                                            <option value={unit?.id} selected={currentUnit === unit?.id ? true : false} key={index}>{unit?.name}</option>
+                                                        ))}
+                                                    </select>
+                                                </div>
+                                                <div className="col-span-2 sm:col-span-1">
+                                                    <label htmlFor="file_input" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ảnh món ăn <span className="text-red-600">*</span></label>
+                                                    <input
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                                                    onChange={handleFileUpload}
+                                                    id="file_input" 
+                                                    type="file"/>
+                                                </div>
+                                                <div className="col-span-2 sm:col-span-1">
+                                                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ảnh minh hoạ  <span className="text-red-600">*</span></label>
+                                                    
+                                                    {showImgUpload ? (
+                                                    <img src={showImgUpload.preview} alt='' className="w-[50%] object-cover h-[70px]" />
+                                                    ):<img src="https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg" className="w-[50%] object-cover h-[70px]" alt="" />}
+                                                </div>
+                                                <div className="col-span-2">
+                                                    <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Miêu tả món ăn <span className="text-red-600">*</span></label>
+                                                    <textarea id="description" rows="4" 
+                                                    className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                                    value={description}
+                                                    onChange={e => setDescription(e.target.value)}
+                                                    placeholder="Miêu tả món ăn"></textarea>                    
+                                                </div>
+                                            </div>
+                                            <button onClick={() => handleCreateDish()} type="submit" class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                                                Thêm món ăn
+                                            </button>
+                                        </from>
                                     </div>
                                 </div>
                             </div>:""}
