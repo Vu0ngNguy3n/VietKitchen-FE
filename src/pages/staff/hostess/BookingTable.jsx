@@ -25,8 +25,9 @@ import { HiUsers } from "react-icons/hi2";
 import { RiMoneyDollarCircleFill } from "react-icons/ri";
 import {formatVND} from "../../../utils/format"
 import { FaCircleCheck } from "react-icons/fa6";
-
-
+import validator from "validator";
+import { parse, format } from "date-fns";
+import { vi } from 'date-fns/locale';
 
 function BookingTable() {
 
@@ -296,6 +297,12 @@ function BookingTable() {
         }
     }   
 
+    const handleChangePhone = (value) => {
+        if(!isNaN(value)){
+            setPhoneNumber(value)
+        }
+    }
+
     const handleIncreaseNumberCustomer = () => {
         setNumberCustomer(prev => prev + 1);
     }
@@ -411,6 +418,21 @@ function BookingTable() {
 
 
     const handleSubmitBookTable = () => {
+        if(customerName?.trim() === '' ){
+            toast.warn("Tên khách hàng không được để trống")
+            return
+        }
+
+        if(tables.length=== 0){
+            toast.warn("Bàn đặt trước chưa được chọn")
+            return
+        }
+
+        const isValidPhoneSpan = validator.isMobilePhone(phoneNumber, 'vi-VN');
+        if(!isValidPhoneSpan){
+            toast.warn("Số điện thoại không hợp lệ")
+            return;
+        }
         const data = {
             customerName: customerName,
             customerPhone: phoneNumber,
@@ -634,6 +656,17 @@ function BookingTable() {
     }
 
     const handleConfirmEdit = () => {
+        
+
+        if(tablesEdit.length=== 0){
+            toast.warn("Bàn đặt trước chưa được chọn")
+            return
+        }
+        const isValidPhoneSpan = validator.isMobilePhone(phoneNumber, 'vi-VN');
+        if(!isValidPhoneSpan){
+            toast.warn("Số điện thoại không hợp lệ")
+            return;
+        }
         const dataRequest = {
             customerName: customerName,
             customerPhone: phoneNumber,
@@ -669,6 +702,20 @@ function BookingTable() {
                 toast.error(err.message);
             }
         })
+    }
+
+    const handleChangeDayToDayInWeek = (dateString) => {
+        try {
+            const date = parse(dateString, 'yyyy-MM-dd', new Date());
+
+            const weekdayName = format(date, 'EEEE', {locale: vi});
+
+            return weekdayName;
+        } catch (error) {
+        console.log(dateString);
+            console.error('Error parsing date:', error);
+            return 'Ngày không hợp lệ';
+        }
     }
     
 
@@ -797,8 +844,8 @@ function BookingTable() {
                             <div 
                                 key={index}
                                 onClick={() => handleChangeDay(day?.date)}
-                                className={`px-6 py-2 ${(selectDay === day?.date && statusTime === "week") ? "bg-gray-400 text-white" : "bg-white text-black"} relative flex justify-center items-center rounded-md font-semibold shadow-md mb-2 cursor-pointer duration-300 transition-all `}>
-                                <span>{day?.date}</span>
+                                className={`px-6 py-2 text-xs ${(selectDay === day?.date && statusTime === "week") ? "bg-gray-400 text-white" : "bg-white text-black"} relative flex justify-center items-center rounded-md font-semibold shadow-md mb-2 cursor-pointer duration-300 transition-all `}>
+                                <span>{index=== 0 ? "Hôm nay" : (index === 1 ? "Ngày mai" : handleChangeDayToDayInWeek(day?.date))} - {day?.date}</span>
                                 <span className="absolute right-1 top-1 text-xs text-red-700">{day?.numbersSchedule}</span>
                             </div>
                         ))}
@@ -880,7 +927,7 @@ function BookingTable() {
                                                 </div>
                                                 <input type="text" id="phone" 
                                                 value={phoneNumber}
-                                                onChange={e => setPhoneNumber(e.target.value)}
+                                                onChange={e => handleChangePhone(e.target.value)}
                                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                                 placeholder="Nhập số điện thoại"/>
                                             </div>
