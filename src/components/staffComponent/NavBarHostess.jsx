@@ -55,9 +55,9 @@ const NavBarHostess = () => {
                         {
                             open &&
                             <div className='bg-white border h-[120px] w-[150px] absolute bottom-[-135px] z-20 right-0 pt-[15px] pl-[15px] space-y-[10px]'>
-                                <p className='cursor-pointer hover:text-[blue] font-semibold'>Profile</p>
-                                <p className='cursor-pointer hover:text-[blue] font-semibold'>Settings</p>
-                                <p className='cursor-pointer hover:text-[blue] font-semibold' onClick={() => handleLogout()}>Log out</p>
+                                <p className='cursor-pointer hover:text-[blue] font-semibold' onClick={() => navigate('/hostess/map')}>Sơ đồ </p>
+                                <p className='cursor-pointer hover:text-[blue] font-semibold' onClick={() => navigate("/hostess/bookingTable")}>Đặt bàn</p>
+                                <p className='cursor-pointer hover:text-[blue] font-semibold' onClick={() => handleLogout()}>Đăng xuất</p>
                             </div>
 
                         }

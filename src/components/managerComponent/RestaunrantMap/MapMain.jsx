@@ -39,12 +39,14 @@ const MapMain = () => {
     const [shapeTable, setShapeTable] = useState();
     const [areaDetail, setAreaDetail] = useState();
     const [isSave, setIsSave] = useState(null);
+    const [isOpenDelete, setIsOpenDelete] = useState(false);
+    const [isOpenEdit, setIsOpenEdit] = useState(false);
+    const [currentTable, setCurrentTable] = useState();
     
 
     
     useEffect(() => {
         setUserStorage(user);
-        console.log(user);
         axiosInstance
         .get(`/api/area/${user?.restaurantId}`)
         .then(res =>{ 
@@ -92,7 +94,6 @@ const MapMain = () => {
             .then(res => {
                 const data = res.data.result;
                 setBoard(data);
-                console.log(data);
             })
             .catch(err => {
                         if (err.response) {
@@ -166,6 +167,7 @@ const MapMain = () => {
                         toast.success(`Tạo khu vực ${areaName} thành công`);
                         handleClosePopup();
                         // setIsReRender(!isReRender)
+                        setAreaDetail(res.data.result)
                         setIsAddArea(!isAddArea);
                     })
                     .catch(err => {
@@ -266,12 +268,74 @@ const MapMain = () => {
     }
 
     const handleOpenEdit = (table) => {
-        console.log(table);
+        setCurrentTable(table);
+        setIsOpenEdit(true);
+        setTableName(table?.name);
+        setTypeTable(table?.numberChairs);
+        setShapeTable(table?.tableType?.id)
+    }
+
+    const handleCloseEdit = () => {
+        setIsOpenEdit(false);
+        setTableName('');
+        setTypeTable('');
+        setShapeTable('')
     }
 
     const handleOpenDelete = (table) => {
-        console.log(table);
+        setIsOpenDelete(true);
+        setCurrentTable(table);
     }
+
+    const handleDeleteTable = () => {
+        axiosInstance
+        .delete(`/api/table/${currentTable?.id}`)
+        .then(res => {
+            setIsAddTable(!isAddTable);
+            toast.success(`Xoá bàn ${currentTable?.name} thành công`);
+            setIsOpenDelete(false);
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })
+    }
+
+    const handleSubmitEditTable = () => {
+        const data = {
+            name: tableName,
+            numberChairs: typeTable,
+            tableTypeId: shapeTable,
+            areaId: currentArea,
+            positionX: currentTable?.positionX,
+            positionY: currentTable?.positionY,
+            restaurantId: user?.restaurantId
+        }
+        axiosInstance
+        .put(`/api/table/${currentTable?.id}`,data)
+        .then(res => {
+            toast.success(`Cập nhật thông tin bàn ${tableName} thành công`);
+            handleCloseEdit();
+            setIsAddTable(!isAddTable)
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })
+    }
+
 
     return (
          <div className="">
@@ -588,6 +652,140 @@ const MapMain = () => {
                             )}
                             
                         </div>
+                        {isOpenDelete && (
+                             <div id="popup-delete" className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
+                                <div className="relative p-4 w-full max-w-md bg-white rounded-lg shadow dark:bg-gray-700 animate-slideIn">
+                                    <button type="button" onClick={() => setIsOpenDelete(false)} className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                        <span className="sr-only">Close modal</span>
+                                    </button>
+                                    <div className="p-4 md:p-5 text-center">
+                                        <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                                        </svg>
+                                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muốn xoá bàn này </h3>
+                                        <button 
+                                            onClick={() => handleDeleteTable()}
+                                            data-modal-hide="popup-modal" 
+                                            type="button" 
+                                            className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                                            Có
+                                        </button>
+                                        <button 
+                                            data-modal-hide="popup-modal" 
+                                            type="button" 
+                                            onClick={() => setIsOpenDelete(false)}
+                                            className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                                            Không
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {isOpenEdit && (
+                            <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
+                                <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl z-50 animate-slideIn">
+                                    <button
+                                        className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-2xl"
+                                        onClick={handleCloseEdit}
+                                    >
+                                        &times;
+                                    </button>
+                                    <h2 className="text-xl font-semibold mb-4">
+                                        Chỉnh sửa thông tin bàn
+                                    </h2>
+                                    <hr />
+                                    <div className="w-full flex border-b-2 justify-between border-b-gray-400 pb-2 mb-4">
+                                        <div className="w-[52%]">
+                                           <div className="border-b-2 pb-2 border-b-gray-400">
+                                                <div className="mb-2">
+                                                    <label className="block mb-2 font-semibold">Tên bàn <span className="text-red-500">*</span></label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Tên bàn"
+                                                        value={tableName}
+                                                        onChange={(e) => setTableName(e.target.value)}
+                                                        className="w-full px-3 py-2 border rounded-md"
+                                                    />
+                                                </div>
+                                           </div>
+                                           <div className="flex justify-between py-2">
+                                                <div className="w-[45%] ">
+                                                    <label className="block mb-2 font-semibold">Loại bàn <span className="text-red-500">*</span></label>
+                                                    <div className="flex-row">
+                                                        <div 
+                                                            className={`flex justify-center py-1 border-2 rounded mb-2 shadow-md cursor-pointer duration-300 transition-all ${typeTable === 4 ? "border-blue-500" : "border-gray-400 "}`} 
+                                                            onClick={() => setTypeTable(4)}
+                                                        >
+                                                            <span className="text-center font-semibold">Nhỏ {`(4) chỗ`}</span>
+                                                        </div>
+                                                        <div 
+                                                            className={`flex justify-center py-1 border-2 rounded mb-2 shadow-md cursor-pointer duration-300 transition-all ${typeTable === 6 ? "border-blue-500" : "border-gray-400 "}`} 
+                                                            onClick={() => setTypeTable(6)}
+                                                        >
+                                                            <span className="text-center font-semibold">Trung bình {`(5-8) chỗ`}</span>
+                                                        </div>
+                                                        <div 
+                                                            className={`flex justify-center py-1 border-2 rounded mb-2 shadow-md cursor-pointer duration-300 transition-all ${typeTable === 8 ? "border-blue-500" : "border-gray-400 "}`} 
+                                                            onClick={() => setTypeTable(8)}
+                                                        >
+                                                            <span className="text-center font-semibold">Lớn {`(> 9 chỗ)`}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="w-[45%]">
+                                                    <label className="block mb-2 font-semibold">Kiểu dáng <span className="text-red-500">*</span></label>
+                                                     <div className="flex-row">
+                                                        {typeTableList?.map((t,index) => {
+                                                            return (
+                                                                <div 
+                                                                    className={`flex justify-center py-1 border-2 rounded mb-2 shadow-md cursor-pointer duration-300 transition-all ${t?.id === shapeTable ?"border-blue-500":"border-gray-400 "}`} 
+                                                                    key={index}
+                                                                    onClick={() => setShapeTable(t?.id)}
+                                                                >
+                                                                    {t?.name === "Bàn tròn" && <div className="border-2 border-gray-400 py-1 h-6 w-6 rounded-full"></div>}
+                                                                    {t?.name === "Bàn vuông" && <div className="border-2 border-gray-400 py-1 h-6 w-6"></div>}
+                                                                    {t?.name === "Bàn chữ nhật" && <div className="border-2 border-gray-400 py-1 h-6 w-10"></div>}
+                                                                </div>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                </div>
+                                           </div>
+                                        </div>
+                                        <div className="w-[45%] border-l-2 flex justify-center items-center">
+                                            {(typeTable === 4 && shapeTable === 3) && <img src={REACTANGE4} alt="" className="size-52"/>}
+                                            {(typeTable === 6 && shapeTable === 3) && <img src={REACTANGE6} alt="" className="size-52"/>}
+                                            {(typeTable === 8 && shapeTable === 3) && <img src={REACTANGE8} alt="" className="size-52"/>}
+                                            {(typeTable === 4 && shapeTable === 1) && <img src={ROUND4} alt="" className="size-52"/>}
+                                            {(typeTable === 6 && shapeTable === 1) && <img src={ROUND6} alt="" className="size-52"/>}
+                                            {(typeTable === 8 && shapeTable === 1) && <img src={ROUND8} alt="" className="size-52"/>}
+                                            {(typeTable === 4 && shapeTable === 2) && <img src={SQUARE4} alt="" className="size-52"/>}
+                                            {(typeTable === 6 && shapeTable === 2) && <img src={SQUARE6} alt="" className="size-52"/>}
+                                            {(typeTable === 8 && shapeTable === 2) && <img src={SQUARE8} alt="" className="size-52"/>}
+                                            
+                                        </div>
+                                    </div>
+                                   
+                                    <div className="flex justify-end gap-2">
+                                        <button
+                                            className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-red-700 transition-all duration-300"
+                                            onClick={handleCloseEdit}
+                                        >
+                                            Hủy
+                                        </button>
+                                        <button
+                                            onClick={() => handleSubmitEditTable()}
+                                            className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-blue-500 transition-all duration-300"
+                                        >
+                                            Chỉnh sửa
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                         <style jsx>{`
                 @keyframes fadeIn {
                     from {

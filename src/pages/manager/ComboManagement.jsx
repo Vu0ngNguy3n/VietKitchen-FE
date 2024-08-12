@@ -263,13 +263,14 @@ function ComboManagement() {
     };
 
     const handleEditCombo = (combo) => {
+        console.log(combo);
         setIsUpdateMode(true);
         setCurrentCombo(combo);
-        setComboName(combo.comboName);
-        setComboPrice(combo.comboPrice);
-        setDescription(combo.description);
-        setSelectedDishes(combo.dishes || []);
-        setShowImgUpload(combo.imageUrl);
+        setComboName(combo?.name);
+        setComboPrice(combo?.price);
+        setDescription(combo?.description);
+        setSelectedDishes(combo?.dishes || []);
+        setShowImgUpload(combo?.imageUrl);
         setIsOpen(true);
     };
 
@@ -319,7 +320,7 @@ function ComboManagement() {
                             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <th scope="col" className="px-16 py-3">
+                                        <th scope="col" className="px-10 py-3">
                                             <span className="sr-only">Image</span>
                                         </th>
                                         <th scope="col" className="px-6 py-3">
@@ -334,13 +335,19 @@ function ComboManagement() {
                                         <th scope="col" className="px-6 py-3">
                                             
                                         </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {comboList?.map(combo => (
                                         <tr key={combo?.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                             <td className="p-4">
-                                                <img src={combo?.imageUrl} alt={combo?.comboName} className="w-16 h-16 object-cover rounded-md" />
+                                                <img src={combo?.imageUrl} alt={combo?.name} className="w-16 h-16 object-cover rounded-md" />
                                             </td>
                                             <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                                                 {combo?.name}
@@ -351,7 +358,7 @@ function ComboManagement() {
                                             <td className="px-6 py-4">
                                                 {combo?.description}
                                             </td>
-                                            <td className="px-6 py-4 flex space-x-2 ">
+                                            <td className="px-6 py-4 m-auto space-x-2 ">
                                                 <button
                                                     className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
                                                     onClick={() => handleEditCombo(combo)}
@@ -359,14 +366,18 @@ function ComboManagement() {
                                                     <FaEdit className="mr-1" />
                                                     Cập nhật
                                                 </button>
+                                            </td>
+                                            {/* <td className="px-6 py-4  space-x-2 ">
                                                 <button
                                                     className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
                                                 >
                                                     <FaTrash className="mr-1" />
                                                     Xóa
                                                 </button>
+                                            </td> */}
+                                            <td>
                                                 <button
-                                                    className="py-2 px-5 bg-green-600 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
+                                                    className="py-2 px-5 bg-blue-500 bg-green-600 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
                                                     onClick={() => handleViewDetail(combo.id)}
                                                 >
                                                     <FaEye className="mr-1" />
@@ -527,10 +538,10 @@ function ComboManagement() {
                         >
                             &times;
                         </button>
-                        <h2 className="text-xl font-semibold mb-4">{comboDetail.comboName}</h2>
-                        <img src={comboDetail.imageUrl} alt={comboDetail.comboName} className="w-full h-40 object-cover rounded-md mb-4" />
-                        <p className="mb-2"><strong>Giá:</strong> {comboDetail.comboPrice}</p>
-                        <p className="mb-4"><strong>Miêu tả:</strong> {comboDetail.description}</p>
+                        <h2 className="text-xl font-semibold mb-4">{comboDetail?.name}</h2>
+                        <img src={comboDetail.imageUrl} alt={comboDetail?.name} className="w-full h-40 object-cover rounded-md mb-4" />
+                        <p className="mb-2"><strong>Giá:</strong> {formatVND(comboDetail?.price)}</p>
+                        <p className="mb-4"><strong>Miêu tả:</strong> {comboDetail?.description}</p>
                         <h3 className="text-lg font-semibold mb-2">Món ăn trong combo:</h3>
                         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                             <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -544,10 +555,10 @@ function ComboManagement() {
                                 {comboDetail.dishes.map(dish => (
                                     <tr key={dish.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td className="px-4 py-2">
-                                            <img src={dish.imageUrl} alt={dish.name} className="w-10 h-10 object-cover rounded-md" />
+                                            <img src={dish?.imageUrl} alt={dish?.name} className="w-10 h-10 object-cover rounded-md" />
                                         </td>
-                                        <td className="px-4 py-2">{dish.name}</td>
-                                        <td className="px-4 py-2">{dish.description}</td>
+                                        <td className="px-4 py-2">{dish?.name}</td>
+                                        <td className="px-4 py-2">{dish?.description}</td>
                                     </tr>
                                 ))}
                             </tbody>
