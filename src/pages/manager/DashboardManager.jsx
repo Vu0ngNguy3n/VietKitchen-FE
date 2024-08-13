@@ -67,7 +67,6 @@ function DashboardManager() {
         .then(res => {
             const data = res.data.result;
             setAllDataLineChart(data);
-            console.log(data);
         })
         .catch(err => {
             if (err.response) {
@@ -280,7 +279,6 @@ function DashboardManager() {
                                 <div className='basis-[100%] border bg-white shadow-md cursor-pointer rounded-[4px]'>
                                     <div className='bg-[#F8F9FC] flex items-center justify-between py-[15px] px-[20px] border-b-[1px] border-[#EDEDED]'>
                                         <h2 className='text-[#4e73df] text-[16px] leading-[19px] font-bold'>Thống kê doanh thu các giờ trong ngày</h2>
-                                        <FaEllipsisV color="gray" className='cursor-pointer' />
                                     </div>
                                     <div className='px-[25px] space-y-[15px] py-[15px]'>
                                         <HighchartsReact highcharts={Highcharts} options={revenueTimeChart}/>                                       
@@ -306,7 +304,6 @@ function DashboardManager() {
                                     <div className='basis-[49%] border bg-white shadow-md cursor-pointer rounded-[4px]'>
                                         <div className='bg-[#F8F9FC] flex items-center justify-between py-[15px] px-[20px] border-b-[1px] border-[#EDEDED] mb-[20px]'>
                                             <h2 className='text-[#4e73df] text-[16px] leading-[19px] font-bold'>Thống kê doanh thu</h2>
-                                            <FaEllipsisV color="gray" className='cursor-pointer' />
                                         </div>
 
                                         <div className="w-full">
@@ -317,7 +314,6 @@ function DashboardManager() {
                                     <div className='basis-[49%] border bg-white shadow-md cursor-pointer rounded-[4px]'>
                                         <div className='bg-[#F8F9FC] flex items-center justify-between py-[15px] px-[20px] border-b-[1px] border-[#EDEDED]'>
                                             <h2 className='text-[#4e73df] text-[16px] leading-[19px] font-bold'>Thống kê số lượng hoá đơn</h2>
-                                            <FaEllipsisV color="gray" className='cursor-pointer' />
                                         </div>
                                         <div className='w-full'>
                                             <HighchartsReact highcharts={Highcharts} options={billsChart}/>                                       

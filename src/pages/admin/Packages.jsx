@@ -102,12 +102,10 @@ function Packages() {
                                         <th scope="col" className="px-6 py-3">
                                             Giá Theo Năm
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
+                                        {/* <th scope="col" className="px-6 py-3">
                                             <span className="sr-only">Chỉnh sửa</span>
-                                        </th>
-                                        <th scope="col" className="px-6 py-3">
-                                            <span className="sr-only">Vô hiệu hóa</span>
-                                        </th>
+                                        </th> */}
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -119,8 +117,8 @@ function Packages() {
                                             >
                                                 {pkg?.packName}
                                             </th>
-                                            <td className="px-6 py-4 ">{formatVND(pkg?.pricePerMonth)}</td>
-                                            <td className="px-6 py-4">{formatVND(pkg?.pricePerYear)}</td>
+                                            <td className="px-6 py-4 font-medium">{formatVND(pkg?.pricePerMonth)}</td>
+                                            <td className="px-6 py-4font-medium">{formatVND(pkg?.pricePerYear)}</td>
                                             <td className="px-6 py-4 flex justify-center">
                                                 <button
                                                     className="py-2 px-5 bg-secondary font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
@@ -130,12 +128,12 @@ function Packages() {
                                                     Chỉnh sửa
                                                 </button>
                                             </td>
-                                            <td className="px-6 py-4 flex-row justify-end">
+                                            {/* <td className="px-6 py-4 flex-row justify-end">
                                                 <button className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center">
                                                     <FaBan className="mr-1" />
                                                     {pkg.isEnable === true ? "Vô hiệu hóa" : "Mở khóa"}
                                                 </button>
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     ))}
                                     {listPackageShow?.length === 0 && (

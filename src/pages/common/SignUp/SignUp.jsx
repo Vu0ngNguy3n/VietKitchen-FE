@@ -96,6 +96,7 @@ function SignUp() {
 
   const handleClosePop = () =>{
     setIsOpenPop(false);
+    setOtp(new Array(6).fill(""));
   }
 
 

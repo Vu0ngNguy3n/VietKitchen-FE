@@ -84,6 +84,7 @@ function AccountDetail() {
         navigate("/admin/accountsManagement");
     }
 
+
     return (
         <div className="">
             <div className="flex  ">

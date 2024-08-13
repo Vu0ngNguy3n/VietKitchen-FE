@@ -60,6 +60,7 @@ function DishesManagement() {
         .then(res =>{ 
             const data = res.data.result;
             setCategoryList(data);
+            console.log(data);
             if(data.length > 0){
                 setCurrentCategory(data[0]?.id);
             }

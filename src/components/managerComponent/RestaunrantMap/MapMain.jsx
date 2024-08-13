@@ -27,7 +27,7 @@ const MapMain = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isReRender, setIsReRender] = useState(false);
     const [isCreateArea, setIsCreateArea] = useState(true);
-    const [tableName, setTableName] = useState();
+    const [tableName, setTableName] = useState("");
     const [typeTableList, setTypeTableList] = useState([]);
     const [currentTypeTable, setCurrentTypeTable] = useState();
     const [numberTables, setNumberTables] = useState(1);
@@ -194,6 +194,7 @@ const MapMain = () => {
                         positionY: 0,
                         restaurantId: user?.restaurantId
                     }
+                    console.log(table);
 
                     axiosInstance
                     .post(`/api/table/create/${numberTables}`, table)
@@ -259,7 +260,7 @@ const MapMain = () => {
  
     const handleChangeNumberTable = (number) => {
         if(!isNaN(number)){
-            if(number > 0 && number < 20){
+            if(number > 0 && number <= 20){
                 setNumberTables(number)
             }else{
                 setNumberTables(1)
@@ -334,6 +335,12 @@ const MapMain = () => {
                 toast.error(err.message);
             }
         })
+    }
+
+    const handleChangeName = (value) => {
+        if(value.length >=0 && value.length <=20){
+            setTableName(value);
+        }
     }
 
 
@@ -479,14 +486,14 @@ const MapMain = () => {
                                                         type="text"
                                                         placeholder="Tên bàn"
                                                         value={tableName}
-                                                        onChange={(e) => setTableName(e.target.value)}
+                                                        onChange={(e) => handleChangeName(e.target.value)}
                                                         className="w-full px-3 py-2 border rounded-md"
                                                     />
                                                 </div>
                                                 <div className="mb-2">
                                                     <label className="block mb-2 font-semibold">Số lượng bàn <span className="text-red-500">*</span></label>
                                                     <input
-                                                        type="number"
+                                                        type="text"
                                                         placeholder="Số lượng bàn"
                                                         value={numberTables}
                                                         onChange={(e) => handleChangeNumberTable(e.target.value)}

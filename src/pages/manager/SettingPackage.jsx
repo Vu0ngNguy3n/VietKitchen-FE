@@ -20,18 +20,20 @@ function SettingPackage(){
     const [packageAbleToUpdate, setPackageAbleToUpdate] = useState();
     const [isOpenUpdate, setIsOpenUpdate] = useState(false);
     const [packageUpdate, setPackageUpdate] = useState();
-    const [monthUpdate, setMonthUpdate] = useState(0);
+    const [monthUpdate, setMonthUpdate] = useState(1);
     const [requireMoney, setRequireMoney] = useState(0);
     const [isOpenRequire, setIsOpenRequire] = useState(false);
     const [responsePayment, setResponsePayment] = useState();
     const [paymentLink, setPaymentLink] = useState(null);
     const [status, setStatus] = useState();
     const [orderCode, setOrderCode] = useState();
+    const [isCheck, setIsCheck] = useState(true);
     const user = useUser();
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     useEffect(() => {
+        
         axiosInstance
         .get(`/api/restaurant/account/${user?.accountId}`)
         .then(res => {
@@ -127,7 +129,7 @@ function SettingPackage(){
     };
 
     const handleShowMoneyUpdate =async () => {
-        if(!isOpenRequire){
+        if(isCheck){
             const data = {
                 packId: packageUpdate?.id,
                 months: monthUpdate
@@ -136,8 +138,8 @@ function SettingPackage(){
             .post(`/api/restaurant/${user?.restaurantId}/pack/require-money`, data)
             .then(res => {
                 const data =res.data.result;
-                console.log(data);
                 setRequireMoney(data);
+                setIsCheck(false)
                 setIsOpenRequire(true);
             })
             .catch(err => {
@@ -242,7 +244,10 @@ function SettingPackage(){
     }
 
     const onChangeMonths = (months) => {
-            setMonthUpdate(months);
+           if(!isNaN(months) && months>0 ){
+            setMonthUpdate(months)
+            setIsCheck(true);
+           }
     }
 
  
@@ -384,6 +389,7 @@ function SettingPackage(){
                                             <div className="w-[40%] flex items-center">
                                                 <input 
                                                     type="text" 
+                                                    placeholder="1"
                                                     className="w-[80%] border-b-2 border-black mr-2 outline-none"
                                                     value={monthUpdate}
                                                     onChange={(e) => onChangeMonths(e.target.value)}
@@ -406,7 +412,7 @@ function SettingPackage(){
                                 </div>
                                 <div  className="border-t-2 w-full flex items-center rounded-b-md" >
                                     <div className="w-[50%] bg-blue-400 py-2 flex justify-center items-center rounded-bl-md cursor-pointer" onClick={() => handleShowMoneyUpdate()}>
-                                        <p className="text-white font-medium" >{!isOpenRequire ? "Kiểm tra" : "Thanh toán"}</p>
+                                        <p className="text-white font-medium" >{isCheck ? "Kiểm tra" : "Thanh toán"}</p>
                                     </div>
                                     <div className="w-[50%] bg-primary py-2 flex justify-center items-center rounded-br-md cursor-pointer" onClick={handleClosePackageUpdate}>
                                         <p className="text-white font-medium">Huỷ</p>

@@ -22,6 +22,7 @@ import { useUser } from "../../../utils/constant";
 import { saveCustomer } from "../../../actions/customerActions";
 import { saveTable } from "../../../actions/tableActions";
 import { saveOrderId } from "../../../actions/orderActions";
+import validator from "validator";
 
 function Menu(){
     const {slug} = useParams();
@@ -260,6 +261,10 @@ function Menu(){
     }
 
     const handleEnterTable = () => {
+      if(!validator.isMobilePhone(phoneNumber, 'vi-VN')){
+        toast.warn("Số điện thoại không đúng định dạng")
+        return
+      }
       axiosInstance
       .get(`/api/customers/${phoneNumber}`)
       .then((res) => {
@@ -388,6 +393,12 @@ function Menu(){
       setIsExistCustomer(false);
     }
 
+    const handleChangePhone = (value) => {
+        if(!isNaN(value) && value.length<=10){
+            setPhoneNumber(value);
+        }
+    }
+
 
     return(
         <div className="">
@@ -448,10 +459,10 @@ function Menu(){
                                     <div className="mb-4">
                                         <label className="block mb-2">Số điện thoại khách hàng</label>
                                         <input
-                                            type="number"
+                                            type="text"
                                             value={phoneNumber}
-                                            onChange={e => setPhoneNumber(e.target.value)}
-                                            placeholder="Số điện thoại khách hàng"
+                                            onChange={e => handleChangePhone(e.target.value)}
+                                            placeholder="VD: 08888637937"
                                             className="w-full px-3 py-2 border rounded-md"
                                         />
                                     </div>
@@ -492,7 +503,7 @@ function Menu(){
                                         <label className="block mb-2">Tên khách hàng</label>
                                         <input
                                             type="text"
-                                            placeholder="Tên khách hàng"
+                                            placeholder="VD: Nguyen Van A"
                                             value={customerName}
                                             onChange={e => setCustomerName(e.target.value)}
                                             className="w-full px-3 py-2 border rounded-md"
@@ -502,7 +513,7 @@ function Menu(){
                                         <label className="block mb-2">Địa chỉ</label>
                                         <input
                                             type="text"
-                                            placeholder="Địa chỉ"
+                                            placeholder="VD: Thạch thất, Hà Nội"
                                             value={address}
                                             onChange={e => setAddress(e.target.value)}
                                             className="w-full px-3 py-2 border rounded-md"

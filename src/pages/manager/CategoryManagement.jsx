@@ -20,13 +20,13 @@ function CategoryManagement() {
     const user = useUser()
 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('user'));
-        const accountId = user?.accountId;
 
-        axiosInstance.get(`/api/dish-category/${accountId}`)
+
+        axiosInstance.get(`/api/dish-category/${user?.accountId}`)
             .then(res => {
                 if (res.data.code === 200) {
                     setCategories(res.data.result);
+                    console.log(res.data.result);
                     setCategoriesDisplay(res.data.result)
                 } else {
                     toast.error("Failed to fetch categories");
