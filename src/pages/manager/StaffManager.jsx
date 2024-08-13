@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { useUser } from "../../utils/constant";
 import { toast } from "react-toastify";
+import validator from "validator";
 
 function StaffManager() {
 
@@ -12,13 +13,13 @@ function StaffManager() {
     const [listEmployeesDisplay, setListEmployeesDisplay] = useState([]);
     const [openPop, setOpenPop] = useState(false);
     const [accountStorage, setAccountStorage] = useState();
-    const [username, setUsername] = useState();
-    const [password, setPassword] = useState();
-    const [confirmPassword, setConfirmPassword] = useState();
-    const [employeeName, setEmployeeName] = useState();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [employeeName, setEmployeeName] = useState('');
     const [listRoles, setListRoles] = useState([]);
-    const [currentRole, setCurrentRole] = useState();
-    const [phoneNumber, setPhoneNumber] = useState();
+    const [currentRole, setCurrentRole] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [isAddEmployee, setIsAddEmployee] = useState(false);
     const [isCreate, setIsCreate]= useState(true);
     const [isEdit, setIsEdit] = useState(false);
@@ -102,6 +103,8 @@ function StaffManager() {
     const handleCreateEmployee = () => {
         if(username.trim() === '' || employeeName.trim() === '' || password.trim() === '' || confirmPassword.trim() === '' ){
             toast.warn("Vui lòng điền đầy đủ thông tin")
+        }else if(!validator.isMobilePhone(phoneNumber, 'vi-VN')){
+            toast.warn("Số điện thoại không đúng định dạng.")
         }else if(password.trim() !== confirmPassword.trim()){
             toast.warn("Mật khẩu không trùng khớp")
         }else{
@@ -212,6 +215,23 @@ function StaffManager() {
     },[search])
 
 
+    const handleChangePhone = (value) => {
+        if(!isNaN(value) && value.length<=10){
+            setPhoneNumber(value);
+        }
+    }
+
+    const handleChangeName = (value) => {
+        if(value.length <= 20){
+            setUsername(value)
+        }
+    }
+
+    const handleChangeNameEmployee = (value) => {
+        if(value.length <= 20){
+            setEmployeeName(value)
+        }
+    }
    
 
     return (
@@ -269,7 +289,7 @@ function StaffManager() {
                                             placeholder="Tên tài khoản nhân viên"
                                             className="w-full px-3 py-2 border rounded-md"
                                             value={username}
-                                            onChange={e => setUsername(e.target.value)}
+                                            onChange={e => handleChangeName(e.target.value)}
                                         />
                                     </div>)}
                                     <div className="mb-4">
@@ -279,7 +299,7 @@ function StaffManager() {
                                             placeholder="Tên nhân viên"
                                             className="w-full px-3 py-2 border rounded-md"
                                             value={employeeName}
-                                            onChange={e => setEmployeeName(e.target.value)}
+                                            onChange={e => handleChangeNameEmployee(e.target.value)}
                                         />
                                     </div>
                                     <div className="mb-4">
@@ -289,7 +309,7 @@ function StaffManager() {
                                             placeholder="Số điện thoại nhân viên"
                                             className="w-full px-3 py-2 border rounded-md"
                                             value={phoneNumber}
-                                            onChange={e => setPhoneNumber(e.target.value)}
+                                            onChange={e => handleChangePhone(e.target.value)}
                                         />
                                     </div>
                                     <div className="mb-4">
@@ -324,7 +344,7 @@ function StaffManager() {
                                             focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
                                             dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                             {listRoles?.map((role, index) =>
-                                                <option value={role?.id} key={index}>{role?.name}</option>
+                                                <option value={role?.id} key={index}>{role?.name === "WAITER" ? "Bồi bàn" : (role?.name === "CHEF" ?  "Đầu bếp" : "Lễ tân")}</option>
                                             )}
                                         </select>
 
@@ -415,7 +435,7 @@ function StaffManager() {
                                                 {e?.phoneNumber}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {e?.role.name}
+                                                {e?.role.name === "WAITER" ? "Bồi bàn" : (e?.role.name === "CHEF" ?  "Đầu bếp" : "Lễ tân")}
                                             </td>
                                             <td className="px-6 py-4 flex space-x-2">
                                                 <button 

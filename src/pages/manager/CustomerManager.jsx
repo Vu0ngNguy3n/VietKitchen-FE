@@ -156,7 +156,7 @@ function CustomerManager() {
     },[search])
 
     const handleChangePhone = (phone) => {
-        if(!isNaN(phone)){
+        if(!isNaN(phone) && phone.length <=10){
             setPhoneNumber(phone)
             const phoneRegex = /^(?:\+84|84)?(0[3-9][0-9]{8})$/;
             setIsValidPhone(phoneRegex.test(phone));
@@ -175,8 +175,8 @@ function CustomerManager() {
                         <h1 className="font-black text-3xl">Quản lý khách hàng</h1>
 
                         <div className="flex mt-6 flex-col gap-4 md:flex-row justify-between">
-                            <div className="">
-                                <div className="relative grow rounded-md border-2 border-gray-300">
+                            <div className="w-[25%]">
+                                <div className="relative grow rounded-md border-2 border-gray-300 ">
                                     <FaSearch className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                                     <input
                                         type="text"
@@ -209,13 +209,13 @@ function CustomerManager() {
                                         &times;
                                     </button>
                                     <h2 className="text-xl font-semibold mb-4">
-                                        {isCreate ? 'Thêm đơn vị tính' : 'Cập nhật đơn vị tính'}
+                                        {isCreate ? 'Thêm khách hàng' : 'Cập nhật khách hàng'}
                                     </h2>
                                     <div className="mb-4">
                                         <label className="block mb-2">Số điện thoại</label>
                                         <input
                                             type="text"
-                                            placeholder="Số điện thoại"
+                                            placeholder="VD: 0888637937"
                                             value={phoneNumber}
                                             onChange={(e) => handleChangePhone(e.target.value)}
                                             disabled={isEdit ? true : false}
@@ -226,7 +226,7 @@ function CustomerManager() {
                                         <label className="block mb-2">Tên khách hàng</label>
                                         <input
                                             type="text"
-                                            placeholder="Tên khách hàng"
+                                            placeholder="VD: Nguyen Van Vuuong"
                                             value={name}
                                             onChange={e => setName(e.target.value)}
                                             className="w-full px-3 py-2 border rounded-md"
@@ -236,7 +236,7 @@ function CustomerManager() {
                                         <label className="block mb-2">Địa chỉ</label>
                                         <input
                                             type="text"
-                                            placeholder="Địa chỉ"
+                                            placeholder="Thạch thất, Hà Nội"
                                             value={address}
                                             onChange={e => setAddress(e.target.value)}
                                             className="w-full px-3 py-2 border rounded-md"

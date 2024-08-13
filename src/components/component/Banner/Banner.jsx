@@ -2,16 +2,12 @@ import { motion} from "framer-motion"
 import {fadeIn} from '../../../variants'
 import { useNavigate } from "react-router"
 import { useEffect, useState } from "react";
+import { useUser } from "../../../utils/constant";
 
 const Banner = ({banner, heading, subheading, btn1, btn2 }) => {
     const navigate = useNavigate();
     const [userStorage, setUserStorage] = useState();
-
-    useEffect(() =>{
-        const storedUser = localStorage.getItem('user');
-        const user = storedUser ? JSON.parse(storedUser) : null
-        setUserStorage(user);
-    },[])
+    const user = useUser();
 
     return (
         <div className="gardientBg rounded-xl rounded-br-[80px] md:p-9 px-4 py-9">
@@ -35,8 +31,8 @@ const Banner = ({banner, heading, subheading, btn1, btn2 }) => {
                     <h2 className="md:text-3xl text-3xl font-bold text-white mb-6 leading-relaxed">{heading}</h2>
                     <p className="text-[#EBEBEB] text-2xl mb-8">{subheading}</p>
                     <div className="space-x-5 space-y-4">
-                        <button className="btnHome" >{btn1}</button>
-                        {userStorage !== null ?"" : (btn2 === '' ? '' :<button className="btnHome" onClick={() => navigate("/login")}>{btn2}</button>)}
+                        <button className="btnHome" onClick={() => navigate("/signUp")}>{btn1}</button>
+                        {user !== null ?"" : (btn2 === '' ? '' :<button className="btnHome" onClick={() => navigate("/login")}>{btn2}</button>)}
                     </div>
                 </motion.div>
 

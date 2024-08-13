@@ -212,7 +212,7 @@ function Payment() {
                             </div>
                             <div className="flex items-center ">
                                 <LuTicket className="mr-3"/>
-                                <span className="font-semibold">Điểm tích luỹ: {(customerPoint).toLocaleString('vi-VN')} điểm</span>
+                                <span className="font-semibold">Điểm tích luỹ: {(customerPoint)?.toLocaleString('vi-VN')} điểm</span>
                             </div>
                         </div>
                         <div className="bg-white rounded-md h-[70%] flex w-full justify-around">
@@ -255,7 +255,7 @@ function Payment() {
                              <div className="bg-slate-300 w-full rounded-sm py-4 font-semibold opacity-60 mb-2">
                                 <div className="flex justify-between px-2 items-center">
                                     <span>Sử dụng điểm</span>
-                                    <span>{(customerPoint).toLocaleString('vi-VN')}</span>
+                                    <span>{(customerPoint)?.toLocaleString('vi-VN')}</span>
                                 </div>
                             </div>
                              <div className="bg-slate-300 w-full rounded-sm py-4 font-semibold  mb-2">

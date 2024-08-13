@@ -93,7 +93,7 @@ const Pricing = () => {
                     </ul>
 
                     <div className="w-full mx-auto mt-8 flex items-center justify-center">
-                        <button className="btnHome" onClick={() => navigate("/login")}>Đăng ký ngay</button>
+                        <button className="btnHome" onClick={() => navigate("/signUp")}>Đăng ký ngay</button>
                     </div>
                 </div>)}
             </motion.div>

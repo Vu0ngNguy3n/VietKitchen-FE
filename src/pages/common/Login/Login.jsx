@@ -9,6 +9,7 @@ import axiosInstance from '../../../utils/axiosInstance';
 import { useDispatch } from 'react-redux';
 import Cookies from 'js-cookie';
 import { clearUser, saveUser } from '../../../actions/userActions';
+import validator from 'validator';
 
 function SignInSide() {
   const navigate = useNavigate();
@@ -84,6 +85,14 @@ function SignInSide() {
 
   const handleLogin = async () => {
     if(typeLogin === 2){
+      if(phoneNumber === '' || staffUsername.trim() === '' || password.trim() === ''){
+        toast.warn("Thông tin không dược để trống")
+        return
+      }
+      if(!validator.isMobilePhone(phoneNumber, 'vi-VN')){
+        toast.warn("Số điện thoại nhà hàng không đúng dịnh dạng")
+        return
+      }
         const employee = {
           phoneNumberOfRestaurant: phoneNumber,
           username:staffUsername,
@@ -204,6 +213,7 @@ function SignInSide() {
 
   const handleClosePop = () =>{
     setIsOpenPop(false);
+    setOtp(new Array(6).fill(""));
   }
 
   const handleLoginByOTP = () => {
@@ -268,6 +278,12 @@ function SignInSide() {
     });
   }
 
+   const handleChangePhone = (value) => {
+        if(!isNaN(value) && value.length<=10){
+            setPhoneNumber(value);
+        }
+    }
+
   return (
     <div className="w-full h-screen flex flex-col md:flex-row items-start">
       <div className="relative w-full md:w-1/2 h-1/2 md:h-full flex flex-col">
@@ -289,7 +305,7 @@ function SignInSide() {
           <img
             src={LOGO}
             alt=""
-            className="w-20 max-w-[500px] cursor-pointer rounded-full"
+            className="w-28 max-w-[500px] cursor-pointer rounded-full"
             onClick={() => navigate('/')}
           />
         </h1>
@@ -334,7 +350,7 @@ function SignInSide() {
               placeholder={'Số điện thoại nhà hàng'}
               className={`w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none  focus:outline-none ${typeLogin===1?'hidden':''}`}
               value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              onChange={(e) => handleChangePhone(e.target.value)}
             />
             <input
               type="text"
@@ -372,6 +388,7 @@ function SignInSide() {
                 Đăng nhập
               </button>
             )}
+            
             {typeLogin === 2 && (
               <button
                 className="w-full text-white my-2 font-semibold bg-[#060606] rounded-md p-4 text-center flex items-center justify-center cursor-pointer"
@@ -380,6 +397,7 @@ function SignInSide() {
                 Đăng nhập
               </button>
             )}
+            
             <button
               className={`w-full text-[#060606] my-2 font-semibold bg-white border-2 border-black-2 rounded-md p-4 text-center flex items-center justify-center ${typeLogin === 2 ?"hidden" : ""}`}
               onClick={() => navigate('/signUp')}
