@@ -42,36 +42,116 @@ function SignInSide() {
   };
 
   const handleOpenPop = () =>{
-    if(email.trim() === '' || password.trim() === ''){
-      toast.warn("Email hoặc mật khẩu không dược để trống")
-      return
+    if( typeLogin === 3){
+      if(email.trim() === '' || password.trim() === ''){
+        toast.warn("Email hoặc mật khẩu không dược để trống")
+        return
+      }else{
+        const userLogin = {
+          email: email.trim(),
+          password: password.trim(),
+        };
+        axios
+        .post(`/api/account/login`, userLogin)
+        .then(res => {
+          const data = res.data;
+          const token = data.result.token;
+          const user = jwtDecode(token);
+          localStorage.setItem('token', token);
+          const userStorage = {
+            username: user.sub,
+            email: user.email,
+            role: user.scope,
+            accountId: user.accountId,
+            restaurantId: user.restaurantId,
+            packName: user.packName
+          };
+          // localStorage.setItem('user', JSON.stringify(userStorage));
+          const action = saveUser(userStorage);
+          dispatch(action);
+          toast.success('Đăng nhập thành công');
+          if(user.scope.includes("ROLE_ADMIN")){
+            navigate("/admin/dashboard");
+          }else if(user.scope.includes("ROLE_MANAGER")){
+            
+            axiosInstance
+            .get(`/api/restaurant/account/${user.accountId}`)
+            .then(res => {
+              if(res.data.result === null){
+                navigate('/manager/restaurantInformation')
+              }else{
+                navigate("/manager/dashboard")
+              }
+            })
+            .catch((err) => {
+              if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+              } else if (err.request) {
+                toast.error(err.request);
+              } else {
+                toast.error(err.message);
+              }
+            })
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            const errorRes = err.response.data;
+            toast.error(errorRes.message);
+          } else if (err.request) {
+            toast.error(err.request);
+          } else {
+            toast.error(err.message);
+          }
+        });
+      }
     }
 
-    const userLogin = {
-      email: email.trim(),
-      password: password.trim(),
-    };
+    if(typeLogin === 1){
+      if(email.trim() === ''  ){
+        toast.warn("Email không dược để trống")
+        return
+      }else{
+        axios
+        .post(`/api/account/${email}/login`)
+        .then(res => { 
+          const data = res.data.result;
+          if(data.authenticated === true){
+            setIsOpenPop(true);
+            setTimeLeft(60)
+            axios
+            .post(`/api/account/${email}/send-otp`)
+            .then(res => {
+              
+            })
+            .catch((err) => {
+              if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+              } else if (err.request) {
+                toast.error(err.request);
+              } else {
+                toast.error(err.message);
+              }
+            });
+          }
+        })
+        .catch((err) => {
+          if (err.response) {
+            const errorRes = err.response.data;
+            toast.error(errorRes.message);
+          } else if (err.request) {
+            toast.error(err.request);
+          } else {
+            toast.error(err.message);
+          }
+        });
+      }
+    }
    
     
-    axios
-    .post('/api/account/login', userLogin)
-    .then(res => {
-      const data = res.data.result.authenticated;
-      if(data === true){
-        setIsOpenPop(true);
-        setTimeLeft(60)
-      }
-    })
-    .catch((err) => {
-      if (err.response) {
-        const errorRes = err.response.data;
-        toast.error(errorRes.message);
-      } else if (err.request) {
-        toast.error(err.request);
-      } else {
-        toast.error(err.message);
-      }
-    });
+   
   }
 
   useEffect(() => {
@@ -284,6 +364,14 @@ function SignInSide() {
         }
     }
 
+  const handleOpenLoginWithPass = () =>{
+    if(typeLogin === 1){
+      setTypeLogin(3);
+    }else{
+      setTypeLogin(1);
+    }
+  }
+
   return (
     <div className="w-full h-screen flex flex-col md:flex-row items-start">
       <div className="relative w-full md:w-1/2 h-1/2 md:h-full flex flex-col">
@@ -341,21 +429,21 @@ function SignInSide() {
             <input
               type="email"
               placeholder={'Email'}
-              className={`w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none  focus:outline-none ${typeLogin===2?'hidden':''}`}
+              className={`w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none  focus:outline-none ${typeLogin!==2?'':'hidden'}`}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <input
               type="text"
               placeholder={'Số điện thoại nhà hàng'}
-              className={`w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none  focus:outline-none ${typeLogin===1?'hidden':''}`}
+              className={`w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none  focus:outline-none ${typeLogin===2?'':'hidden'}`}
               value={phoneNumber}
               onChange={(e) => handleChangePhone(e.target.value)}
             />
             <input
               type="text"
               placeholder={'Tên đăng nhập'}
-              className={`w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none  focus:outline-none ${typeLogin===1?'hidden':''}`}
+              className={`w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none  focus:outline-none ${typeLogin===2?'':'hidden'}`}
               value={staffUsername}
               onChange={(e) => setStaffUsername(e.target.value)}
             />
@@ -363,16 +451,15 @@ function SignInSide() {
             <input
               type="password"
               placeholder="Mật khẩu"
-              className="w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none focus:outline-none"
+              className={`w-full text-black py-2 my-2 bg-transparent border-b border-black outline-none focus:outline-none ${typeLogin !== 1? '' : "hidden"}`}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
 
           <div className={`w-full flex items-center justify-between ${typeLogin === 2 ? "hidden": ""}`}>
-            <div className="w-full flex">
-              {/* <input type="checkbox" className="w-4 h-4 mr-2" />
-              <p className="text-sm">Nhớ mật khẩu</p> */}
+            <div className="w-full flex cursor-pointer" onClick={() => handleOpenLoginWithPass()}>
+              <p className="text-sm font-medium whitespace-nowrap cursor-pointer underline-offset-2">{typeLogin === 1 ? "Đăng nhập bằng phương thức khác" : "Quay lại"}</p>
             </div>
             <p className="text-sm font-medium whitespace-nowrap cursor-pointer underline underline-offset-2">
               Quên mật khẩu?
@@ -393,6 +480,14 @@ function SignInSide() {
               <button
                 className="w-full text-white my-2 font-semibold bg-[#060606] rounded-md p-4 text-center flex items-center justify-center cursor-pointer"
                 onClick={() => handleLogin()}
+              >
+                Đăng nhập
+              </button>
+            )}
+            {typeLogin === 3 && (
+              <button
+                className="w-full text-white my-2 font-semibold bg-[#060606] rounded-md p-4 text-center flex items-center justify-center cursor-pointer"
+                onClick={() => handleOpenPop()}
               >
                 Đăng nhập
               </button>
