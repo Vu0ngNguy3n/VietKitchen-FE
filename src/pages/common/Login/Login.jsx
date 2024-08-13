@@ -461,7 +461,7 @@ function SignInSide() {
             <div className="w-full flex cursor-pointer" onClick={() => handleOpenLoginWithPass()}>
               <p className="text-sm font-medium whitespace-nowrap cursor-pointer underline-offset-2">{typeLogin === 1 ? "Đăng nhập bằng phương thức khác" : "Quay lại"}</p>
             </div>
-            <p className="text-sm font-medium whitespace-nowrap cursor-pointer underline underline-offset-2">
+            <p className="text-sm font-medium whitespace-nowrap cursor-pointer underline underline-offset-2" onClick={() => navigate("/forgotPassword")}>
               Quên mật khẩu?
             </p>
           </div>

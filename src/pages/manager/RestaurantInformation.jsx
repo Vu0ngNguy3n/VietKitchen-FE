@@ -132,7 +132,7 @@ function RestaurantInformation() {
                 <div className="basis-[12%] h-[100vh]">
                     <SidebarManager />
                 </div>
-                <div className="basis-[88%] border h-[100vh]">
+                <div className="basis-[88%] border h-[100vh] overflow-scroll">
                     <HeaderManagerDashboard />
                     <div className="min-w-[40]x rounded-lg bg-primary/[0.1] p-16 shadow min-h-[90vh]  mt-2 flex-row ">
     
