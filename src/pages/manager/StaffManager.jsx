@@ -1,11 +1,11 @@
 import SidebarManager from "../../components/managerComponent/SidebarManager";
 import HeaderManagerDashboard from "../../components/managerComponent/HeaderManagerDashboard";
-import { FaSearch, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
+import { FaSearch, FaPlus, FaEdit, FaTrash, FaKey } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { useUser } from "../../utils/constant";
 import { toast } from "react-toastify";
-import validator from "validator";
+import validator, { isRFC3339 } from "validator";
 
 function StaffManager() {
 
@@ -25,7 +25,9 @@ function StaffManager() {
     const [isEdit, setIsEdit] = useState(false);
     const [employeeId, setEmployeeId] = useState();
     const [isOpenDelete, setIsOpenDelete] = useState(false);
+    const [isOpenChangePass, setIsOpenChangePass] = useState(false);
     const [employeeDelete, setEmployeeDelete] = useState();
+    const [employeeChangePassword, setEmployeeChangePassword] = useState();
     const [search, setSearch] = useState('');
     const account = useUser();
 
@@ -77,19 +79,20 @@ function StaffManager() {
             })
     },[isAddEmployee])
 
-    const handleChangePhoneNumber = (value) => {
-        
-    }
     
     const handleOpenPopup = () => {
         setIsCreate(true);
         setIsEdit(false);
         setOpenPop(true);
+        setPassword('');
+        setConfirmPassword('');
     }
 
     const handleClosePopup = () => {
         setOpenPop(false);
         clearInput();
+        setPassword('');
+        setConfirmPassword('');
     }
 
     const clearInput = () => {
@@ -139,12 +142,10 @@ function StaffManager() {
                 })
             }else if(isEdit){
                 const newEmployee = {
-                    password: password,
                     employeeName: employeeName,
                     phoneNumber: phoneNumber,
                     roleId: +currentRole
                 }
-                console.log(newEmployee);
 
                 axiosInstance
                 .put(`/api/employee/${employeeId}`,newEmployee)
@@ -232,6 +233,44 @@ function StaffManager() {
             setEmployeeName(value)
         }
     }
+
+    const handleChangePassword = (employee) => {
+        setIsOpenChangePass(true);
+        setEmployeeChangePassword(employee)
+    }
+
+    const handleOpenChangePass = () => {
+        setIsOpenChangePass(true);
+    }
+
+    const handleCloseChangePass = () => {
+        setIsOpenChangePass(false);
+        setPassword('');
+        setConfirmPassword('');
+    }
+
+    const handleSubmitChangePass = () =>  {
+        if(password !== confirmPassword){
+            toast.warn("Mật khẩu không trùng khớp")
+            return
+        }
+        axiosInstance
+        .put(`/api/employee/${employeeChangePassword?.id}/change-password/${password}`)
+        .then(res => {
+            toast.success(`Đổi mật khẩu cho nhân viên ${employeeChangePassword?.employeeName} thành công`)
+            handleCloseChangePass();
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })
+    }
    
 
     return (
@@ -312,26 +351,31 @@ function StaffManager() {
                                             onChange={e => handleChangePhone(e.target.value)}
                                         />
                                     </div>
-                                    <div className="mb-4">
-                                        <label className="block mb-2">Mật khẩu <span className="text-red-500">*</span></label>
-                                        <input
-                                            type="password"
-                                            placeholder="Mật khẩu"
-                                            className="w-full px-3 py-2 border rounded-md"
-                                            value={password}
-                                            onChange={e => setPassword(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="mb-4">
-                                        <label className="block mb-2">Xác nhận mật khẩu <span className="text-red-500">*</span></label>
-                                        <input
-                                            type="password"
-                                            placeholder="Xác nhận mật khẩu"
-                                            className="w-full px-3 py-2 border rounded-md"
-                                            value={confirmPassword}
-                                            onChange={e => setConfirmPassword(e.target.value)}
-                                        />
-                                    </div>
+                                    {!isEdit && (
+                                        <div className="mb-4">
+                                            <label className="block mb-2">Mật khẩu <span className="text-red-500">*</span></label>
+                                            <input
+                                                type="password"
+                                                placeholder="Mật khẩu"
+                                                className="w-full px-3 py-2 border rounded-md"
+                                                value={password}
+                                                onChange={e => setPassword(e.target.value)}
+                                            />
+                                        </div>
+                                    )}
+                                    
+                                    {!isEdit && (
+                                        <div className="mb-4">
+                                            <label className="block mb-2">Xác nhận mật khẩu <span className="text-red-500">*</span></label>
+                                            <input
+                                                type="password"
+                                                placeholder="Xác nhận mật khẩu"
+                                                className="w-full px-3 py-2 border rounded-md"
+                                                value={confirmPassword}
+                                                onChange={e => setConfirmPassword(e.target.value)}
+                                            />
+                                        </div>
+                                    )}
                                     
                                     <div className="mb-4">
                                         <label className="block mb-2">Loại nhân viên <span className="text-red-500">*</span></label>
@@ -367,6 +411,57 @@ function StaffManager() {
                                     </div>
                                 </div>
                             </div>:""}
+                        
+                        {isOpenChangePass && (
+                            <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+                                <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-md z-50 overflow-y-auto max-h-screen ">
+                                    <button
+                                        className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-2xl"
+                                        onClick={handleCloseChangePass}
+                                    >
+                                        &times;
+                                    </button>
+                                    
+                                    <div className="mb-4">
+                                        <label className="block mb-2">Mật khẩu mới <span className="text-red-500">*</span></label>
+                                        <input
+                                            type="password"
+                                            placeholder="Mật khẩu"
+                                            className="w-full px-3 py-2 border rounded-md"
+                                            value={password}
+                                            onChange={e => setPassword(e.target.value)}
+                                        />
+                                    </div>
+                                
+                                    <div className="mb-4">
+                                        <label className="block mb-2">Xác nhận mật khẩu<span className="text-red-500">*</span></label>
+                                        <input
+                                            type="password"
+                                            placeholder="Xác nhận mật khẩu"
+                                            className="w-full px-3 py-2 border rounded-md"
+                                            value={confirmPassword}
+                                            onChange={e => setConfirmPassword(e.target.value)}
+                                        />
+                                    </div>
+                                    
+                                    <div className="flex justify-end gap-2">
+                                        <button
+                                            className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-red-700 transition-all duration-300"
+                                            onClick={handleCloseChangePass}
+                                        >
+                                            Hủy
+                                        </button>
+                                        <button
+                                            className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-blue-500 transition-all duration-300"
+                                            onClick={handleSubmitChangePass}
+                                        >
+                                            Đổi mật khẩu
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    
                         {isOpenDelete && (
                             <div id="popup-delete" className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
                                 <div className="relative p-4 w-full max-w-md bg-white rounded-lg shadow dark:bg-gray-700 animate-slideIn">
@@ -418,7 +513,15 @@ function StaffManager() {
                                         </th>
                                         <th scope="col" className="px-6 py-3">
                                             <span className="sr-only">Chỉnh sửa</span>
-                                            <span className="sr-only">Xóa</span>
+                                            {/* <span className="sr-only">Xóa</span> */}
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            <span className="sr-only">Đổi mật khẩu</span>
+                                            {/* <span className="sr-only">Xóa</span> */}
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            <span className="sr-only">Xoá</span>
+                                            {/* <span className="sr-only">Xóa</span> */}
                                         </th>
                                     </tr>
                                 </thead>
@@ -437,13 +540,24 @@ function StaffManager() {
                                             <td className="px-6 py-4">
                                                 {e?.role.name === "WAITER" ? "Bồi bàn" : (e?.role.name === "CHEF" ?  "Đầu bếp" : "Lễ tân")}
                                             </td>
-                                            <td className="px-6 py-4 flex space-x-2">
+                                            <td className="px-6 py-4 ">
                                                 <button 
                                                     onClick={() => handleEditEmployee(e)}
-                                                    className="py-2 px-5 bg-secondary font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center">
+                                                    className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center">
                                                     <FaEdit className="mr-1" />
                                                     Chỉnh sửa
                                                 </button>
+                                                
+                                            </td>
+                                            <td className="px-6 py-4 ">
+                                                <button 
+                                                    onClick={() => handleChangePassword(e)}
+                                                    className="py-2 px-5 bg-secondary font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center">
+                                                    <FaKey className="mr-1" />
+                                                    Đổi mật khẩu
+                                                </button>
+                                            </td>
+                                            <td className="px-6 py-4 ">
                                                 <button 
                                                     onClick={() => handleDeleteEmployee(e)}
                                                     className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center">

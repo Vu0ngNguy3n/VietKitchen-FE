@@ -8,6 +8,7 @@ import { useNavigate } from "react-router";
 import { MdOutlinePayment } from "react-icons/md";
 import { FiPackage } from "react-icons/fi";
 import { BiSolidPurchaseTag } from "react-icons/bi";
+import { FaKey } from "react-icons/fa";
 
 
 function SettingManager() {
@@ -41,6 +42,16 @@ function SettingManager() {
                                             onClick={() => navigate('/manager/restaurantInformation')}
                                             >Thông tin nhà hàng</p>
                                             <span>Xem và điều chỉnh thông tin nhà hàng của bạn</span>
+                                        </div>
+                                    </div>
+                                    <div className='flex items-center gap-[10px] basis-[40%]'>
+                                        <FaKey color='black ' size={35} />
+                                        <div className="flex-row">
+                                            <p 
+                                            className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.7] cursor-pointer'
+                                            onClick={() => navigate('/manager/changePassword')}
+                                            >Đổi mật khẩu </p>
+                                            <span>Đổi mật khẩu cho nhà hàng của bạn</span>
                                         </div>
                                     </div>
                                     <div className='flex items-center gap-[10px] basis-[40%]'>

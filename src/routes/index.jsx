@@ -37,11 +37,14 @@ import DishDecline from "../pages/staff/chef/DishDecline"
 import TableAreaChef from "../pages/staff/chef/TableAreaChef"
 import DishTable from "../pages/staff/chef/DishTable"
 import BookingTable from "../pages/staff/hostess/BookingTable"
+import ChangePassword from "../pages/manager/ChangePasswordManager"
+import ForgotPassword from "../pages/common/ForgotPassword/ForgotPassword"
 
 const publicRoutes = [
     {path: '/login', component: SignInSide},
     {path: '/signUp', component: SignUp},
     {path: '/', component: HomePage},
+    {path: '/forgotPassword', component: ForgotPassword},
 
 ]
 
@@ -73,6 +76,7 @@ const managerRoutes = [
     {path: '/manager/packageRestaurant', component: SettingPackage},
     {path: '/manager/VATSetting', component: VATSetting},
     {path: '/manager/PointSetting', component: PointSetting},
+    {path: '/manager/changePassword', component: ChangePassword},
 ]
 
 const waiterRoutes = [
