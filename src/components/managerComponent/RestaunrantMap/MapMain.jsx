@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import axiosInstance from "../../../utils/axiosInstance";
 import { useUser } from "../../../utils/constant";
-import { AiTwotoneEdit } from "react-icons/ai";
+import { AiFillEdit, AiTwotoneEdit } from "react-icons/ai";
 import { FaTrashAlt } from "react-icons/fa";
 import {  FaPlus } from "react-icons/fa";
 import REACTANGE4 from "../../../assests/reactange4.png"
@@ -15,6 +15,7 @@ import SQUARE4 from "../../../assests/square4.png"
 import SQUARE6 from "../../../assests/square6.png"
 import SQUARE8 from "../../../assests/square8.png"
 import ZEROTABLE from "../../../assests/zeroTable.jpg"
+import { IoReturnUpBackOutline } from "react-icons/io5";
 
 const MapMain = () => {
     const [board, setBoard] = useState([]);
@@ -42,7 +43,7 @@ const MapMain = () => {
     const [isOpenDelete, setIsOpenDelete] = useState(false);
     const [isOpenEdit, setIsOpenEdit] = useState(false);
     const [currentTable, setCurrentTable] = useState();
-    
+    const [isOpenEditArea, setIsOpenEditArea] = useState(false);
 
     
     useEffect(() => {
@@ -309,6 +310,10 @@ const MapMain = () => {
     }
 
     const handleSubmitEditTable = () => {
+        if(tableName === '' ){
+            toast.warn("Tên bàn không được để trống")
+            return
+        }
         const data = {
             name: tableName,
             numberChairs: typeTable,
@@ -342,6 +347,48 @@ const MapMain = () => {
             setTableName(value);
         }
     }
+
+    const handleOpenEditArea = () => {
+        setAreaName(areaDetail?.name)
+        setIsOpenEditArea(true)
+    }
+
+    const handleCloseEditArea = () => {
+        setAreaName('')
+        setIsOpenEditArea(false)
+    }
+
+    const handleEditArea = () => {
+        if(areaName === ''){
+            toast.warn("Tên khu vực không đang để trống")
+            return
+        }
+
+        const data = {
+            name: areaName,
+            restaurantId: user?.restaurantId
+        }
+
+        axiosInstance
+        .put(`/api/area/${areaDetail?.id}`, data)
+        .then(res => {
+            toast.success("Cập nhật khu vực thành công")
+            setIsAddArea(!isAddArea);
+            setAreaDetail(res.data.result);
+            handleCloseEditArea()
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })
+    }
+
 
 
     return (
@@ -465,6 +512,46 @@ const MapMain = () => {
                                 </div>
                             </div>
                             : ''}
+                            {isOpenEditArea && (
+                                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
+                                    <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-md z-50 animate-slideIn">
+                                        <button
+                                            className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-2xl"
+                                            onClick={handleCloseEditArea}
+                                        >
+                                            &times;
+                                        </button>
+                                        <h2 className="text-xl font-semibold mb-4">
+                                            Đổi tên khu vực
+                                        </h2>
+                                        {isCreateArea && <div className="mb-4">
+                                            <label className="block mb-2">Tên khu vực <span className="text-red-500">*</span></label>
+                                            <input
+                                                type="text"
+                                                placeholder="VD: Tầng 1"
+                                                value={areaName}
+                                                onChange={(e) => setAreaName(e.target.value)}
+                                                className="w-full px-3 py-2 border rounded-md"
+                                            />
+                                        </div>}
+                                        <div className="flex justify-end gap-2">
+                                            <button
+                                                className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-red-700 transition-all duration-300"
+                                                onClick={handleCloseEditArea}
+                                            >
+                                                Hủy
+                                            </button>
+                                            <button
+                                                onClick={() => handleEditArea()}
+                                                className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-blue-500 transition-all duration-300"
+                                            >
+                                                Thêm 
+                                            </button>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                             {isOpenCreateTable ? <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
                                 <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl z-50 animate-slideIn">
                                     <button
@@ -583,9 +670,13 @@ const MapMain = () => {
                                         <span className="font-semibold">Tên khu vực</span>
                                     </div>
                                     <div className="w-[60%] ">
-                                        <div className="border-2 px-2 py-2">
-                                            {areaDetail?.name}
+                                        <div className="border-2  flex justify-between items-center">
+                                            <span className="py-2 pl-2">{areaDetail?.name}</span>
+                                             <div className="cursor-pointer h-full py-2 px-2 border-l-2 bg-secondary hover:opacity-80 transition-all duration-300" onClick={() => handleOpenEditArea()}>
+                                                <AiFillEdit className="size-6 text-white"/>
+                                             </div>
                                         </div>
+                                       
                                     </div>
                                 </div>
                             </div>
