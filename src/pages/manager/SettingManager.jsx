@@ -1,7 +1,7 @@
 import SidebarManager from "../../components/managerComponent/SidebarManager"
 import HeaderManagerDashboard from "../../components/managerComponent/HeaderManagerDashboard"
 import { FaShop } from "react-icons/fa6";
-import { MdManageAccounts } from "react-icons/md";
+import { MdChair, MdManageAccounts } from "react-icons/md";
 import { PiUniteFill } from "react-icons/pi";
 import { RiMoneyDollarCircleFill } from "react-icons/ri";
 import { useNavigate } from "react-router";
@@ -108,6 +108,13 @@ function SettingManager() {
                                         <div className="flex-row">
                                             <p className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.7] cursor-pointer' onClick={() => navigate('/manager/PointSetting')}>Thiết lập điểm</p>
                                             <span>Xem và thiết lập điểm của nhà hàng</span>
+                                        </div>
+                                    </div>
+                                    <div className='flex items-center gap-[10px] basis-[40%]'>
+                                        <MdChair color='black ' size={35} />
+                                        <div className="flex-row">
+                                            <p className='text-[16px] leading-[20px] font-extrabold text-secondary/[0.7] cursor-pointer' onClick={() => navigate('/manager/areaManagement')}>Thiết lập khu vực</p>
+                                            <span>Xem và thiết lập, chỉnh sửa các khu vực trong nhà hàng</span>
                                         </div>
                                     </div>
                                     

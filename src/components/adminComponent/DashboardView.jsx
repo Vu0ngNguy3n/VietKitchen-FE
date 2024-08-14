@@ -32,8 +32,8 @@ const Dashboardview = () => {
                 </div>
                 <div className='flex items-center gap-[20px]'>
                     <div className='flex items-center gap-[25px] border-r-[1px] pr-[25px]'>
-                        <FaRegBell />
-                        <FaEnvelope />
+                        {/* <FaRegBell />
+                        <FaEnvelope /> */}
                     </div>
                     <div className='flex items-center gap-[15px] relative' onClick={showProfile} >
                         <p className='font-semibold'>ADMIN</p>
@@ -45,7 +45,7 @@ const Dashboardview = () => {
                         {
                             open &&
                             <div className='bg-white border h-[120px] w-[180px] absolute bottom-[-135px] z-20 right-0 pt-[15px] pl-[15px] space-y-[10px]'>
-                                <p className='cursor-pointer hover:text-[blue] font-semibold' onClick={() => navigate('/admin/permissions')}>Quản lý chức năng</p>
+                                <p className='cursor-pointer hover:text-[blue] font-semibold' onClick={() => navigate('/admin/dashboard')}>Tổng quan</p>
                                 <p className='cursor-pointer hover:text-[blue] font-semibold' onClick={() => navigate('/admin/packages')}>Quản lý gói</p>
                                 <p className='cursor-pointer hover:text-[blue] font-semibold' onClick={() => handleLogout()}>Đăng xuất</p>
                             </div>

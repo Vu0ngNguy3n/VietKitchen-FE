@@ -69,7 +69,7 @@ function AccountsManagements() {
 
                             </div>
 
-                            <div className="flex items-center">
+                            {/* <div className="flex items-center">
                                 <form className="max-w-sm mr-4 ">
                                     <select
                                         id="countries"
@@ -81,11 +81,8 @@ function AccountsManagements() {
                                         <option value="US">Tài khoản bị khóa</option>
                                     </select>
                                 </form>
-                                {/* <div>
-                                    <button className="py-2 px-5 bg-secondary font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"> <FaFileExport className="mr-1" />
-                                        Xuất Excel</button>
-                                </div> */}
-                            </div>
+                               
+                            </div> */}
                         </div>
 
 
@@ -102,6 +99,9 @@ function AccountsManagements() {
                                             Email
                                         </th>
                                         <th scope="col" className="px-6 py-3">
+                                            Số điện thoại
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
                                             Tên nhà hàng
                                         </th>
                                         <th scope="col" className="px-6 py-3">
@@ -110,9 +110,9 @@ function AccountsManagements() {
                                         <th scope="col" className="px-6 py-3">
                                             <span className="sr-only">Chỉnh sửa</span>
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
+                                        {/* <th scope="col" className="px-6 py-3">
                                             <span className="sr-only">Vô hiệu hóa</span>
-                                        </th>
+                                        </th> */}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -123,6 +123,9 @@ function AccountsManagements() {
                                             </th>
                                             <td className="px-6 py-4">
                                                 {user?.email}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {user?.phoneNumber}
                                             </td>
                                             <td className="px-6 py-4">
                                                 {user?.restaurant === null ? '' : user?.restaurant?.restaurantName}
@@ -136,18 +139,17 @@ function AccountsManagements() {
                                                     onClick={() => navigate(`/admin/accountDetail/${user?.id}`)}
                                                 >
                                                     <FaEdit className="mr-1" />
-                                                    Chỉnh sửa</button>
+                                                    Thông tin</button>
                                                 {/* <span className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer">Chỉnh sửa</span> */}
                                             </td>
-                                            <td className="px-6 py-4 flex-row justify-end">
+                                            {/* <td className="px-6 py-4 flex-row justify-end">
                                                 <button
                                                     className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
                                                 >
                                                     <FaEdit className="mr-1" />
                                                     {user?.isEnable === true ? "Vô hiệu hóa" : "Mở khóa"}
                                                 </button>
-                                                {/* <span className="font-medium text-red-600 dark:text-red-500 hover:underline cursor-pointer">{user.isEnable === true ? "Vô hiệu hóa" : "Mở khóa"}</span> */}
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     ))}
 

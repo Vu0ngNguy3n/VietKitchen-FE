@@ -213,7 +213,9 @@ function SignUp() {
 
   const handleChangePhoneNumber = (e) => {
     const inputPhone = e.target.value;
-    setPhoneNumber(inputPhone);
+    if(inputPhone?.length <= 10){
+      setPhoneNumber(inputPhone);
+    }
 
 
   }
