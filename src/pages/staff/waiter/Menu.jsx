@@ -39,15 +39,15 @@ function Menu(){
   const [client, setClient] = useState(null);
   const [connected, setConnected] = useState(false);
   const [isExistCustomer, setIsExistCustomer] = useState(false);
-  const [phoneNumber, setPhoneNumber ] = useState();
+  const [phoneNumber, setPhoneNumber ] = useState('');
   const [areaList, setAreaList] = useState([]);
   const [currentArea, setCurrentArea] = useState();
   const [tableList, setTableList] = useState([]);
   const [currentTable, setCurrentTable] = useState();
   const [isAddCustomer, setIsAddCustomer] = useState(false);
   const [phoneNumberAdd, setPhoneNumberAdd] = useState();
-  const [customerName, setCustomerName] = useState();
-  const [address, setAddress] = useState();
+  const [customerName, setCustomerName] = useState('');
+  const [address, setAddress] = useState('');
   const user = useUser();
   const navigate = useNavigate();
 
