@@ -244,7 +244,6 @@ function ComboManagement() {
         setImgComboCreate(fileImg);
 
         if (fileImg.type === 'image/jpeg' || fileImg.type === 'image/png') {
-            toast.success("Upload image successfully!");
             fileImg.preview = URL.createObjectURL(fileImg);
             setShowImgUpload(fileImg.preview);
         } else {
@@ -394,136 +393,121 @@ function ComboManagement() {
             </div>
 
             {isOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 p-4">
-                    <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
-                        <button
-                            className="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-2xl"
-                            onClick={handleClosePopUp}
-                        >
-                            &times;
-                        </button>
-                        <h2 className="text-xl font-semibold mb-2">{isUpdateMode ? 'Cập nhật Combo' : 'Thêm Combo'}</h2>
-                        <div className="mb-2">
-                            <label htmlFor="combo-name" className="block mb-2">
-                                Tên Combo <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                id="combo-name"
-                                type="text"
-                                placeholder="Tên Combo"
-                                value={comboName}
-                                onChange={e => setComboName(e.target.value)}
-                                className="w-full px-3 py-2 border rounded-md"
-                            />
-                        </div>
-                        <div className="mb-2">
-                            <label htmlFor="combo-price" className="block mb-2">
-                                Giá Combo <span className="text-red-500">*</span>
-                            </label>
-                            <NumericFormat
-                                value={comboPrice}
-                                thousandSeparator=","
-                                displayType="input"
-                                placeholder="Giá combo"
-                                suffix=" VNĐ"
-                                onValueChange={(values) => handleChangePrice(values.value)}
-                                className="w-full px-3 py-2 border rounded-md"
-                            />
-                            {/* <input
-                                id="combo-price"
-                                type="text"
-                                placeholder="Giá Combo"
-                                value={comboPrice}
-                                onChange={e => handleChangePrice(e.target.value)}
-                                className="w-full px-3 py-2 border rounded-md"
-                            /> */}
-                        </div>
-                        <div className="mb-2">
-                            <label htmlFor="combo-description" className="block mb-2">
-                                Miêu tả Combo <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                id="combo-description"
-                                type="text"
-                                value={description}
-                                onChange={e => setDescription(e.target.value)}
-                                placeholder="Miêu tả Combo"
-                                className="w-full px-3 py-2 border rounded-md"
-                            />
-                        </div>
-                        <div className="mb-2 flex">
-                            <div className="w-full">
-                                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                    Ảnh Combo 
-                                </label>
-                                <input
-                                    className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 
-                                    focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                                    onChange={handleFileUpload}
-                                    id="file_input"
-                                    type="file"
-                                />
+                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+                    <div className="relative bg-white rounded-lg shadow-lg w-full max-w-2xl z-50 overflow-y-auto max-h-screen">
+                        <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 p-4">
+                            <div className="flex items-center justify-between  border-b rounded-t dark:border-gray-600">
+                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                    Thêm combo
+                                </h3>
+                                <button type="button"  onClick={handleClosePopUp}  className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="crud-modal">
+                                    <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                    </svg>
+                                    <span className="sr-only">Close modal</span>
+                                </button>
                             </div>
-                        </div>
-                        {showImgUpload && (
-                            <div className="mb-2">
-                                <img src={showImgUpload} alt="Combo preview" className="w-full h-40 object-cover rounded-md" />
-                            </div>
-                        )}
-                        <div className="mb-2">
-                            <label htmlFor="combo-dishes" className="block mb-2">
-                                Chọn món ăn <span className="text-red-500">*</span>
-                            </label>
-                            <select
-                                id="combo-dishes"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 
-                                focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
-                                dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                onChange={e => {
-                                    const selectedDish = dishesList.find(dish => dish.id === +e.target.value);
-                                    if (selectedDish) {
-                                        handleSelectDish(selectedDish);
-                                    }
-                                }}
-                            >
-                                <option value="">Chọn món ăn</option>
-                                {dishesList?.map(dish => (
-                                    <option key={dish.id} value={dish.id}>
-                                        {dish.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="mb-2">
-                            <h3 className="block mb-2">Món ăn đã chọn</h3>
-                            <div className="flex flex-wrap">
-                                {selectedDishes?.map(dish => (
-                                    <div key={dish.id} className="flex items-center m-1 p-2 border rounded">
-                                        <img src={dish.imageUrl} alt={dish.name} className="w-10 h-10 mr-2" />
-                                        <span>{dish.name}</span>
-                                        <button
-                                            className="ml-2 text-red-500"
-                                            onClick={() => handleRemoveDish(dish)}
-                                        >
-                                            &times;
-                                        </button>
+                            <from className="p-4 md:p-5">
+                                <div className="grid gap-4 mb-4 grid-cols-2">
+                                    <div className="col-span-2 sm:col-span-1">
+                                        <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên combo <span className="text-red-600">*</span></label>
+                                        <input type="text" name="name" id="name" 
+                                        value={comboName}
+                                        onChange={e => setComboName(e.target.value)}
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="Tên combo"
+                                       />
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-                        <div className="flex justify-end gap-2">
-                            <button
-                                onClick={handleClosePopUp}
-                                className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-red-700 transition-all duration-300"
-                            >
-                                Hủy
-                            </button>
-                            <button
-                                onClick={isUpdateMode ? handleUpdateCombo : handleCreateCombo}
-                                className="py-2 px-5 bg-lgreen font-semibold text-white rounded hover:bg-green transition-all duration-300"
-                            >
-                                {isUpdateMode ? 'Cập nhật' : 'Thêm'}
-                            </button>
+                                    {/* <div className="col-span-2 sm:col-span-1">
+                                        <label htmlFor="weight" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Giá combo<span className="text-red-600">*</span></label>
+                                        <input type="text"  id="weight" 
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                                        placeholder="Giá combo"
+                                        />
+                                    </div> */}
+                                    <div className="col-span-2 sm:col-span-1">
+                                        <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Giá combo <span className="text-red-600">*</span></label>
+                                        <NumericFormat type="text" name="price" id="price" 
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                                        value={comboPrice}
+                                        thousandSeparator=","
+                                        displayType="input"
+                                        placeholder="Giá combo"
+                                        suffix=" VNĐ"
+                                        onValueChange={(values) => handleChangePrice(values.value)}
+                                        />
+                                    </div>
+                                    <div className="col-span-2 sm:col-span-1">
+                                        <label htmlFor="file_input" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ảnh combo <span className="text-red-600">*</span></label>
+                                        <input
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                                        onChange={handleFileUpload}
+                                        id="file_input" 
+                                        type="file"/>
+                                    </div>
+                                    <div className="col-span-2 sm:col-span-1">
+                                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ảnh minh hoạ  <span className="text-red-600">*</span></label>
+                                        {showImgUpload ? (
+                                        <img src={showImgUpload} alt='Ảnh combo' className="w-[50%] object-cover h-[70px]" />
+                                        ):<img src="https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg" className="w-[50%] object-cover h-[70px]" alt="" />}
+                                    </div>
+                                    <div className="col-span-2">
+                                        <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Miêu tả combo <span className="text-red-600">*</span></label>
+                                        <textarea id="description" rows="4" 
+                                        value={description}
+                                        onChange={e => setDescription(e.target.value)}
+                                        className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                        placeholder="Miêu tả combo"></textarea>                    
+                                    </div>
+                                    <div className="col-span-2 ">
+                                        <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Chọn món ăn  <span className="text-red-600">*</span></label>
+                                        <select id="category" 
+                                        onChange={e => {
+                                            const selectedDish = dishesList.find(dish => dish.id === +e.target.value);
+                                            if (selectedDish) {
+                                                handleSelectDish(selectedDish);
+                                            }
+                                        }}
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        >
+                                            {/* {dishesList?.map(dish => (
+                                                <option key={dish.id} value={dish.id}>
+                                                    {dish.name}
+                                                </option>
+                                            ))} */}
+                                            {dishesList?.map((dish, index) => (
+                                                <option value={dish?.id} key={index}>{dish?.name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    
+                                    
+                                    <div className="col-span-2 ">
+                                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Món đã chọn  <span className="text-red-600">*</span></label>
+                                        <div className="flex flex-wrap">
+                                            {selectedDishes?.map(dish => (
+                                                <div key={dish.id} className="flex items-center m-1 p-2 border rounded">
+                                                    <img src={dish.imageUrl} alt={dish.name} className="w-10 h-10 mr-2" />
+                                                    <span>{dish.name}</span>
+                                                    <button
+                                                        className="ml-2 text-red-500"
+                                                        onClick={() => handleRemoveDish(dish)}
+                                                    >
+                                                        &times;
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                <button 
+                                     onClick={isUpdateMode ? handleUpdateCombo : handleCreateCombo}
+                                    type="submit" class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                                    Thêm combo
+                                </button>
+                            </from>
                         </div>
                     </div>
                 </div>

@@ -11,6 +11,7 @@ import HighchartsReact from "highcharts-react-official";
 import Highcharts from 'highcharts';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import axios from "axios";
 
 
 function Dashboard() {
@@ -23,6 +24,7 @@ function Dashboard() {
     const [listTime, setListTime] = useState([])
     const [statisticRevenue, setStatisticRevenue] = useState([]);
     const [statisticRestaurant, setStatisticRestaurant] = useState([]);
+    const [packages, setPackages] = useState([])
     const user = useUser();
 
     useEffect(() => {
@@ -30,7 +32,25 @@ function Dashboard() {
         .get(`/api/statistic/admin/time/${typeMonth}`)
         .then(res => {
             const data = res.data.result;
+            console.log(data);
             setDataStatisticAll(data);            
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })
+
+        axios
+        .get(`/api/package/view`)
+        .then(res => {
+            const data = res.data.result;
+            setPackages(data);
         })
         .catch(err => {
             if (err.response) {
@@ -70,7 +90,7 @@ function Dashboard() {
             type: 'line'
         },
         title: {
-            text: `Thống kê doanh thu theo ${typeMonth.includes("week") ? "tuần" : "tháng" } `
+            text: `Thống kê doanh thu theo ${typeMonth.includes("current-week") ? "tuần này" : (typeMonth === 'last-week' ? "tuần trước" : (typeMonth === 'current-month' ? 'Tháng này' : 'Tháng trước'))  } `
         },
         subtitle: {
             text: 'Source: ' +
@@ -103,7 +123,7 @@ function Dashboard() {
             type: 'line'
         },
         title: {
-            text: `Thống kê số nhà hàng mới theo ${typeMonth.includes("week") ? "tuần" : "tháng" } `
+            text: `Thống kê số nhà hàng mới theo ${typeMonth.includes("current-week") ? "tuần này" : (typeMonth === 'last-week' ? "tuần trước" : (typeMonth === 'current-month' ? 'Tháng này' : 'Tháng trước'))  } `
         },
         subtitle: {
             text: 'Source: ' +
@@ -191,7 +211,7 @@ function Dashboard() {
                                 <div className=' h-[100px] rounded-[8px] bg-white border-l-[4px] border-[#F6C23E] flex items-center justify-between px-[30px] cursor-pointer hover:shadow-lg transform hover:scale-[103%] transition duration-300 ease-out'>
                                     <div>
                                         <h2 className='text-[#1cc88a] text-[11px] leading-[17px] font-bold uppercase'>Tổng số gói</h2>
-                                        <h1 className='text-[20px] leading-[24px] font-bold text-[#5a5c69] mt-[5px]'>{formatVND(dataStatistic?.vat)}</h1>
+                                        <h1 className='text-[20px] leading-[24px] font-bold text-[#5a5c69] mt-[5px]'>{packages?.length} gói</h1>
                                     </div>
                                     <FaRegCalendarMinus fontSize={28} />
                                 </div>
@@ -231,7 +251,7 @@ function Dashboard() {
                                     </div>
                                 </div>
                             </div>
-                            <div className='flex-row mt-[22px] w-full gap-[30px]'>
+                            {/* <div className='flex-row mt-[22px] w-full gap-[30px]'>
                                 
                                 <div className="w-full flex gap-[10px]">
                                     <div className='basis-[49%] border bg-white shadow-md cursor-pointer rounded-[4px]'>
@@ -256,7 +276,7 @@ function Dashboard() {
                                     </div>
                                 </div>
                             </div>
-                            
+                             */}
 
 
                         </div >

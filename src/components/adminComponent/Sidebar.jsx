@@ -1,5 +1,6 @@
 import React from 'react'
 import { FaTachometerAlt, FaRegSun, FaWrench, FaStickyNote, FaRegChartBar, FaRegCalendarAlt, FaChevronRight, FaChevronLeft, FaBolt } from "react-icons/fa"
+import { MdDashboard } from 'react-icons/md'
 import { useNavigate } from 'react-router'
 import LOGO from "../../assests/VIET.png"
 
@@ -14,7 +15,7 @@ const Sidebar = () => {
                 <h1 className='text-white text-[20px] leading-[24px] font-extrabold cursor-pointer'>VietKitchen</h1>
             </div>
             <div className='flex items-center gap-[15px] py-[20px] border-b-[1px] transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary border-[#EDEDED]/[0.3] cursor-pointer ' onClick={() => navigate('/admin/dashboard')}>
-                {/* <FaTachometerAlt color='white' /> */}
+                <MdDashboard color='white' />
                 <p className='text-[14px] leading-[20px] font-bold text-white '>Tổng quan</p>
             </div>
             <div className='pt-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
