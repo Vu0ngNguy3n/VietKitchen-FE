@@ -162,7 +162,7 @@ function PointSetting() {
                                     <div className="mt-6 w-full flex justify-end">
                                         <button
                                             onClick={() => handleSubmitChange()} 
-                                            className="outline-none px-6 py-3 bg-blue-500 cursor-pointer duration-300 transition-all rounded-md text-white font-medium hover:opacity-80">Xác nhận</button>
+                                            className="outline-none px-6 py-3 bg-blue-500 cursor-pointer duration-300 transition-all rounded-md text-white font-medium hover:opacity-80">Lưu</button>
                                     </div>
                                 </div>
                             </div>

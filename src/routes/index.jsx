@@ -40,6 +40,7 @@ import BookingTable from "../pages/staff/hostess/BookingTable"
 import ChangePassword from "../pages/manager/ChangePasswordManager"
 import ForgotPassword from "../pages/common/ForgotPassword/ForgotPassword"
 import AreaManagement from "../pages/manager/AreaManagement"
+import BookingTableManagement from "../pages/manager/BookingTableManagement"
 
 const publicRoutes = [
     {path: '/login', component: SignInSide},
@@ -79,6 +80,7 @@ const managerRoutes = [
     {path: '/manager/PointSetting', component: PointSetting},
     {path: '/manager/changePassword', component: ChangePassword},
     {path: '/manager/areaManagement', component: AreaManagement},
+    {path: '/manager/bookingTable', component: BookingTableManagement},
 ]
 
 const waiterRoutes = [

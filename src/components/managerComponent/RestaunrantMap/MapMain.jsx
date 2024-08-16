@@ -168,7 +168,11 @@ const MapMain = () => {
                         toast.success(`Tạo khu vực ${areaName} thành công`);
                         handleClosePopup();
                         // setIsReRender(!isReRender)
-                        setAreaDetail(res.data.result)
+                        if(areaList?.length === 0){
+                            setAreaDetail(res.data.result)
+                            setCurrentArea(res.data.result?.id)
+                        }
+
                         setIsAddArea(!isAddArea);
                     })
                     .catch(err => {
