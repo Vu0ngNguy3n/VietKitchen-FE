@@ -3,14 +3,9 @@ import { BiSolidDish } from "react-icons/bi";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import axiosInstance from "../../../utils/axiosInstance";
-import { useUser } from "../../../utils/constant";
-import LOGO from "../../../assests/VIET.png"
+import LOGO from "../../assests/VIET.png"
 import { MdTableBar } from "react-icons/md";
-import NavBarHostess from "../../../components/staffComponent/NavBarHostess";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
-import { BsFillCaretDownFill } from "react-icons/bs";
-import { BsFillCaretUpFill } from "react-icons/bs";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
 import { FaMinus, FaPlus, FaPlusCircle, FaUserCircle } from "react-icons/fa";
 import { MdNoteAlt } from "react-icons/md";
@@ -23,13 +18,18 @@ import { IoMdArrowBack, IoMdMore } from "react-icons/io";
 import { MdLocationOn } from "react-icons/md";
 import { HiUsers } from "react-icons/hi2";
 import { RiMoneyDollarCircleFill } from "react-icons/ri";
-import {formatVND} from "../../../utils/format"
+import {formatVND} from "../../utils/format"
 import { FaCircleCheck } from "react-icons/fa6";
 import validator from "validator";
 import { parse, format } from "date-fns";
 import { vi } from 'date-fns/locale';
+import axiosInstance from "../../utils/axiosInstance";
+import { useUser } from "../../utils/constant";
+import NavBarHostess from "../../components/staffComponent/NavBarHostess";
+import HeaderManagerDashboard from "../../components/managerComponent/HeaderManagerDashboard";
+import SidebarManager from "../../components/managerComponent/SidebarManager";
 
-function BookingTable() {
+function BookingTableManagement() {
 
     const [areaList, setAreaList] = useState([])
     const [isOpenBooking, setIsOpenBooking] = useState(false);
@@ -724,43 +724,10 @@ function BookingTable() {
     return (
         <div className="flex">
             <div className="basis-[12%] h-[100vh]">
-                    <div className='bg-primary px-[25px] h-screen relative'>
-                        <div className='px-[15px] py-[30px] flex items-center justify-center border-b-[1px] border-[#EDEDED]/[0.3] '>
-                            <img src={LOGO} alt="" className="w-10 inline-block items-center rounded-full mr-2" />
-                            <h1 className='text-white text-[20px] leading-[24px] font-extrabold cursor-pointer'> VietKitchen</h1>
-                        </div>
-            
-                        <div className='pt-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
-                            <p className='text-[10px] font-extrabold leading-[16px] text-white/[0.4]'> Khu vực</p>
-                            {areaList?.map((area, index) => {
-                                return (
-                                    <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'
-                                        onClick={() => handleChangeArea(area)}
-                                        key={index}>
-                                        <div className='flex items-center gap-[10px]'>
-                                            <MdLocationOn color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>{area?.name}</p>
-                                        </div>
-                                        {/* <FaChevronRight color='white' /> */}
-                                    </div>
-                                )
-                            })}
-                        </div>
-                        <div className='pt-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
-                            <p className='text-[10px] font-extrabold leading-[16px] text-white/[0.4]'>Chức năng</p>
-                            <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'
-                                onClick={() => navigate("/hostess/bookingTable")}
-                            >
-                                <div className='flex items-center gap-[10px]'>
-                                    <MdTableBar color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Đặt bàn</p>
-                                </div>
-                                {/* <FaChevronRight color='white' /> */}
-                            </div>
-                        </div>
-            
-                    </div>
+                    <SidebarManager />
                 </div>
             <div className="basis-[88%] border overflow-scroll h-[100vh]">
-                <NavBarHostess />
+                <HeaderManagerDashboard />
                 <div className="min-w-[40]x bg-secondary p-2 shadow min-h-[86vh] mt-2 flex justify-between">
                     <div className="w-[83%] rounded-md p-4 ">
                         <div className="flex justify-between flex-wrap">
@@ -1026,7 +993,7 @@ function BookingTable() {
                             <span className="sr-only">Close modal</span>
                         </button>
                         <div className="w-full flex justify-center items-center mb-4 border-b-2 pb-2 pt-4 bg-slate-200 rounded-t-lg">
-                            <h2 className="font-bold text-lg">Thông tin đơn đặt bàn</h2>
+                            <h2 className="font-bold text-lg">Thêm đặt bàn</h2>
                         </div>
                         <div className="flex-row">
                             <div className="flex justify-center px-4 pb-10">
@@ -1040,7 +1007,7 @@ function BookingTable() {
                                                     id="dateBooking"
                                                     value={pickUpDay}
                                                     onChange={e => setPickUpDay(e.target.value)}
-                                                    className="border border-gray-300 rounded-lg px-3 py-2 text-base shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                    className="bg-gray-400 border border-gray-300 text-gray-900 cursor-not-allowed rounded-lg px-3 py-2 text-base shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                                 />
                                             </div>
                                             <div className="w-[50%]">
@@ -1050,8 +1017,7 @@ function BookingTable() {
                                                     </div>
                                                     <input type="time" 
                                                     value={time}
-                                                    onChange={e => handleChangeTime(e)}
-                                                    className="bg-gray-50 border font-semibold text-center border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                                    className="bg-gray-400 cursor-not-allowed border font-semibold text-center border-gray-300 text-gray-900 text-md rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                                     placeholder="Nhập ngày giờ"/>
                                                 </div>
                                             </div>
@@ -1061,14 +1027,15 @@ function BookingTable() {
                                         <div className="w-[45%]">
                                             <label htmlFor="numberCustomer" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Số khách<span className="text-red-500">(*)</span></label>
                                             <div className="flex">
-                                                <button onClick={handleDecreaseNumberCustomer} className="w-[35%] flex justify-center cursor-pointer items-center font-semibold bg-gray-300 p-2.5 text-lg rounded-l-lg text-red-500">-</button>
+                                                <button className="w-[35%] flex justify-center cursor-pointer items-center font-semibold bg-gray-300 p-2.5 text-lg rounded-l-lg text-red-500">-</button>
                                                 <input 
                                                     type="text"
                                                     value={numberCustomer}
+                                                    disabled
                                                     onChange={e => handleChangeNumberCustomer(e.target.value)}
                                                     className="w-[30%] flex font-semibold p-2.5 text-center border-t-[2px] border-b-[2px]"
                                                     />
-                                                <button onClick={handleIncreaseNumberCustomer} className="w-[35%] flex justify-center cursor-pointer items-center font-semibold bg-gray-300 p-2.5 text-lg rounded-r-lg text-blue-500">+</button>
+                                                <button className="w-[35%] flex justify-center cursor-pointer items-center font-semibold bg-gray-300 p-2.5 text-lg rounded-r-lg text-blue-500">+</button>
                                             </div>
                                         </div>
                                         <div className="w-[50%]">
@@ -1076,9 +1043,10 @@ function BookingTable() {
                                             <div className="w-full flex">
                                                 <input 
                                                     type="text" 
+                                                    disabled
                                                     value={intendTime}
                                                     onChange={e => setIntendTime(e.target.value)}    
-                                                    className="w-[50%] outline-none bg-gray-50 border text-center font-medium border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                                                    className="w-[50%] outline-none bg-gray-400 border text-center font-medium border-gray-300 text-gray-900 text-sm rounded-l-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                                                 <div className="w-[50%] border-[1px] p-2.5 flex justify-center items-center font-semibold">Phút</div>
                                             </div>
                                         </div>
@@ -1116,11 +1084,11 @@ function BookingTable() {
                                                 <MdLocationSearching />
                                             </div>
                                             <div 
-                                                onClick={() => handleOpenChooseTable()}
-                                                className="block bg-gray-50 cursor-pointer border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                                <span className="border-gray-300 font-medium text-gray-400">{tables?.length === 0 ? "Chưa chọn bàn" : `Đã chọn ${tables?.length} bàn`}</span>
+                                                // onClick={() => handleOpenChooseTable()}
+                                                className="block bg-gray-400  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                                <span className="border-gray-300 font-medium text-gray-900">{tables?.length === 0 ? "Chưa chọn bàn" : `Đã chọn ${tables?.length} bàn`}</span>
                                             </div>
-                                            <span className="absolute right-2.5 top-3 cursor-pointer"><MdOutlineNavigateNext /></span>
+                                            <span className="absolute right-2.5 top-3 "><MdOutlineNavigateNext /></span>
                                         </div>
                                     </div>  
                                     <div>
@@ -1130,11 +1098,11 @@ function BookingTable() {
                                                 <BiSolidDish />
                                             </div>
                                             <div
-                                                onClick={() => handleOpenChooseDishes()} 
-                                                className="block bg-gray-50 cursor-pointer border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                                <span className="border-gray-300 font-medium text-gray-400">{dishesChoose?.length > 0 ? `Đã đặt ${dishesChoose?.length} món` : "Chưa có món được chọn"} </span>
+                                                // onClick={() => handleOpenChooseDishes()} 
+                                                className="block bg-gray-400  border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                                <span className="border-gray-300 font-medium text-gray-900">{dishesChoose?.length > 0 ? `Đã đặt ${dishesChoose?.length} món` : "Chưa có món được chọn"} </span>
                                             </div>
-                                            <span className="absolute right-2.5 top-3 cursor-pointer"><MdOutlineNavigateNext /></span>
+                                            <span className="absolute right-2.5 top-3 "><MdOutlineNavigateNext /></span>
                                         </div>
                                     </div>
                                     <div>
@@ -1164,14 +1132,15 @@ function BookingTable() {
                                             </div>
                                             <input type="text" id="note" 
                                                 value={note}
+                                                disabled
                                             onChange={e => setNote(e.target.value)}
-                                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                            className=" bg-gray-400 border border-gray-300 placeholder:text-gray-900 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                             placeholder="Nhập tên ghi chú"/>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex">
+                            {/* <div className="flex">
                                 <div onClick={() => handleCancelBooking(scheduleIdCancel)} className="border-t-2 flex justify-center py-2 items-center bg-gray-200 cursor-pointer rounded-bl-md w-[50%]" >
                                     <p className="text-red-500 font-medium uppercase">Huỷ đơn đặt bàn</p>
                                 </div>
@@ -1180,7 +1149,7 @@ function BookingTable() {
                                     className="border-t-2 flex justify-center py-2 items-center bg-blue-400 cursor-pointer rounded-br-md w-[50%]" >
                                     <p className="text-white font-medium uppercase">Xác nhận</p>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                         
                     </div>
@@ -1457,4 +1426,4 @@ function BookingTable() {
     )
 }
 
-export default BookingTable
+export default BookingTableManagement

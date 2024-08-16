@@ -147,8 +147,12 @@ function InvoiceManagement() {
     };
 
     const formatStatus = (status) => {
-        return status === 'CONFIRM' ? 'Xác nhận' : status;
+        return status === 'CONFIRM' ? 'Đã phục vụ' : "Từ chối";
     };
+
+    useEffect(() => {
+        console.log(billDetails);
+    },[billDetails])
 
     return (
         <div className="flex h-screen">
@@ -316,9 +320,9 @@ function InvoiceManagement() {
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-sm text-left text-gray-500">
                                         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                                            <tr>
+                                            <tr className='text-center'>
                                                 <th scope="col" className="px-6 py-3">Tên món</th>
-                                                <th scope="col" className="px-6 py-3">Mô tả</th>
+                                                {/* <th scope="col" className="px-6 py-3">Mô tả</th> */}
                                                 <th scope="col" className="px-6 py-3">Giá</th>
                                                 <th scope="col" className="px-6 py-3">Số lượng</th>
                                                 <th scope="col" className="px-6 py-3">Trạng thái</th>
@@ -327,14 +331,14 @@ function InvoiceManagement() {
                                         </thead>
                                         <tbody>
                                             {billDetails?.map(detail => (
-                                                <tr key={detail.id} className="bg-white border-b hover:bg-gray-50">
-                                                    <td className="px-6 py-4 font-medium text-gray-900">{detail.dish?.name}</td>
-                                                    <td className="px-6 py-4">{detail.dish?.description}</td>
-                                                    <td className="px-6 py-4">{detail.dish?.price}</td>
+                                                <tr key={detail.id} className="bg-white border-b hover:bg-gray-50 text-center">
+                                                    <td className="px-6 py-4 font-medium text-gray-900">{detail.dish?.name ||detail?.combo?.name}</td>
+                                                    {/* <td className="px-6 py-4">{detail.dish?.description}</td> */}
+                                                    <td className="px-6 py-4">{detail?.dish?.price||detail?.combo?.price}</td>
                                                     <td className="px-6 py-4">{detail?.quantity}</td>
-                                                    <td className="px-6 py-4">{formatStatus(detail?.status)}</td>
+                                                    <td className={`px-6 py-4 ${detail?.status === 'CONFIRM' ? "text-green" : "text-red-500"} `} >{formatStatus(detail?.status)}</td>
                                                     <td className="px-6 py-4">
-                                                        <img src={detail.dish?.imageUrl} alt={detail.dish?.name} className="w-16 h-16 object-cover" />
+                                                        <img src={detail?.dish?.imageUrl || detail?.combo?.imageUrl} alt={detail.dish?.name} className="w-16 h-16 object-cover" />
                                                     </td>
                                                 </tr>
                                             ))}

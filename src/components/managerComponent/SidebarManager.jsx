@@ -4,7 +4,7 @@ import { FaFileInvoiceDollar, FaUserAlt, FaWrench, FaListAlt , FaStickyNote, FaR
 import { MdCategory } from "react-icons/md";
 import { BiSolidDish } from "react-icons/bi";
 import { useLocation, useNavigate } from 'react-router'
-import { PiUniteFill } from "react-icons/pi";
+import { RiCalendarScheduleFill } from "react-icons/ri";
 import { IoSettings } from "react-icons/io5";
 
 
@@ -32,6 +32,13 @@ const SidebarManager = () => {
                     onClick={() => navigate("/manager/restaurantMapMain")}>
                     <div className='flex items-center gap-[10px]'>
                         <FaMap color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white' >Sơ đồ</p>
+                    </div>
+                    {/* <FaChevronRight color='white' /> */}
+                </div>
+                <div className={`flex items-center justify-between gap-[10px] ${path?.includes('/manager/bookingTable')&&"bg-secondary"} py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
+                    onClick={() => navigate("/manager/bookingTable")}>
+                    <div className='flex items-center gap-[10px]'>
+                        <RiCalendarScheduleFill color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white' >Đặt bàn</p>
                     </div>
                     {/* <FaChevronRight color='white' /> */}
                 </div>

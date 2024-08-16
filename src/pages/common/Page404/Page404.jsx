@@ -26,6 +26,9 @@ function Page404() {
         }else if(role?.toUpperCase()?.includes("ROLE_HOSTESS")){
             console.log("hoss");
             navigate('/hostess/map')
+        }else{
+            navigate('/')
+            console.log('/');
         }
     }
 
