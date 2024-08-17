@@ -213,7 +213,7 @@ function SignUp() {
 
   const handleChangePhoneNumber = (e) => {
     const inputPhone = e.target.value;
-    if(inputPhone?.length <= 10){
+    if(inputPhone?.length <= 10 && !isNaN(inputPhone)){
       setPhoneNumber(inputPhone);
     }
 

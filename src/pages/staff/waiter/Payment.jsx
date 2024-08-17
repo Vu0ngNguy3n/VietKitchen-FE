@@ -143,10 +143,11 @@ function Payment() {
 
     const handleCreateBill = () => {
         const dataBill = {
-            total: orderDetail?.totalDish,
-            point: pointUsePay,
+            total: orderDetail?.totalMoney,
+            points: pointUsePay,
             methodPayment: isQR?"BANKING":"MONEY"
         }
+        console.log(dataBill);
         axiosInstance
         .post(`/api/bill/create/order/${orderId}`, dataBill)
         .then(res => {
