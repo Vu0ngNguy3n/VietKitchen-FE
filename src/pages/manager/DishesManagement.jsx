@@ -7,6 +7,7 @@ import { useUser } from "../../utils/constant";
 import { toast } from "react-toastify";
 import {formatVND} from "../../utils/format"
 import { FaEye, FaSearch } from "react-icons/fa";
+import { AiFillEdit } from "react-icons/ai";
 import { NumericFormat } from "react-number-format";
 
 
@@ -614,9 +615,9 @@ function DishesManagement() {
                                             <td class="px-6 py-4">
                                                 <button
                                                     onClick={() => handleOpenEdit(dish)}
-                                                    className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
+                                                    className="py-2 px-5 bg-lgreen font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
                                                 >
-                                                    <FaEye className="mr-2"/>Chỉnh sửa
+                                                    <AiFillEdit className="mr-2"/>Chỉnh sửa
                                                 </button>
                                                 {/* <a onClick={() => handleOpenHidePopUp(dish)} class="font-medium text-red-600 dark:text-red-500 hover:underline">{statusDish === 'true'? 'Ẩn' : 'Hiện'}</a> */}
                                             </td>
