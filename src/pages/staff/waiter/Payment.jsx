@@ -37,6 +37,8 @@ function Payment() {
     const [QRCodeImg, setQRCodeImg] = useState();
     const [isOpenPopUp, setIsOpenPopUp] = useState(false);
     const [isOpenSuccessPayment, setIsOpenSuccessPayment] = useState(false);
+    const [isUsePoint, setIsUsePoint] = useState(false);
+    const [pointUsePay, setPointUsePay] = useState(0);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -45,10 +47,10 @@ function Payment() {
             .get(`/api/order/${orderId}`)
             .then(res => {
                 const data = res.data.result;
-                setOrderDetail(data);
-                setCustomerPoint(data.customer.point)
-                setRequireMoney(data.totalMoney)
                 console.log(data);
+                setOrderDetail(data);
+                setCustomerPoint(data?.customer?.currentPoint)
+                setRequireMoney(data.totalMoney)
             })
             .catch((err) => {
             if (err.response) {
@@ -116,7 +118,6 @@ function Payment() {
 
     const joinNumber = (value) => {
         setCustomerPay(customerPay+value);
-        console.log(customerPay+value);
     }
 
     const clearCustomerPay = () => {
@@ -143,9 +144,9 @@ function Payment() {
     const handleCreateBill = () => {
         const dataBill = {
             total: requireMoney,
+            point: pointUsePay,
             methodPayment: isQR?"BANKING":"MONEY"
         }
-        
         axiosInstance
         .post(`/api/bill/create/order/${orderId}`, dataBill)
         .then(res => {
@@ -183,6 +184,23 @@ function Payment() {
         setIsOpenSuccessPayment(false)
         navigate("/waiter/map")
     }
+
+    const handleChangeStatusPoint = () => {
+        if(!isUsePoint){
+            setIsUsePoint(true);
+            setPointUsePay(customerPoint)
+            setRequireMoney(requireMoney-customerPoint*1000)
+        }else{
+            setIsUsePoint(false);
+            setPointUsePay(0);
+            setRequireMoney(orderDetail?.totalMoney)
+        }
+    }
+
+    useEffect(() => {
+        setRemainMoney(-requireMoney)
+        setCustomerPay(0);
+    },[requireMoney])
 
   return (
     <div className="flex h-screen">
@@ -246,16 +264,24 @@ function Payment() {
                     </div>
                     <div className="w-[33%] bg-white h-full rounded-md flex-row">
                         <div className="p-2">
-                            <div className="bg-slate-300 w-full rounded-sm py-4 font-semibold opacity-60 mb-2">
+                            <div className="bg-slate-300 w-full rounded-sm py-4 font-semibold opacity-80 mb-2">
                                 <div className="flex justify-between px-2 items-center">
                                     <span>Tổng tiền {'('}{orderDetail?.totalDish}{')'}</span>
-                                    <span>{formatVND(requireMoney)}</span>
+                                    <span>{formatVND(orderDetail?.totalMoney)}</span>
                                 </div>
                             </div>
-                             <div className="bg-slate-300 w-full rounded-sm py-4 font-semibold opacity-60 mb-2">
+                             <div className="bg-slate-300 w-full rounded-sm py-4 font-semibold opacity-80 mb-2">
                                 <div className="flex justify-between px-2 items-center">
                                     <span>Sử dụng điểm</span>
-                                    <span>{(customerPoint)?.toLocaleString('vi-VN')}</span>
+                                    <div className="flex items-center">
+                                        <span>{(customerPoint)?.toLocaleString('vi-VN')} điểm</span>
+                                        <div className="flex items-center ml-3">
+                                            <label className="inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" checked={isUsePoint} className="sr-only peer" onChange={() => handleChangeStatusPoint()} />
+                                            <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                              <div className="bg-slate-300 w-full rounded-sm py-4 font-semibold  mb-2">
@@ -444,10 +470,22 @@ function Payment() {
                                         <img src={GREEN_CHECK} alt="" className="w-[12%] " />
                                     </div>
                                     <h3 className="mb-5 text-lg font-semibold text-black dark:text-black">Thanh toán hoá đơn thành công</h3>
-                                    <div className="flex justify-center w-full mb-8">
+                                    <div className="flex justify-center w-full mb-4">
                                         <div className="flex justify-between w-[83%]">
                                             <p className="font-medium">Tiền khách trả</p>
                                             <span className="font-semibold ">{formatVND(requireMoney)}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-center w-full mb-4">
+                                        <div className="flex justify-between w-[83%]">
+                                            <p className="font-medium">Phương thức trả tiền</p>
+                                            <span className="font-semibold ">{isQR ? "Chuyển khoản ngân hàng" : "Tiền mặt"}</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-center w-full mb-8">
+                                        <div className="flex justify-between w-[83%]">
+                                            <p className="font-medium">Số điểm được quy đổi</p>
+                                            <span className="font-semibold ">{pointUsePay} điểm</span>
                                         </div>
                                     </div>
                                 </div>

@@ -327,7 +327,7 @@ function CustomerManager() {
                                             </th>
                                             <td className="px-6 py-4">{c.phoneNumber}</td>
                                             <td className="px-6 py-4">{c.address}</td>
-                                            <td className="px-6 py-4">{c.point}</td>
+                                            <td className="px-6 py-4">{c.totalPoint}</td>
                                             <td className="px-6 py-4 flex space-x-2">
                                                 <button 
                                                     onClick={() => handleOpenEdit(c)}

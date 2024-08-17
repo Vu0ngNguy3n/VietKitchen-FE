@@ -38,7 +38,7 @@ function DishesManagement() {
     useEffect(() => {
         setUserStorage(user);
         axiosInstance
-        .get(`/api/dish/account/${user.accountId}/${statusDish}`)
+        .get(`/api/dish/restaurant/${user.restaurantId}/${statusDish}`)
         .then(res => {
             const data = res.data.result;
             setDishesList(data);
@@ -56,7 +56,7 @@ function DishesManagement() {
                 })
 
         axiosInstance
-        .get(`/api/dish-category/${user.accountId}`)
+        .get(`/api/dish-category/${user.restaurantId}`)
         .then(res =>{ 
             const data = res.data.result;
             setCategoryList(data);
@@ -101,7 +101,7 @@ function DishesManagement() {
     useEffect(() => {
         setUserStorage(user);
         axiosInstance
-        .get(`/api/dish/account/${user.accountId}/${statusDish}`)
+        .get(`/api/dish/restaurant/${user.restaurantId}/${statusDish}`)
         .then(res => {
             const data = res.data.result;
             setDishesList(data);
@@ -122,6 +122,9 @@ function DishesManagement() {
 
     const handleOpenPopUp = () => {
         setIsOpen(true);
+        if(categoryList.length === [0]){
+            toast.warn("Bạn hãy tạo loại món ăn để tạo gói")
+        }
     }
 
     const handleClosePouUp = () => {
@@ -139,7 +142,13 @@ function DishesManagement() {
   
 
     const handleCreateDish = () => {
-        if(dishName === '' || weight === '' || description === '' || (price/1 <=0 || isNaN(price)) || imgDishCreate === '' || !imgDishCreate){
+        if(unitsList?.length === 0){
+            toast.warn("Hãy tạo đơn vị tính cho món ăn")
+            return
+        }
+        if(categoryList?.length === 0){
+            toast.warn('Hãy tạo loại món ăn')
+        }else if(dishName === '' || weight === '' || description === '' || (price/1 <=0 || isNaN(price)) || imgDishCreate === '' || !imgDishCreate){
             toast.warn("Thông tin món ăn không được để trống")
         }else{
             const data = new FormData();
@@ -161,7 +170,8 @@ function DishesManagement() {
                         dishCategoryId: currentCategory,
                         imageUrl: data.url,
                         unitId: currentUnit,
-                        accountId: userStorage.accountId
+                        // accountId: userStorage.accountId
+                        restaurantId: user?.restaurantId
                     }
 
                     axiosInstance

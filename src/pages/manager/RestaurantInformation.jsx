@@ -44,7 +44,7 @@ function RestaurantInformation() {
                     .post("/api/restaurant/init", restaurantCreate)
                     .then(res => {
                         toast.success("Tạo thông tin cửa hàng thành công!")
-                        navigate("/manager/units")
+                        navigate("/manager/paymentSetting")
                         localStorage.setItem("token", res.data.result.token);
                         const token = res.data.result.token;
                         const dataUser = jwtDecode(token)

@@ -172,7 +172,7 @@ function BookingTable() {
         })   
 
         axiosInstance
-        .get(`/api/dish-category/${user?.accountId}`)
+        .get(`/api/dish-category/${user?.restaurantId}`)
         .then(res => {
             const data = res.data.result;
             if(data?.length > 0){
@@ -212,7 +212,7 @@ function BookingTable() {
     useEffect(() => {
         if(currentCategory){
             axiosInstance
-            .get(`/api/dish/category/${currentCategory?.code}`)
+            .get(`/api/dish/category/${currentCategory?.code}/restaurant/${user?.restaurantId}`)
             .then(res => {
                 const data = res.data.result;
                 setListDishes(data);

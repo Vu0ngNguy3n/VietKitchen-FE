@@ -123,7 +123,7 @@ function SignInSide() {
             axios
             .post(`/api/account/${email}/send-otp`)
             .then(res => {
-              
+                console.log('Đã gửi mã xác thực OTP thành công');
             })
             .catch((err) => {
               if (err.response) {

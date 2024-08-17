@@ -22,7 +22,7 @@ function CategoryManagement() {
     useEffect(() => {
 
 
-        axiosInstance.get(`/api/dish-category/${user?.accountId}`)
+        axiosInstance.get(`/api/dish-category/${user?.restaurantId}`)
             .then(res => {
                 if (res.data.code === 200) {
                     setCategories(res.data.result);
@@ -84,7 +84,8 @@ function CategoryManagement() {
             const category = {
                 name: name,
                 description: description,
-                accountId: accountId
+                // accountId: accountId,
+                restaurantId: user?.restaurantId
             };
 
             axiosInstance
@@ -123,7 +124,8 @@ function CategoryManagement() {
             const category = {
                 name: name,
                 description: description,
-                accountId: accountId
+                // accountId: accountId
+                restaurantId: user?.restaurantId
             };
 
             axiosInstance
