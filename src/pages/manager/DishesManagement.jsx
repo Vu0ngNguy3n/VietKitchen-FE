@@ -253,7 +253,6 @@ function DishesManagement() {
          const fileImg = e.target.files[0];
 
          if(fileImg?.type === 'image/jpeg' || fileImg?.type === 'image/png'){
-             toast.success("Upload image successfully!")
             fileImg.preview = URL.createObjectURL(fileImg)
             setIsFile(true)
             setShowImgUpload(fileImg)
@@ -430,7 +429,7 @@ function DishesManagement() {
                                         <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                                         </svg>
-                                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muôn {statusDish === "true" ? 'ẩn' : 'hiện'} món ăn {dishName}?</h3>
+                                        <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắn muôn {statusDish === "true" ? 'hiện' : 'ẩn'} món ăn {dishName}?</h3>
                                         <button 
                                             data-modal-hide="popup-modal" 
                                             type="button" 
@@ -626,7 +625,7 @@ function DishesManagement() {
                                                     onClick={() => handleOpenHidePopUp(dish)}
                                                     className="py-2 px-8 bg-red-600 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
                                                 >
-                                                    {statusDish === 'true'? 'Ẩn' : 'Hiện'}
+                                                    {statusDish === 'true'? 'Hiện' : 'Ẩn'}
                                                 </button>
                                                 {/* <a onClick={() => handleOpenHidePopUp(dish)} class="font-medium text-red-600 dark:text-red-500 hover:underline">{statusDish === 'true'? 'Ẩn' : 'Hiện'}</a> */}
                                             </td>
@@ -759,7 +758,7 @@ function DishesManagement() {
                                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                                         Thông tin món ăn
                                     </h3>
-                                    <button type="button" onClick={() => handleCloseEdit()} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="crud-modal">
+                                    <button type="button" onClick={() => handleCloseShow()} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="crud-modal">
                                         <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                                         </svg>
