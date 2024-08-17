@@ -26,12 +26,11 @@ const Sidebar = () => {
                     </div>
                     {/* <FaChevronRight color='white' /> */}
                 </div>
-                <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary' onClick={() => navigate("/admin/permissions")}>
+                {/* <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary' onClick={() => navigate("/admin/permissions")}>
                     <div className='flex items-center gap-[10px]'>
                         <FaWrench color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Quản lý chức năng</p>
                     </div>
-                    {/* <FaChevronRight color='white' /> */}
-                </div>
+                </div> */}
             </div>
             <div className='pt-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
                 <p className='text-[10px] font-extrabold leading-[16px] text-white/[0.4]'> Người dùng</p>
