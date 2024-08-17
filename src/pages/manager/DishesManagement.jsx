@@ -1,12 +1,12 @@
 import SidebarManager from "../../components/managerComponent/SidebarManager"
 import HeaderManagerDashboard from "../../components/managerComponent/HeaderManagerDashboard"
-import { IoMdAdd } from "react-icons/io";
+import { IoMdAdd, IoMdArrowRoundBack } from "react-icons/io";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { useUser } from "../../utils/constant";
 import { toast } from "react-toastify";
 import {formatVND} from "../../utils/format"
-import { FaSearch } from "react-icons/fa";
+import { FaEye, FaSearch } from "react-icons/fa";
 import { NumericFormat } from "react-number-format";
 
 
@@ -32,6 +32,8 @@ function DishesManagement() {
     const [isFile, setIsFile] = useState();
     const [showImgUpload, setShowImgUpload] = useState();
     const [search, setSearch] = useState('');
+    const [isOpenShow, setIsOpenShow] = useState(false);
+    const [currentDish, setCurrentDish] = useState(); 
     const user = useUser();
     
 
@@ -281,6 +283,16 @@ function DishesManagement() {
         }
     }
 
+    const handleOpenShow = (dish) => {
+        console.log(dish);
+        setCurrentDish(dish)
+        setIsOpenShow(true);
+    }
+
+    const handleCloseShow = () => {
+        setIsOpenShow(false)
+    }
+
 
 
     return (
@@ -479,6 +491,9 @@ function DishesManagement() {
                                         <th scope="col" class="px-6 py-3">
                                             
                                         </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -514,6 +529,15 @@ function DishesManagement() {
                                             </td>
                                             <td class="px-6 py-4">
                                                 <button
+                                                    onClick={() => handleOpenShow(dish)}
+                                                    className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
+                                                >
+                                                    <FaEye className="mr-2"/>Chi tiết
+                                                </button>
+                                                {/* <a onClick={() => handleOpenHidePopUp(dish)} class="font-medium text-red-600 dark:text-red-500 hover:underline">{statusDish === 'true'? 'Ẩn' : 'Hiện'}</a> */}
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <button
                                                     onClick={() => handleOpenHidePopUp(dish)}
                                                     className="py-2 px-8 bg-red-600 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
                                                 >
@@ -540,6 +564,94 @@ function DishesManagement() {
                         </div>
                     </div>
                 </div>
+
+                {isOpenShow && (
+                    <div id="crud-modal" tabindex="-1" aria-hidden="true" className=" fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+                        <div className="relative p-4 w-full max-w-xl max-h-full">
+                            <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                        Thông tin món ăn
+                                    </h3>
+                                    <button type="button" onClick={() => handleCloseShow()} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="crud-modal">
+                                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                        </svg>
+                                        <span className="sr-only">Close modal</span>
+                                    </button>
+                                </div>
+                                <form className="p-4 md:p-5">
+                                    <div className="grid gap-4 mb-4 grid-cols-2">
+                                        <div className="col-span-2">
+                                            <label for="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên món ăn</label>
+                                            <input
+                                                type="text" 
+                                                name="name" id="name" 
+                                                disabled
+                                                value={currentDish?.name}
+                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                                                placeholder="Tên món ăn" required=""/>
+                                        </div>
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <label for="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Giá món ăn</label>
+                                            <input 
+                                                type="text" name="price" 
+                                                value={currentDish?.price}
+                                                disabled
+                                                id="price" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                                                placeholder="$2999" required=""/>
+                                        </div>
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <label for="weight" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Định lượng món ăn</label>
+                                            <input 
+                                                type="text" name="weight" id="weight" 
+                                                value={currentDish?.weight}
+                                                disabled
+                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                                                placeholder="0.4" required=""/>
+                                        </div>
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <label for="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Loại món ăn</label>
+                                            <input 
+                                                type="text" name="category" id="category" 
+                                                value={currentDish?.dishCategory?.name}
+                                                disabled
+                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                                                placeholder="$2999" required=""/>
+                                            
+                                        </div>
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <label for="unit" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Đơn vị tính</label>
+                                            <input 
+                                                type="text" name="unit" id="unit"
+                                                disabled
+                                                value={currentDish?.unit?.name}
+                                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                                                placeholder="$2999" required=""/>
+                                        </div>
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <label for="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ảnh món ăn</label>
+                                            <img src={currentDish?.imageUrl} alt="" />
+                                        </div>
+                                        <div className="col-span-2 sm:col-span-1">
+                                            <label for="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Miêu tả món ăn</label>
+                                            <textarea 
+                                                id="description" rows="4" 
+                                                disabled
+                                                value={currentDish?.description}
+                                                className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                                                placeholder="Write product description here"></textarea>                    
+                                        </div>
+                                    </div>
+                                    <button  onClick={() => handleCloseShow()} className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                        <IoMdArrowRoundBack className="mr-2"/>
+                                        Quay lại
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div> 
+                )}
 
 
             </div>
