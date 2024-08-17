@@ -72,6 +72,8 @@ function VATSetting() {
                 taxName: vatName,
                 taxValue: vat
             }
+            console.log(request);
+            console.log(restaurantInformation);
             axiosInstance
             .put(`/api/vat/${restaurantInformation?.id}/tax`,request)
             .then(res => {
@@ -142,6 +144,7 @@ function VATSetting() {
             .then(res => {
                 const data = res.data.result;
                 setRestaurantInformation(data);
+                console.log(data);
                 setIsUseVAT(true);
                 toast.success("Tạo thông tin thuế doanh nghiệp thành công!")
                 setVAT(data?.taxValue);

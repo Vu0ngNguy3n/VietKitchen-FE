@@ -192,9 +192,10 @@ function Menu(){
           });
         }else{
           axiosInstance
-          .get(`/api/dish/category/${slug}`)
+          .get(`/api/dish/category/${slug}/restaurant/${user?.restaurantId}`)
           .then(res => {
               const data = res.data;
+              console.log(data);
               setDishesList(data.result);
           })
           .catch((err) => {

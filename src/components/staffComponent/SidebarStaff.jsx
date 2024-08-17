@@ -18,7 +18,7 @@ const SidebarStaff = () => {
     useEffect(() => {
         setUserId(user.accountId)
         axiosInstance
-        .get(`/api/dish-category/${user.accountId}`)
+        .get(`/api/dish-category/${user.restaurantId}`)
         .then(res => {
             setCategory(res.data.result);
         })

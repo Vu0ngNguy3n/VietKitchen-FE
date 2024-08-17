@@ -38,7 +38,7 @@ function DishesManagement() {
     useEffect(() => {
         setUserStorage(user);
         axiosInstance
-        .get(`/api/dish/account/${user.accountId}/${statusDish}`)
+        .get(`/api/dish/restaurant/${user.restaurantId}/${statusDish}`)
         .then(res => {
             const data = res.data.result;
             setDishesList(data);
@@ -56,7 +56,7 @@ function DishesManagement() {
                 })
 
         axiosInstance
-        .get(`/api/dish-category/${user.accountId}`)
+        .get(`/api/dish-category/${user.restaurantId}`)
         .then(res =>{ 
             const data = res.data.result;
             setCategoryList(data);
@@ -101,7 +101,7 @@ function DishesManagement() {
     useEffect(() => {
         setUserStorage(user);
         axiosInstance
-        .get(`/api/dish/account/${user.accountId}/${statusDish}`)
+        .get(`/api/dish/restaurant/${user.restaurantId}/${statusDish}`)
         .then(res => {
             const data = res.data.result;
             setDishesList(data);
@@ -161,7 +161,8 @@ function DishesManagement() {
                         dishCategoryId: currentCategory,
                         imageUrl: data.url,
                         unitId: currentUnit,
-                        accountId: userStorage.accountId
+                        // accountId: userStorage.accountId
+                        restaurantId: user?.restaurantId
                     }
 
                     axiosInstance
