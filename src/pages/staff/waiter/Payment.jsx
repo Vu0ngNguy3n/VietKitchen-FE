@@ -143,7 +143,7 @@ function Payment() {
 
     const handleCreateBill = () => {
         const dataBill = {
-            total: requireMoney,
+            total: orderDetail?.totalDish,
             point: pointUsePay,
             methodPayment: isQR?"BANKING":"MONEY"
         }

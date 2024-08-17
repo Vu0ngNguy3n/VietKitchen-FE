@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import LOGO from "../../assests/VIET.png"
-import { FaFileInvoiceDollar, FaUserAlt, FaWrench, FaListAlt , FaStickyNote, FaRegChartBar, FaRegCalendarAlt, FaChevronRight, FaChevronLeft, FaBolt, FaUserFriends, FaMap } from "react-icons/fa"
-import { MdCategory } from "react-icons/md";
+import { FaFileInvoiceDollar, FaUserAlt, FaListAlt ,  FaUserFriends, FaMap } from "react-icons/fa"
+import { MdCategory, MdDashboard } from "react-icons/md";
 import { BiSolidDish } from "react-icons/bi";
 import { useLocation, useNavigate } from 'react-router'
 import { RiCalendarScheduleFill } from "react-icons/ri";
@@ -22,41 +22,42 @@ const SidebarManager = () => {
                 <img src={LOGO} alt="" className="w-10 inline-block items-center rounded-full mr-2" />
                 <h1 className='text-white text-[20px] leading-[24px] font-extrabold cursor-pointer'> VietKitchen</h1>
             </div>
-            <div className='flex items-center gap-[15px] py-[20px] border-b-[1px] transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary border-[#EDEDED]/[0.3] cursor-pointer '
+            <div className='flex items-center gap-[15px] py-[15px] border-b-[1px] transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary border-[#EDEDED]/[0.3] cursor-pointer '
                 onClick={() => navigate('/manager/dashboard')}>
+                <MdDashboard color='white' />
                 <p className='text-[14px] leading-[20px] font-bold text-white '>Tổng quan</p>
             </div>
             <div className='pt-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
                 <p className='text-[10px] font-extrabold leading-[16px] text-white/[0.4]'> Quản lý</p>
-                <div className={`flex items-center justify-between gap-[10px] ${path?.includes('/manager/restaurantMapMain')&&"bg-secondary"} py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
+                <div className={`flex items-center justify-between gap-[10px] ${path?.includes('/manager/restaurantMapMain')&&"bg-secondary"} py-[13px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
                     onClick={() => navigate("/manager/restaurantMapMain")}>
                     <div className='flex items-center gap-[10px]'>
                         <FaMap color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white' >Sơ đồ</p>
                     </div>
                     {/* <FaChevronRight color='white' /> */}
                 </div>
-                <div className={`flex items-center justify-between gap-[10px] ${path?.includes('/manager/bookingTable')&&"bg-secondary"} py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
+                <div className={`flex items-center justify-between gap-[10px] ${path?.includes('/manager/bookingTable')&&"bg-secondary"} py-[13px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
                     onClick={() => navigate("/manager/bookingTable")}>
                     <div className='flex items-center gap-[10px]'>
                         <RiCalendarScheduleFill color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white' >Đặt bàn</p>
                     </div>
                     {/* <FaChevronRight color='white' /> */}
                 </div>
-                <div className={`flex items-center justify-between gap-[10px] ${path?.includes('/manager/staffs')&&"bg-secondary"} py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
+                <div className={`flex items-center justify-between gap-[10px] ${path?.includes('/manager/staffs')&&"bg-secondary"} py-[13px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
                     onClick={() => navigate("/manager/staffs")}>
                     <div className='flex items-center gap-[10px]'>
                         <FaUserFriends color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white' >Nhân viên</p>
                     </div>
                     {/* <FaChevronRight color='white' /> */}
                 </div>
-                <div className={`flex items-center justify-between gap-[10px] ${path?.includes('/manager/customers')&&"bg-secondary"} py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
+                <div className={`flex items-center justify-between gap-[10px] ${path?.includes('/manager/customers')&&"bg-secondary"} py-[13px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
                     onClick={() => navigate("/manager/customers")}>
                     <div className='flex items-center gap-[10px]'>
                         <FaUserAlt color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Khách hàng</p>
                     </div>
                     {/* <FaChevronRight color='white' /> */}
                 </div>
-                <div className={`flex items-center justify-between gap-[10px] ${path?.includes('/manager/invoices')&&"bg-secondary"} py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
+                <div className={`flex items-center justify-between gap-[10px] ${path?.includes('/manager/invoices')&&"bg-secondary"} py-[13px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
                     onClick={() => navigate("/manager/invoices")}>
                     <div className='flex items-center gap-[10px]'>
                         <FaFileInvoiceDollar color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Hóa đơn</p>
@@ -68,31 +69,31 @@ const SidebarManager = () => {
             </div>
             <div className='pt-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
                 <p className='text-[10px] font-extrabold leading-[16px] text-white/[0.4]'> Mặt hàng</p>
-                <div className={`flex items-center justify-between gap-[10px] ${path?.includes('/manager/dishes')&&"bg-secondary"} py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
+                <div className={`flex items-center justify-between gap-[10px] ${path?.includes('/manager/dishes')&&"bg-secondary"} py-[13px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
                     onClick={() => navigate("/manager/dishes")}>
-                    <div className='flex items-center gap-[10px]'>
+                    <div className='flex items-center gap-[13px]'>
                         <BiSolidDish color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Món ăn</p>
                     </div>
                     {/* <FaChevronRight color='white' /> */}
                 </div>
-                <div className={`flex items-center justify-between gap-[10px] ${path?.includes('/manager/categories')&&"bg-secondary"} py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
+                <div className={`flex items-center justify-between gap-[13px] ${path?.includes('/manager/categories')&&"bg-secondary"} py-[13px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
                     onClick={() => navigate("/manager/categories")}>
-                    <div className='flex items-center gap-[10px]'>
-                        <MdCategory color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Thực đơn</p>
+                    <div className='flex items-center gap-[13px]'>
+                        <MdCategory color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Loại món ăn</p>
                     </div>
                     {/* <FaChevronRight color='white' /> */}
                 </div>
                 
-                <div className={`flex items-center justify-between gap-[10px] ${path?.includes('/manager/combos')&&"bg-secondary"} py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
+                <div className={`flex items-center justify-between gap-[13px] ${path?.includes('/manager/combos')&&"bg-secondary"} py-[13px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary`}
                     onClick={() => navigate("/manager/combos")}>
-                    <div className='flex items-center gap-[10px]'>
+                    <div className='flex items-center gap-[13px]'>
                         <FaListAlt  color='white' /> <p className='text-[14px] leading-[20px] font-normal text-white'>Combo</p>
                     </div>
                 </div>
                
                 
             </div>
-            {/* <div className='pt-[15px]'>
+            {/* <div className='pt-[10px]'>
                 <div className='flex items-center justify-center' onClick={() => navigate("/")}>
                     <div className='h-[40px] w-[40px] bg-[#3C5EC1] rounded-full flex items-center justify-center cursor-pointer'>
                         <FaChevronLeft color='white' />
