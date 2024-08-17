@@ -31,10 +31,12 @@ function ComboManagement() {
     useEffect(() => {
         setUserStorage(user);
         axiosInstance
-            .get(`/api/dish/account/${user.accountId}/true`)
+            .get(`/api/dish/restaurant/${user.restaurantId}/true`)
             .then(res => {
                 const data = res.data.result;
-                setDishesList(data);
+                if(data.length >0){
+                    setDishesList(data);
+                }
             })
             .catch(err => {
                 if (err.response) {
@@ -48,9 +50,12 @@ function ComboManagement() {
             });
 
         axiosInstance
-            .get(`/api/combos/getAllCombos`)
+            .get(`/api/combos/restaurant/${user?.restaurantId}`)
             .then(res => {
-                setComboList(res.data);
+                const data = res.data.result;
+                if(data?.length > 0){
+                    setComboList(data);
+                } 
             })
             .catch(err => {
                 if (err.response) {
@@ -117,7 +122,8 @@ function ComboManagement() {
                     imageUrl: data.url,
                     status: true,
                     dishIds: selectedDishes.map(dish => dish.id),
-                    accountId: userStorage.accountId
+                    // accountId: userStorage.accountId
+                    restaurantId: user?.restaurantId
                 };
 
                 axiosInstance
@@ -125,9 +131,11 @@ function ComboManagement() {
                     .then(res => {
                         toast.success(`Tạo combo ${comboName} thành công!`);
                         axiosInstance
-                            .get(`/api/combos/getAllCombos`)
+                            .get(`/api/combos/restaurant/${user?.restaurantId}`)
                             .then(res => {
-                                setComboList(res.data);
+                                if(res.data.result.length !== 0){
+                                    setComboList(res.data.result);
+                                }
                             })
                             .catch(err => {
                                 if (err.response) {

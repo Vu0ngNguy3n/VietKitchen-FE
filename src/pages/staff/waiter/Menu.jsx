@@ -175,9 +175,9 @@ function Menu(){
     useEffect(() => {
         if(slug === "combo"){
           axiosInstance
-          .get(`/api/combos/getAllCombos`)
+          .get(`/api/combos/restaurant/${user?.restaurantId}`)
           .then(res => {
-              const data = res.data;
+              const data = res.data.result;
               setDishesList(data);
           })
           .catch((err) => {
@@ -195,7 +195,6 @@ function Menu(){
           .get(`/api/dish/category/${slug}/restaurant/${user?.restaurantId}`)
           .then(res => {
               const data = res.data;
-              console.log(data);
               setDishesList(data.result);
           })
           .catch((err) => {
@@ -551,6 +550,9 @@ function Menu(){
                                     <div className="relative flex flex-col p-4 leading-normal w-full" >
                                         <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{d?.name}</h5>
                                         <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{formatVND(d?.price)}</p>
+                                        <span className="mb-3 font-xs text-black dark:text-gray-400 w-[80%] line-clamp-2">
+                                          {d?.description}
+                                        </span>
                                         <div className="absolute bottom-2 right-4 cursor-pointer" >
                                             <FaPlusCircle className="text-red-600 size-7 hover:text-secondary transition ease-in-out duration-300"/>
                                         </div>

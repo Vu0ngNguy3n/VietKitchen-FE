@@ -16,7 +16,7 @@ function AccountDetail() {
     const [restaurantName, setRestaurantName] = useState('');
     const [province, setProvince] = useState();
     const [months, setMonths] = useState();
-    const [packagesList, setPackagesList] = useState();
+    // const [packagesList, setPackagesList] = useState();
     const [currentPack, setCurrentPack] = useState('');
     const [restaurantId, setRestaurantId] = useState();
     const {accountId} = useParams();
@@ -28,10 +28,11 @@ function AccountDetail() {
             const data = res.data.result;
             setUsername(data.username);
             setEmail(data.email);
-            data.restaurant === null ?setRestaurantName('') : setRestaurantName(data.restaurant.restaurantName)
-            data.restaurant === null ?setProvince('') : setProvince(data.restaurant.province)
-            data.restaurant === null ?setRestaurantId('') : setRestaurantId(data.restaurant.id)
-            data.restaurant === null ? setCurrentPack() : setCurrentPack(data.restaurant.restaurantPackage.id)
+            console.log(data);
+            data.restaurant === null ?setRestaurantName('') : setRestaurantName(data?.restaurant?.restaurantName)
+            data.restaurant === null ?setProvince('') : setProvince(data?.restaurant?.province)
+            data.restaurant === null ?setRestaurantId('') : setRestaurantId(data?.restaurant?.id)
+            data.restaurant === null ? setCurrentPack() : setCurrentPack(data.restaurant.restaurantPackage?.packName)
         })
         .catch(err => {
             if (err.response) {
@@ -44,46 +45,10 @@ function AccountDetail() {
             }
         })
 
-        axiosInstance
-        .get("/api/package")
-        .then(res => {
-            setPackagesList(res.data.result)
-        })
-        .catch(err => {
-            if (err.response) {
-                const errorRes = err.response.data;
-                toast.error(errorRes.message);
-            } else if (err.request) {
-                toast.error("Yêu cầu không thành công");
-            } else {
-                toast.error(err.message);
-            }
-        })
+       
     },[])
 
 
-    const handleUpdate = () => {
-        const userInformation = {
-            packId: currentPack,
-            months: months
-        }
-        axiosInstance
-        .put(`/api/restaurant/admin/${restaurantId}`,userInformation)
-        .then(res => {
-            toast.success(`Nâng cấp lên gói ${currentPack} thành công`)
-        })
-        .catch(err => {
-            if (err.response) {
-                const errorRes = err.response.data;
-                toast.error(errorRes.message);
-            } else if (err.request) {
-                toast.error("Yêu cầu không thành công");
-            } else {
-                toast.error(err.message);
-            }
-        })
-        navigate("/admin/accountsManagement");
-    }
 
 
     return (
@@ -124,6 +89,18 @@ function AccountDetail() {
                                         placeholder="Email" required="" />
                                 </div>
                                 
+                                <div className="col-span-2 ">
+                                    <label htmlFor="province" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Địa chỉ nhà hàng</label>
+                                    <textarea
+                                        type="text"
+                                        name="province"
+                                        id="province"
+                                        value={province}
+                                        disabled={true}
+                                        className="bg-gray-50 border cursor-not-allowed border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="Địa chỉ nhà hàng" required="" />
+                                </div>
+                                
                                 <div className="col-span-2 sm:col-span-1">
                                     <label htmlFor="restaurant" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên nhà hàng</label>
                                     <input 
@@ -136,18 +113,22 @@ function AccountDetail() {
                                      placeholder="Tên nhà hàng" 
                                      required="" />
                                 </div>
-                                
+
                                 <div className="col-span-2 sm:col-span-1">
-                                    <label htmlFor="province" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Địa chỉ nhà hàng</label>
-                                    <input
-                                        type="text"
-                                        name="province"
-                                        id="province"
-                                        value={province}
-                                        disabled={true}
-                                        className="bg-gray-50 border cursor-not-allowed border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="Địa chỉ nhà hàng" required="" />
+                                    <label htmlFor="restaurant" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gói hiện tại</label>
+                                    <input 
+                                    type="text" 
+                                    name="restaurant"
+                                     id="restaurant" 
+                                     value={currentPack}
+                                    disabled={true}
+                                     className="bg-gray-50 border border-gray-300 cursor-not-allowed text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                                     placeholder="Tên gói" 
+                                     required="" />
                                 </div>
+
+                                
+                                
 
                                 {/* <div className="col-span-2 sm:col-span-1">
                                     <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Loại gói</label>
