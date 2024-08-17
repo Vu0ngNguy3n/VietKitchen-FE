@@ -30,6 +30,7 @@ function PaymentSetting() {
         .then(res => {
             const data = res.data.data;
             setListBank(data);
+            console.log(data);
         })
         .catch(err => {
             if (err.response) {
@@ -46,7 +47,6 @@ function PaymentSetting() {
         .get(`/api/restaurant/account/${user?.accountId}`)
         .then(res => {
             const data = res.data.result; 
-            console.log(res.data.result);
             setCustomerBankName(data?.account_NAME);
             setCustomerBankNumber(data?.account_NO);
             setBinBank(data?.bank_ID)
@@ -67,7 +67,6 @@ function PaymentSetting() {
     useEffect(() => {
         const currentBankName = listBank?.find(b => b?.bin === binBank);
         setCurrentBank(currentBankName?.name);
-        console.log(binBank);
     },[binBank])
 
     const handleDebouncedChange = useCallback(
@@ -90,6 +89,7 @@ function PaymentSetting() {
 
             // axios(config)
             // .then(function (response) {
+            //     console.log(JSON.stringify(response.data));
             //     setCustomerBankName(response.data.data.accountName)
             // })
             // .catch(function (error) {
@@ -106,7 +106,7 @@ function PaymentSetting() {
         return () => {
             handleDebouncedChange.cancel();
         }
-    },[customerBankNumber, handleDebouncedChange])
+    },[customerBankNumber])
 
 
 

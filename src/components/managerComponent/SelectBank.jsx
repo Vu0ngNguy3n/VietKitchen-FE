@@ -41,7 +41,7 @@ export const SelectBank = ({ options, value, onChange, onChangeBin }) => {
                         setOpen(false);
                     }}
                 >
-                    {o.name}
+                    {o?.name} {`(${o?.shortName})`}
                 </div>
             ))
             : [

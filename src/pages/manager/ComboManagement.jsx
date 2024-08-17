@@ -336,9 +336,9 @@ function ComboManagement() {
                                         <th scope="col" className="px-6 py-3">
                                             Giá
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
+                                        {/* <th scope="col" className="px-6 py-3">
                                             Miêu tả
-                                        </th>
+                                        </th> */}
                                         <th scope="col" className="px-6 py-3">
                                             
                                         </th>
@@ -362,9 +362,9 @@ function ComboManagement() {
                                             <td className="px-6 py-4">
                                                 {formatVND(combo?.price)}
                                             </td>
-                                            <td className="px-6 py-4">
+                                            {/* <td className="px-6 py-4">
                                                 {combo?.description}
-                                            </td>
+                                            </td> */}
                                             <td className="px-6 py-4 m-auto space-x-2 ">
                                                 <button
                                                     className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"

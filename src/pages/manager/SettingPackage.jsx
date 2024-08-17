@@ -173,8 +173,8 @@ function SettingPackage(){
                 const newOrderCode = res.data.result;
                 console.log(newOrderCode);
                 const payload = {
-                    orderCode: 78,
-                    amount: 5000, 
+                    orderCode: 209,
+                    amount: requireMoney, 
                     description: des,
                     returnUrl: urlReturn,
                     cancelUrl: urlCancel,
