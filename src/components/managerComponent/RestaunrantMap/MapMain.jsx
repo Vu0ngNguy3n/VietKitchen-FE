@@ -530,7 +530,7 @@ const MapMain = () => {
                                         <h2 className="text-xl font-semibold mb-4">
                                             Đổi tên khu vực
                                         </h2>
-                                        {isCreateArea && <div className="mb-4">
+                                        {isOpenEditArea && <div className="mb-4">
                                             <label className="block mb-2">Tên khu vực <span className="text-red-500">*</span></label>
                                             <input
                                                 type="text"
