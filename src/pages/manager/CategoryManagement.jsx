@@ -75,9 +75,9 @@ function CategoryManagement() {
 
     const handleSubmitCreateCategory = () => {
         if (name.trim() === '') {
-            toast.warn("Tên thực đơn không dược để trống");
+            toast.warn("Tên loại món ăn không dược để trống");
         } else if(description.trim() === ''){
-            toast.warn('Miêu tả thực đơn không dược để trống')
+            toast.warn('Miêu tả loại món ăn không dược để trống')
         }else {
             const accountId = user?.accountId;
 
@@ -92,12 +92,12 @@ function CategoryManagement() {
                 .post('/api/dish-category/create', category)
                 .then(res => {
                     if (res.data.code === 200) {
-                        toast.success("Thêm thực đơn thành công");
+                        toast.success("Thêm loại món ăn thành công");
                         setCategories([...categories, res.data.result]);
                         setCategoriesDisplay([...categories, res.data.result])
                         handleCloseCreatePop();
                     } else {
-                        toast.error("Thêm mới thực đơn thất bại");
+                        toast.error("Thêm mới loại món ăn thất bại");
                     }
                 })
                 .catch(err => {
@@ -115,9 +115,9 @@ function CategoryManagement() {
 
     const handleSubmitUpdateCategory = () => {
         if (name.trim() === '') {
-            toast.warn("Tên thực đơn không được bỏ trống");
+            toast.warn("Tên loại món ăn không được bỏ trống");
         } else if(description.trim() === ''){
-            toast.warn("Miêu tả thực đơn không được bỏ trống")
+            toast.warn("Miêu tả loại món ăn không được bỏ trống")
         }else{
             const accountId = user?.accountId;
 
@@ -132,7 +132,7 @@ function CategoryManagement() {
                 .put(`/api/dish-category/${currentCategoryId}`, category)
                 .then(res => {
                     if (res.data.code === 200) {
-                        toast.success("Cập nhật thực đơn thành công");
+                        toast.success("Cập nhật loại món ăn thành công");
                         const updatedCategories = categories.map(cat => 
                             cat.id === currentCategoryId ? res.data.result : cat
                         );
@@ -140,7 +140,7 @@ function CategoryManagement() {
                         setCategoriesDisplay(updatedCategories);
                         handleCloseCreatePop();
                     } else {
-                        toast.error("Cập nhật thực đơn thất bại");
+                        toast.error("Cập nhật loại món ăn thất bại");
                     }
                 })
                 .catch(err => {
@@ -161,13 +161,13 @@ function CategoryManagement() {
             .delete(`/api/dish-category/${currentCategoryId}`)
             .then(res => {
                 if (res.data.code === 200) {
-                    toast.success("Xóa thực đơn thành công");
+                    toast.success("Xóa loại món ăn thành công");
                     const updatedCategories = categories.filter(cat => cat.id !== currentCategoryId);
                     setCategories(updatedCategories);
                     setCategoriesDisplay(updatedCategories);
                     handleCloseDeletePop();
                 } else {
-                    toast.error("Xóa thực đơn thất bại");
+                    toast.error("Xóa loại món ăn thất bại");
                 }
             })
             .catch(err => {
@@ -196,7 +196,7 @@ function CategoryManagement() {
                 <div className="basis-[88%] border overflow-scroll h-[100vh]">
                     <HeaderManagerDashboard />
                     <div className="min-w-[40]x rounded-lg bg-white p-12 shadow min-h-[90vh] mt-2">
-                        <h1 className="font-black text-3xl mb-4">Quản lý thực đơn</h1>
+                        <h1 className="font-black text-3xl mb-4">Quản lý loại món ăn</h1>
                         <div className="flex justify-between">
                             <div className="">
                                 <div className="relative grow rounded-md border-2 border-gray-300">
@@ -206,7 +206,7 @@ function CategoryManagement() {
                                         className="w-full px-4 py-3 pl-10 outline-none italic "
                                         value={search}
                                         onChange={e => setSearch(e.target.value)}
-                                        placeholder="Nhập tên thực đơn"
+                                        placeholder="Nhập tên loại món ăn"
                                     />
                                 </div>
                             </div>
@@ -214,7 +214,7 @@ function CategoryManagement() {
                                 className="py-2 px-3 bg-blue-500 font-semibold text-white rounded hover:bg-blue-700 transition-all duration-300 flex items-center"
                                 onClick={handleOpenCreatePop}
                             >
-                                <IoMdAdd />Thêm thực đơn
+                                <IoMdAdd />Thêm loại món ăn
                             </button>
                         </div>
                         <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-6">
@@ -267,7 +267,7 @@ function CategoryManagement() {
                                     {categoriesDisplay?.length===0 && (
                                         <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                                             <td className="px-6 py-4 break-words max-w-xs text-red-500">
-                                                Không tìm thấy thông tin thực đơn tương ứng
+                                                Không tìm thấy thông tin loại món ăn tương ứng
                                             </td>
                                             <td className="px-6 py-4 break-words max-w-xs"></td>
                                             <td className="px-6 py-4 break-words max-w-xs"></td>
@@ -291,7 +291,7 @@ function CategoryManagement() {
                             &times;
                         </button>
                         <h2 className="text-xl font-semibold mb-4">
-                            {isCreate ? "Thêm thực đơn" : "Cập nhật thực đơn"}
+                            {isCreate ? "Thêm loại món ăn" : "Cập nhật loại món ăn"}
                         </h2>
                         <div className="mb-4">
                             <label className="block mb-2">Tên loại món ăn</label>
