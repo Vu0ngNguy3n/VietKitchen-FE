@@ -124,7 +124,7 @@ function VATSetting() {
     }
 
     const handleSubmitRestaurantVerify = () => {
-        if(nameRestaurant.trim() === '' || taxCode.trim() === '' || address.trim() === ''){
+        if(nameRestaurant === '' || taxCode === '' || address === ''){
             toast.warn("Thông tin doanh nghiệp không được bỏ trống")
             return 
         }
