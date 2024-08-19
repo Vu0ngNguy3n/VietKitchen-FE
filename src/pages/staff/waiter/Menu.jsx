@@ -686,7 +686,6 @@ function Menu(){
                   width: 24%;
               }
 
-              /* Responsive styles for iPad screens */
               @media (max-width: 1024px) {
                   .basis-12 {
                       flex-basis: 100%;
