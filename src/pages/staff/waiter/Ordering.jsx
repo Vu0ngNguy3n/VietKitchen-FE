@@ -111,6 +111,7 @@ function Ordering() {
 
   return (
     <div className="flex h-screen relative">
+      
       <div className="w-full flex justify-center absolute mt-6 bottom-6" onClick={() => handlePayment()}>
         <button className="ml-[12%] px-4 py-3 border-none rounded-md bg-primary text-white uppercase font-semibold transition-all duration-300 hover:opacity-[60%]">Thanh toán</button>
       </div>
