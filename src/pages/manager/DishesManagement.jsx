@@ -1,7 +1,7 @@
 import SidebarManager from "../../components/managerComponent/SidebarManager"
 import HeaderManagerDashboard from "../../components/managerComponent/HeaderManagerDashboard"
 import { IoMdAdd, IoMdArrowRoundBack } from "react-icons/io";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { useUser } from "../../utils/constant";
 import { toast } from "react-toastify";
@@ -9,6 +9,8 @@ import {formatVND} from "../../utils/format"
 import { FaEye, FaSearch } from "react-icons/fa";
 import { AiFillEdit } from "react-icons/ai";
 import { NumericFormat } from "react-number-format";
+import _ from "lodash";
+import Pagination from "../../components/component/Pagination/Pagination";
 
 
 function DishesManagement() {
@@ -38,18 +40,28 @@ function DishesManagement() {
     const [isOpenEdit, setIsOpenEdit] = useState(false);
     const [dishIdEdit, setDishIdEdit] = useState();
     const [currentImgEdit, setCurrentImgEdit] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [size, setSize] = useState(10);
+    const [totalDishes, setTotalDishes] = useState();
+    const [isSearch, setIsSearch] = useState(false);
     const user = useUser();
     
 
     useEffect(() => {
         setUserStorage(user);
         axiosInstance
-        .get(`/api/dish/restaurant/${user.restaurantId}/${statusDish}`)
+        .get(`/api/dish/restaurant/${user.restaurantId}/${statusDish}`,{
+            params: {
+                page: currentPage,
+                size: size,
+                query: ''
+            },
+        })
         .then(res => {
             const data = res.data.result;
-            console.log(data);
-            setDishesList(data);
-            setDishesListDisplay(data);
+            setTotalDishes(data.totalItems)
+            setDishesList(data.results);
+            setDishesListDisplay(data.results);
         })
         .catch(err => {
                     if (err.response) {
@@ -65,10 +77,9 @@ function DishesManagement() {
         axiosInstance
         .get(`/api/dish-category/${user.restaurantId}`)
         .then(res =>{ 
-            const data = res.data.result;
+            const data = res.data.result.result;
             setCategoryList(data);
-            console.log(data);
-            if(data.length > 0){
+            if(data?.length > 0){
                 setCurrentCategory(data[0]?.id);
             }
         })
@@ -106,13 +117,20 @@ function DishesManagement() {
 
 
     useEffect(() => {
-        setUserStorage(user);
         axiosInstance
-        .get(`/api/dish/restaurant/${user.restaurantId}/${statusDish}`)
+        .get(`/api/dish/restaurant/${user.restaurantId}/${statusDish}`,{
+            params: {
+                page: currentPage,
+                size: size,
+                query: ''
+            },
+        })
         .then(res => {
             const data = res.data.result;
-            setDishesList(data);
-            setDishesListDisplay(data);
+            setDishesList(data.results);
+            setDishesListDisplay(data.results);
+            setTotalDishes(data.totalItems)
+            
         })
         .catch(err => {
                     if (err.response) {
@@ -124,8 +142,133 @@ function DishesManagement() {
                         toast.error(err.message);
                     }
                 })
-    },[isReRender, statusDish])
+    },[isReRender])
 
+    useEffect(() => {
+        setSearch('');
+        setCurrentPage(1);
+        axiosInstance
+        .get(`/api/dish/restaurant/${user.restaurantId}/${statusDish}`,{
+            params: {
+                page: 1,
+                size: size,
+                query: ''
+            },
+        })
+        .then(res => {
+            const data = res.data.result;
+            setDishesList(data.results);
+            setDishesListDisplay(data.results);
+            setTotalDishes(data.totalItems)
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })
+    },[statusDish])
+
+    const handleDebouncedChange = useCallback(
+        _.debounce((value) => {
+            setIsSearch(prev => !prev);
+        }, 500),
+        []
+    )
+
+    useEffect(() => {
+        handleDebouncedChange(search)
+
+        return () => {
+            handleDebouncedChange.cancel();
+        }
+    },[search])
+
+    useEffect(() => {
+
+        axiosInstance
+        .get(`/api/dish/restaurant/${user.restaurantId}/${statusDish}`,{
+            params: {
+                page: 1,
+                size: size,
+                query: search
+            },
+        })
+        .then(res => {
+            const data = res.data.result;
+            console.log(data);
+            setDishesList(data.results);
+            setDishesListDisplay(data.results);
+            setTotalDishes(data.results.length)
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })
+    },[isSearch])
+
+    useEffect(() => {
+        axiosInstance
+        .get(`/api/dish/restaurant/${user.restaurantId}/${statusDish}`,{
+            params: {
+                page: currentPage,
+                size: size,
+                query: search
+            },
+        })
+        .then(res => {
+            const data = res.data.result;
+            setDishesList(data.results);
+            setDishesListDisplay(data.results);
+            setTotalDishes(data.totalItems)
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })
+
+    },[currentPage])
+
+    const handleClick = (page) => {
+        setCurrentPage(page);
+    };
+
+    const renderPageNumbers = () => {
+        const pages = [];
+        for (let i = 1; i <= totalDishes/10; i++) {
+        pages.push(
+            <li key={i}>
+                <a
+                    onClick={setCurrentPage(i)}
+                    className={`flex items-center justify-center px-3 h-8 leading-tight ${
+                    currentPage === i
+                        ? 'text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+                        : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+                    }`}
+                >
+                    {i}
+                </a>
+            </li>
+        );
+        }
+        return pages;
+    };
 
     const handleOpenPopUp = () => {
         setIsOpen(true);
@@ -273,10 +416,10 @@ function DishesManagement() {
          }
     }
 
-    useEffect(() => {
-        const newListDishes = dishesList?.filter(d => (d?.code.includes(search.toLowerCase()) || d?.name.toLowerCase().includes(search.trim().toLowerCase())))
-        setDishesListDisplay(newListDishes)
-    },[search])
+    // useEffect(() => {
+    //     const newListDishes = dishesList?.filter(d => (d?.code.includes(search.toLowerCase()) || d?.name.toLowerCase().includes(search.trim().toLowerCase())))
+    //     setDishesListDisplay(newListDishes)
+    // },[search])
 
     const handleChangePrice = (price) => {
         if(!isNaN(price) ){
@@ -289,7 +432,6 @@ function DishesManagement() {
     }
 
     const handleOpenShow = (dish) => {
-        console.log(dish);
         setCurrentDish(dish)
         setIsOpenShow(true);
     }
@@ -300,7 +442,6 @@ function DishesManagement() {
 
     const handleOpenEdit = (dish) =>{
         setIsOpenEdit(true)
-        console.log(dish);
         setDishName(dish?.name);
         setWeight(dish?.weight);
         setStatusDish(dish?.status);
@@ -325,7 +466,6 @@ function DishesManagement() {
     }
 
     const handleSubmitEdit = () => {
-        console.log(imgDishCreate?.preview);
        
         if(unitsList?.length === 0){
             toast.warn("Hãy tạo đơn vị tính cho món ăn")
@@ -595,112 +735,104 @@ function DishesManagement() {
                                                 </div>
                                             </div>
                                             <button onClick={() => handleCreateDish()} type="submit" class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                                <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                                                <svg className="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
                                                 Thêm món ăn
                                             </button>
                                         </from>
                                     </div>
                                 </div>
                             </div>:""}
-                        <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-6 mb-20">
-                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
+                            <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <th scope="col" class="px-16 py-3">
-                                            <span class="sr-only">Image</span>
+                                        
+                                        <th scope="col" className="px-6 py-3">
+                                            Hình ảnh
                                         </th>
-                                        <th scope="col" class="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3">
                                             Tên món ăn
                                         </th>
-                                        <th scope="col" class="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3">
                                             Giá
                                         </th>
-                                        <th scope="col" class="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3">
                                             Thông tin
                                         </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            
+                                        <th scope="col" className="px-6 py-3">
+                                            Hành động
                                         </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            
+                                        <th scope="col" className="px-16 py-3">
+                                            <span className="sr-only">Hide</span>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {dishesListDisplay?.map((dish, index) => (
-                                        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600" key={index}>
-                                            <td class="p-4">
-                                                <img src={dish?.imageUrl} class=" w-16 h-16 object-cover rounded-md" alt={dish?.code} />
+                                        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                <img src={dish?.imageUrl} className=" w-16 h-16 object-cover rounded-md" alt={dish?.code} />
+                                            </th>
+                                            <td className="px-6 py-4">
+                                               {dish?.name}
                                             </td>
-                                            <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                                                {dish?.name}
-                                            </td>
-                                            {/* <td class="px-6 py-4">
-                                                <div class="flex items-center">
-                                                    <button class="inline-flex items-center justify-center p-1 me-3 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
-                                                        <span class="sr-only">Quantity button</span>
-                                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
-                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" />
-                                                        </svg>
-                                                    </button>
-                                                    <div>
-                                                        <input type="number" id="first_product" class="bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="1" required />
-                                                    </div>
-                                                    <button class="inline-flex items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
-                                                        <span class="sr-only">Quantity button</span>
-                                                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                            </td> */}
-                                            <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+                                            <td className="px-6 py-4">
                                                 {formatVND(dish?.price)}
                                             </td>
-                                            <td class="px-6 py-4">
-                                                <button
-                                                    onClick={() => handleOpenShow(dish)}
-                                                    className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
-                                                >
-                                                    <FaEye className="mr-2"/>Chi tiết
-                                                </button>
-                                                {/* <a onClick={() => handleOpenHidePopUp(dish)} class="font-medium text-red-600 dark:text-red-500 hover:underline">{statusDish === 'true'? 'Ẩn' : 'Hiện'}</a> */}
+                                            <td className="px-6 py-4">
+                                                <a onClick={() => handleOpenShow(dish)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer">Mô tả</a>
                                             </td>
-                                            <td class="px-6 py-4">
-                                                <button
-                                                    onClick={() => handleOpenEdit(dish)}
-                                                    className="py-2 px-5 bg-lgreen font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
-                                                >
-                                                    <AiFillEdit className="mr-2"/>Chỉnh sửa
-                                                </button>
-                                                {/* <a onClick={() => handleOpenHidePopUp(dish)} class="font-medium text-red-600 dark:text-red-500 hover:underline">{statusDish === 'true'? 'Ẩn' : 'Hiện'}</a> */}
+                                            <td className="px-6 py-4">
+                                                <a 
+                                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer" onClick={() => handleOpenEdit(dish)}>Chỉnh sửa</a>
                                             </td>
-                                            <td class="px-6 py-4">
-                                                <button
+                                            <td className="px-6 py-4">
+                                                <a 
                                                     onClick={() => handleOpenHidePopUp(dish)}
-                                                    className="py-2 px-8 bg-red-600 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
-                                                >
-                                                    {statusDish === 'true'? 'Ẩn' : 'Hiện'}
-                                                </button>
-                                                {/* <a onClick={() => handleOpenHidePopUp(dish)} class="font-medium text-red-600 dark:text-red-500 hover:underline">{statusDish === 'true'? 'Ẩn' : 'Hiện'}</a> */}
+                                                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer" >{statusDish === 'true'? 'Ẩn' : 'Hiện'}</a>
                                             </td>
                                         </tr>
                                     ))}
-
                                     {dishesListDisplay?.length === 0 && (
-                                        <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                            <td className="w-4 p-4"></td>
-                                            <td className="px-6 py-4 text-red-500">
+                                        <tr classNameName="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                            <td className="px-6 py-4">
+                                            </td>
+                                            <td classNameName="px-6 py-4 text-red-500">
                                                 Không tìm thấy thông tin món ăn tương ứng
                                             </td>
-                                            <td className="px-6 p-4"></td>
-                                            <td className="px-6 p-4"></td>
+                                            <td classNameName="px-6 p-4"></td>
+                                            <td classNameName="px-6 p-4"></td>
+                                            <td classNameName="px-6 p-4"></td>
+                                            <td classNameName="px-6 p-4"></td>
                                         </tr>
                                     )}
-                                    
+                                   
                                 </tbody>
                             </table>
+                            <nav className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
+                                <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Hiển thị <span className="font-semibold text-gray-900 dark:text-white">{1 + 10*(currentPage-1)}-{10 + 10*(currentPage-1)}</span> trong <span className="font-semibold text-gray-900 dark:text-white">{totalDishes} </span>món ăn</span>
+                                <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+                                    <li onClick={() => handleClick(currentPage-1)}>
+                                        <a href="#" className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
+                                    </li>
+                                    {Array.from({ length: totalDishes/10+1 }).map((_, index) => (
+                                        <li onClick={() => setCurrentPage(index+1)}>
+                                            <a href="#" aria-current="page" className={`flex items-center justify-center px-3 h-8 leading-tight ${
+                                                currentPage === index+1
+                                                    ? 'text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+                                                    : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+                                                }`}>{index+1}</a>
+                                        </li>
+                                    ))}
+                                    <li onClick={() => handleClick(currentPage+1)}>
+                                         <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
+                                    </li>
+                                    
+                                </ul>
+                            </nav>
+                            {/* <Pagination totalPages={2} onChange={setCurrentPage}/> */}
                         </div>
+                        
                     </div>
                 </div>
 
