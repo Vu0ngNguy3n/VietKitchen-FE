@@ -77,7 +77,7 @@ function DishesManagement() {
         axiosInstance
         .get(`/api/dish-category/${user.restaurantId}`)
         .then(res =>{ 
-            const data = res.data.result.result;
+            const data = res.data.result;
             setCategoryList(data);
             if(data?.length > 0){
                 setCurrentCategory(data[0]?.id);
