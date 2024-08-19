@@ -114,14 +114,14 @@ function Ordering() {
       <div className="w-full flex justify-center absolute mt-6 bottom-6" onClick={() => handlePayment()}>
         <button className="ml-[12%] px-4 py-3 border-none rounded-md bg-primary text-white uppercase font-semibold transition-all duration-300 hover:opacity-[60%]">Thanh toán</button>
       </div>
-         <div className="absolute left-[60%] top-4 w-[13%] flex justify-between p-2 rounded-md bg-primary/[0.8] text-white font-semibold">
-                <span>Tổng tiền:</span>
-                <span>{formatVND(totalMoney)}</span>
-            </div>  
+      <div className="absolute left-[60%] top-4 w-[13%] flex justify-between items-center p-2 rounded-md bg-primary/[0.8] text-white font-semibold">
+          <span className="md:text-xs text-sm">Tổng tiền:</span>
+          <span className="md:text-xs">{formatVND(totalMoney)}</span>
+      </div>  
       <div className="basis-[12%]">
         <SidebarStaff />
       </div>
-      <div className="basis-[88%] border overflow-scroll ">
+      <div className="basis-[88%] border overflow-hidden ">
         <NavBarStaff />
         
 
@@ -132,7 +132,7 @@ function Ordering() {
               <div class=" overflow-x-auto  sm:rounded-lg w-full ">
                   
                                                             
-                  <div className="w-full  flex flex-wrap justify-around ">
+                  <div className="w-full  flex flex-wrap justify-around overflow-y-auto no-scrollbar max-h-[80vh] pb-4">
                     
                                 {oldCart?.map((d,index) => {
                                   return (                                                        
@@ -165,7 +165,7 @@ function Ordering() {
                                     </a>
                                   )
                                 })}
-                                 {messages?.map((d, index) =>  {
+                                 {/* {messages?.map((d, index) =>  {
                                     return (
                                       <a key={index} class="w-[40%] mt-8 flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
                                         <img class="object-cover ml-2 w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src={d?.dish?.imageUrl || d?.combo?.imageUrl} alt=""/>
@@ -176,7 +176,7 @@ function Ordering() {
                                         </div>
                                     </a>
                                     )
-                                  })}
+                                  })} */}
                                   <div class="w-[40%] "></div>
                                   <div class="w-[40%] "></div>
                                     

@@ -18,6 +18,7 @@ import {clearCart} from "../../../actions/cartActions"
 import {clearCustomer} from "../../../actions/customerActions"
 import GREEN_CHECK from "../../../assests/greenCheck.png"
 import axios from "axios";
+import { FaCircleCheck } from "react-icons/fa6";
 
 
 function Payment() {
@@ -436,15 +437,18 @@ function Payment() {
                                         <span className="sr-only">Close modal</span>
                                     </button>
                                     <div className="p-4 md:p-5 text-center">
-                                        <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        {/* <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-                                        </svg>
+                                        </svg> */}
+                                        <div className="flex justify-center items-center p-6">
+                                            <FaCircleCheck className="size-20 text-lgreen"/>
+                                        </div>
                                         <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Xác nhận thanh toán thành công</h3>
                                         <button 
                                             data-modal-hide="popup-modal" 
                                             type="button" 
                                             onClick={() => handleCreateBill()}
-                                            className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                                            className="text-white bg-lgreen hover:bg-green focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
                                             Có
                                         </button>
                                         <button 
@@ -478,9 +482,9 @@ function Payment() {
                                         </div>
                                     </div>
                                     <div className="flex justify-center w-full mb-4">
-                                        <div className="flex justify-between w-[83%]">
-                                            <p className="font-medium">Phương thức trả tiền</p>
-                                            <span className="font-semibold ">{isQR ? "Chuyển khoản ngân hàng" : "Tiền mặt"}</span>
+                                        <div className="flex w-[83%] ">
+                                            <p className="font-medium w-[50%] text-left">Phương thức trả tiền</p>
+                                            <span className="font-semibold w-[50%] text-right">{isQR ? "Chuyển khoản ngân hàng" : "Tiền mặt"}</span>
                                         </div>
                                     </div>
                                     <div className="flex justify-center w-full mb-8">
@@ -527,6 +531,24 @@ function Payment() {
 
                 .animate-slideIn {
                     animation: slideIn 0.3s ease-in-out;
+                }
+
+                @media (min-width: 768px) and (max-width: 1024px) {
+                    .w-full {
+                        width: 100%;
+                    }
+
+                    .h-full {
+                        height: 100%;
+                    }
+
+                    .md\:w-[30%] {
+                        width: 30%;
+                    }
+
+                    .md\:h-[70%] {
+                        height: 70%;
+                    }
                 }
             `}</style>
     </div>

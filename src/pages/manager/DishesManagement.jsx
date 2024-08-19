@@ -37,6 +37,7 @@ function DishesManagement() {
     const [currentDish, setCurrentDish] = useState(); 
     const [isOpenEdit, setIsOpenEdit] = useState(false);
     const [dishIdEdit, setDishIdEdit] = useState();
+    const [currentImgEdit, setCurrentImgEdit] = useState('');
     const user = useUser();
     
 
@@ -186,6 +187,7 @@ function DishesManagement() {
                         toast.success(`Tạo món ăn ${dishName} thành công!`)
                         setIsReRender(!isReRender)
                         setShowImgUpload('')
+                        setImgDishCreate('');
                         handleClosePouUp();
                         setCurrentCategory(categoryList[0]?.id)
                     })
@@ -305,9 +307,9 @@ function DishesManagement() {
         setDescription(dish?.description);
         setPrice(dish?.price);
         setCurrentCategory(dish?.dishCategory?.id);
-        setImgDishCreate(dish?.imageUrl);
         setCurrentUnit(dish?.unit?.id)
         setDishIdEdit(dish?.id)
+        setCurrentImgEdit(dish?.imageUrl)
     }
 
     const handleCloseEdit = () => {
@@ -323,6 +325,7 @@ function DishesManagement() {
     }
 
     const handleSubmitEdit = () => {
+        console.log(imgDishCreate?.preview);
        
         if(unitsList?.length === 0){
             toast.warn("Hãy tạo đơn vị tính cho món ăn")
@@ -333,37 +336,85 @@ function DishesManagement() {
         }else if(dishName === '' || weight === '' || description === '' || (price/1 <=0 || isNaN(price)) || imgDishCreate === '' || !imgDishCreate){
             toast.warn("Thông tin món ăn không được để trống")
         }else{
-            const request = {
-                name: dishName,
-                weight: weight,
-                status: statusDish,
-                description: description,
-                price: price,
-                dishCategoryId: currentCategory,
-                imageUrl: imgDishCreate?.preview || imgDishCreate ,
-                unitId: currentUnit
-            }
-            console.log(request);
-            console.log(dishIdEdit);
-            
-            axiosInstance
-            .put(`/api/dish/${dishIdEdit}`, request)
-            .then(res => {
-                handleCloseEdit();
-                toast.success("Cập nhật thông tin món ăn thành công")
-                setIsReRender(!isReRender)
-                setShowImgUpload('')
-            })
-            .catch(err => {
-                if (err.response) {
-                    const errorRes = err.response.data;
-                    toast.error(errorRes.message);
-                } else if (err.request) {
-                    toast.error("Yêu cầu không thành công");
-                } else {
-                    toast.error(err.message);
+            if(imgDishCreate !== ''){
+                const data = new FormData();
+                data.append("file",imgDishCreate);
+                data.append("upload_preset", "seafood");
+                data.append("cloud_name", "dggciohw8");  
+                fetch("https://api.cloudinary.com/v1_1/dggciohw8/image/upload", {
+                        method: "post",
+                        body: data,
+                    })
+                    .then((res) => res.json())
+                    .then((data) => {
+
+                        const request = {
+                            name: dishName,
+                            weight: weight,
+                            status: statusDish,
+                            description: description,
+                            price: price,
+                            dishCategoryId: currentCategory,
+                            imageUrl: data.url ,
+                            unitId: currentUnit
+                        }
+                    
+                        
+                        axiosInstance
+                        .put(`/api/dish/${dishIdEdit}`, request)
+                        .then(res => {
+                            handleCloseEdit();
+                            toast.success("Cập nhật thông tin món ăn thành công")
+                            setIsReRender(!isReRender)
+                            setShowImgUpload('')
+                        })
+                        .catch(err => {
+                            if (err.response) {
+                                const errorRes = err.response.data;
+                                toast.error(errorRes.message);
+                            } else if (err.request) {
+                                toast.error("Yêu cầu không thành công");
+                            } else {
+                                toast.error(err.message);
+                            }
+                        })
+
+                        
+                })
+                .catch(err => console.log(err + "Can not comment"))
+            }else{
+                const request = {
+                    name: dishName,
+                    weight: weight,
+                    status: statusDish,
+                    description: description,
+                    price: price,
+                    dishCategoryId: currentCategory,
+                    imageUrl: currentImgEdit ,
+                    unitId: currentUnit
                 }
-            })
+            
+                
+                axiosInstance
+                .put(`/api/dish/${dishIdEdit}`, request)
+                .then(res => {
+                    handleCloseEdit();
+                    toast.success("Cập nhật thông tin món ăn thành công")
+                    setIsReRender(!isReRender)
+                    setShowImgUpload('')
+                })
+                .catch(err => {
+                    if (err.response) {
+                        const errorRes = err.response.data;
+                        toast.error(errorRes.message);
+                    } else if (err.request) {
+                        toast.error("Yêu cầu không thành công");
+                    } else {
+                        toast.error(err.message);
+                    }
+                })
+            }
+            
         }
     }
 
@@ -474,12 +525,20 @@ function DishesManagement() {
                                                     onChange={e => setDishName(e.target.value)}/>
                                                 </div>
                                                 <div className="col-span-2 sm:col-span-1">
-                                                    <label htmlFor="weight" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Định lượng món ăn (kg)<span className="text-red-600">*</span></label>
-                                                    <input type="text"  id="weight" 
+                                                    <label htmlFor="weight" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Định lượng món ăn <span className="text-red-600">*</span></label>
+                                                    {/* <input type="text"  id="weight" 
                                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
-                                                    placeholder="Định lượng món ăn (kg)"
+                                                    placeholder="Định lượng món ăn "
                                                     value={weight}
-                                                    onChange={e => handleChangeWeight(e.target.value)}/>
+                                                    onChange={e => handleChangeWeight(e.target.value)}/> */}
+                                                    <NumericFormat type="text" name="weight" id="weight" 
+                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
+                                                    value={weight}
+                                                    thousandSeparator=","
+                                                    displayType="input"
+                                                    placeholder="Định lượng món ăn"
+                                                    suffix=" kg"
+                                                    onValueChange={(values) => handleChangeWeight(values.value)}/>
                                                 </div>
                                                 <div className="col-span-2 sm:col-span-1">
                                                     <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Giá món ăn <span className="text-red-600">*</span></label>
@@ -675,10 +734,10 @@ function DishesManagement() {
                                                     onChange={e => setDishName(e.target.value)}/>
                                                 </div>
                                                 <div className="col-span-2 sm:col-span-1">
-                                                    <label htmlFor="weight" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Định lượng món ăn (kg)<span className="text-red-600">*</span></label>
+                                                    <label htmlFor="weight" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Định lượng món ăn<span className="text-red-600">*</span></label>
                                                     <input type="text"  id="weight" 
                                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
-                                                    placeholder="Định lượng món ăn (kg)"
+                                                    placeholder="Định lượng món ăn"
                                                     value={weight}
                                                     onChange={e => handleChangeWeight(e.target.value)}/>
                                                 </div>
@@ -729,7 +788,7 @@ function DishesManagement() {
                                                     
                                                     {showImgUpload ? (
                                                     <img src={showImgUpload?.preview} alt='' className="w-[50%] object-cover h-[70px]" />
-                                                    ):<img src={imgDishCreate} className="w-[50%] object-cover h-[70px]" alt="" />}
+                                                    ):<img src={currentImgEdit} className="w-[50%] object-cover h-[70px]" alt="" />}
                                                 </div>
                                                 <div className="col-span-2">
                                                     <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Miêu tả món ăn <span className="text-red-600">*</span></label>

@@ -104,7 +104,7 @@ function StaffManager() {
     }
 
     const handleCreateEmployee = () => {
-        if(username.trim() === '' || employeeName.trim() === '' || password.trim() === '' || confirmPassword.trim() === '' ){
+        if(username.trim() === '' || employeeName.trim() === ''){
             toast.warn("Vui lòng điền đầy đủ thông tin")
         }else if(!validator.isMobilePhone(phoneNumber, 'vi-VN')){
             toast.warn("Số điện thoại không đúng định dạng.")
@@ -146,6 +146,8 @@ function StaffManager() {
                     phoneNumber: phoneNumber,
                     roleId: +currentRole
                 }
+
+                console.log(newEmployee);
 
                 axiosInstance
                 .put(`/api/employee/${employeeId}`,newEmployee)
@@ -388,7 +390,7 @@ function StaffManager() {
                                             focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
                                             dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                                             {listRoles?.map((role, index) =>
-                                                <option value={role?.id} key={index}>{role?.name === "WAITER" ? "Bồi bàn" : (role?.name === "CHEF" ?  "Đầu bếp" : "Lễ tân")}</option>
+                                                <option value={role?.id} key={index}>{role?.name === "WAITER" ? "Bồi bàn" : (role?.name === "CHEF" ?  "Bếp trưởng" : "Lễ tân")}</option>
                                             )}
                                         </select>
 
@@ -546,7 +548,7 @@ function StaffManager() {
                                                 {e?.phoneNumber}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {e?.role.name === "WAITER" ? "Bồi bàn" : (e?.role.name === "CHEF" ?  "Đầu bếp" : "Lễ tân")}
+                                                {e?.role.name === "WAITER" ? "Bồi bàn" : (e?.role.name === "CHEF" ?  "Bếp trưởng" : "Lễ tân")}
                                             </td>
                                             <td className="px-6 py-4 ">
                                                 <button 

@@ -217,6 +217,7 @@ function Menu(){
 
     const handleAddDish = (dish) => {
         let dishAdd;
+        console.log(dish);
         if(dish?.dishes){
             dishAdd = {
                 dishId: null,
@@ -406,7 +407,7 @@ function Menu(){
                 <div className="basis-[12%] h-[100vh]">
                     <SidebarStaff/>
                 </div>
-                <div className="basis-[88%] border overflow-scroll h-[100vh]">
+                <div className="basis-[88%] border overflow-scroll max-h-[100vh]">
                     <NavBarStaff />
                     <div className="flex w-full">
                       <div className="w-full border-r-2">
@@ -536,7 +537,7 @@ function Menu(){
                                 </div>
                             </div> : ''}
                             
-                        <div className=" flex flex-wrap ">
+                        <div className=" flex flex-wrap overflow-y-auto no-scrollbar max-h-[79vh]">
                           {dishesList?.map((d, index) => {
                               return (
                                 <a 
@@ -565,19 +566,19 @@ function Menu(){
                       
                       <div className="w-[35%] bg-slate-500">
                           <div className="w-full h-14 flex justify-between">
-                            <div className="bg-slate-300 flex flex-wrap justify-center w-[25%] p-2 rounded-sm ">
+                            <div className="bg-slate-300 flex flex-col items-center text-center w-[25%] p-2 rounded-sm ">
                               <GrRestaurant className="size-4 mb-2"/>
-                              <span className="text-[14px] font-semibold">Vị trí bàn</span>
+                              <span className="text-sm font-semibold ">Vị trí </span>
                             </div>
                             <div className="bg-slate-300 flex w-[74%] items-center p-2 rounded-sm">
                               <span className="font-semibold">{table?.areaName}: {table?.tableName}</span>
                             </div>
                           </div>
-                          <div className="flex-row relative">
-                            <div className="h-[79vh]  overflow-hidden ">
+                          <div className="flex-row relative h-[91%]  ">
+                            <div className="min-h-[79vh] max-h-[70vh] overflow-y-auto no-scrollbar pb-32">
                               {cartList?.map((cart, index) => {
                                 return (
-                                  <div className="w-full bg-secondary px-1 py-2 mt-2 shadow-sm rounded-sm" key={index}>
+                                  <div className="w-full bg-secondary px-1 py-2 mt-2 shadow-sm rounded-sm " key={index}>
                                       <div className="w-full text-white flex justify-between">
                                         <b>{index <= 9 ? index+1 : index+1}. {cart?.name}</b>
                                         <div className="w-[30%] font-semibold text-right">
@@ -607,24 +608,24 @@ function Menu(){
                                 )
                               })}
                             </div>
-                            <div className="absolute bottom-0 w-full flex flex-wrap justify-center">
+                            <div className="absolute bottom-0 w-full flex flex-wrap justify-center bg-slate-400">
                               <div className="bg-white  w-full p-3 mx-1 my-2 flex justify-between ">
                                 <span >Tổng tiền:</span>
                                 <span className="font-semibold">{formatVND(totalAmount)}</span>
                               </div>
                               <div className="w-full flex flex-wrap justify-between">
-                                <div className="w-[24%] bg-red-700 h-16 text-white ml-[2px] rounded-sm flex items-center justify-center  cursor-pointer" onClick={() => handleClearCart()}>
+                                <div className="w-[24%] bg-red-700 h-16 text-white ml-[2px] rounded-sm flex items-center justify-center  cursor-pointer text-center" onClick={() => handleClearCart()}>
                                   <span>Làm mới</span>
                                 </div>
-                                <div className="w-[24%] bg-purple-500 h-16 text-white ml-[2px] rounded-sm flex items-center justify-center cursor-pointer " 
+                                <div className="w-[24%] bg-purple-500 h-16 text-white ml-[2px] rounded-sm flex items-center justify-center cursor-pointer text-center" 
                                     onClick={() => navigate("/waiter/ordering")}
                                 >
                                   <span>Trạng thái </span>
                                 </div>
-                                <div className="w-[24%] bg-green h-16 text-white ml-[2px] rounded-sm flex items-center justify-center  cursor-pointer " onClick={() => handleSubmitDish()}>
+                                <div className="w-[24%] bg-green h-16 text-white ml-[2px] rounded-sm flex items-center justify-center  cursor-pointer text-center " onClick={() => handleSubmitDish()}>
                                   <span>Xác nhận</span>
                                 </div>
-                                <div className="w-[24%] bg-blue-600 h-16 text-white ml-[2px] rounded-sm flex items-center justify-center cursor-pointer"
+                                <div className="w-[24%] bg-blue-600 h-16 text-white ml-[2px] rounded-sm flex items-center justify-center cursor-pointer text-center"
                                   onClick={() => navigate('/waiter/payment')}
                                 >
                                   <span className="text-center">Thanh toán</span>
@@ -638,32 +639,83 @@ function Menu(){
                 </div>
             </div>
             <style jsx>{`
-                @keyframes fadeIn {
-                    from {
-                        opacity: 0;
-                    }
-                    to {
-                        opacity: 1;
-                    }
-                }
+              @keyframes fadeIn {
+                  from {
+                      opacity: 0;
+                  }
+                  to {
+                      opacity: 1;
+                  }
+              }
 
-                @keyframes slideIn {
-                    from {
-                        transform: translateY(-20%);
-                    }
-                    to {
-                        transform: translateY(0);
-                    }
-                }
+              @keyframes slideIn {
+                  from {
+                      transform: translateY(-20%);
+                  }
+                  to {
+                      transform: translateY(0);
+                  }
+              }
 
-                .animate-fadeIn {
-                    animation: fadeIn 0.3s ease-in-out;
-                }
+              .animate-fadeIn {
+                  animation: fadeIn 0.3s ease-in-out;
+              }
 
-                .animate-slideIn {
-                    animation: slideIn 0.3s ease-in-out;
-                }
-            `}</style>
+              .animate-slideIn {
+                  animation: slideIn 0.3s ease-in-out;
+              }
+
+              /* Default styles for larger screens */
+              .basis-12 {
+                  flex-basis: 12%;
+              }
+
+              .basis-88 {
+                  flex-basis: 88%;
+              }
+
+              .w-49 {
+                  width: 49%;
+              }
+
+              .w-35 {
+                  width: 35%;
+              }
+
+              .w-24 {
+                  width: 24%;
+              }
+
+              /* Responsive styles for iPad screens */
+              @media (max-width: 1024px) {
+                  .basis-12 {
+                      flex-basis: 100%;
+                      height: auto;
+                  }
+
+                  .basis-88 {
+                      flex-basis: 100%;
+                      height: auto;
+                  }
+
+                  .w-49 {
+                      width: 100%;
+                  }
+
+                  .w-35 {
+                      width: 100%;
+                  }
+
+                  .w-24 {
+                      width: 48%;
+                      margin-bottom: 10px;
+                  }
+
+                  .h-16 {
+                      height: auto;
+                  }
+              }
+          `}</style>
         </div>
 
 
