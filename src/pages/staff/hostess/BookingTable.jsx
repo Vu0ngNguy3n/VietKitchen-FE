@@ -464,6 +464,12 @@ function BookingTable() {
                 setDishesChoose([]);
                 setDishesChooseSubmit([]);
                 setTime('12:00')
+                const today = new Date();
+                const tomorrow = new Date(today);
+                tomorrow.setDate(today.getDate() );
+                const formattedDate = tomorrow.toISOString().split('T')[0];
+                setPickUpDay(formattedDate)
+
            }else{
             toast.error(response)
            }
@@ -547,6 +553,12 @@ function BookingTable() {
         setDishesChoose([]);
         setDishesChooseSubmit([]);
         setTime('12:00')
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() );
+        const formattedDate = tomorrow.toISOString().split('T')[0];
+        setPickUpDay(formattedDate)
+
     }
 
     const handleCancelBooking = () => {
