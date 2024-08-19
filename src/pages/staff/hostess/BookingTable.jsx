@@ -203,7 +203,7 @@ function BookingTable() {
 
         const today = new Date();
         const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
+        tomorrow.setDate(today.getDate() );
         const formattedDate = tomorrow.toISOString().split('T')[0];
         setPickUpDay(formattedDate)
 
@@ -463,6 +463,7 @@ function BookingTable() {
                 setIsCancel(!isCancel)
                 setDishesChoose([]);
                 setDishesChooseSubmit([]);
+                setTime('12:00')
            }else{
             toast.error(response)
            }
@@ -545,6 +546,7 @@ function BookingTable() {
         setIsOpenShowInformation(false);
         setDishesChoose([]);
         setDishesChooseSubmit([]);
+        setTime('12:00')
     }
 
     const handleCancelBooking = () => {

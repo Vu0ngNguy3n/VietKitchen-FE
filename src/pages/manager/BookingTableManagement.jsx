@@ -203,7 +203,7 @@ function BookingTableManagement() {
 
         const today = new Date();
         const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
+        tomorrow.setDate(today.getDate() );
         const formattedDate = tomorrow.toISOString().split('T')[0];
         setPickUpDay(formattedDate)
 
@@ -463,6 +463,7 @@ function BookingTableManagement() {
                 setIsCancel(!isCancel)
                 setDishesChoose([]);
                 setDishesChooseSubmit([]);
+                setTime('12:00')
            }else{
             toast.error(response)
            }
@@ -545,6 +546,7 @@ function BookingTableManagement() {
         setIsOpenShowInformation(false);
         setDishesChoose([]);
         setDishesChooseSubmit([]);
+        setTime("12:00")
     }
 
     const handleCancelBooking = () => {
@@ -993,7 +995,7 @@ function BookingTableManagement() {
                             <span className="sr-only">Close modal</span>
                         </button>
                         <div className="w-full flex justify-center items-center mb-4 border-b-2 pb-2 pt-4 bg-slate-200 rounded-t-lg">
-                            <h2 className="font-bold text-lg">Thêm đặt bàn</h2>
+                            <h2 className="font-bold text-lg">Cập nhật đơn đặt bàn</h2>
                         </div>
                         <div className="flex-row">
                             <div className="flex justify-center px-4 pb-10">

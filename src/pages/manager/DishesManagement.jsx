@@ -22,7 +22,7 @@ function DishesManagement() {
     const [isOpen, setIsOpen] = useState(false);
     const [currentCategory, setCurrentCategory] = useState();
     const [dishName, setDishName] = useState();
-    const [weight, setWeight] = useState();
+    const [weight, setWeight] = useState('');
     const [description, setDescription] = useState();
     const [price, setPrice] = useState(100000);
     const [isOpenHidePopUp, setIsOpenHidePopUp] = useState(false);
@@ -155,7 +155,7 @@ function DishesManagement() {
         }
         if(categoryList?.length === 0){
             toast.warn('Hãy tạo loại món ăn')
-        }else if(dishName === '' || weight === '' || description === '' || (price/1 <=0 || isNaN(price)) || imgDishCreate === '' || !imgDishCreate){
+        }else if(dishName === '' || description === '' || (price/1 <=0 || isNaN(price)) || imgDishCreate === '' || !imgDishCreate){
             toast.warn("Thông tin món ăn không được để trống")
         }else{
             const data = new FormData();
@@ -516,7 +516,7 @@ function DishesManagement() {
                                         </div>
                                         <from className="p-4 md:p-5">
                                             <div className="grid gap-4 mb-4 grid-cols-2">
-                                                <div className="col-span-2">
+                                                <div className="col-span-2 sm:col-span-1">
                                                     <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên món ăn <span className="text-red-600">*</span></label>
                                                     <input type="text" name="name" id="name" 
                                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
@@ -524,13 +524,9 @@ function DishesManagement() {
                                                     value={dishName}
                                                     onChange={e => setDishName(e.target.value)}/>
                                                 </div>
-                                                <div className="col-span-2 sm:col-span-1">
+                                                {/* <div className="col-span-2 sm:col-span-1">
                                                     <label htmlFor="weight" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Định lượng món ăn <span className="text-red-600">*</span></label>
-                                                    {/* <input type="text"  id="weight" 
-                                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
-                                                    placeholder="Định lượng món ăn "
-                                                    value={weight}
-                                                    onChange={e => handleChangeWeight(e.target.value)}/> */}
+                                                    
                                                     <NumericFormat type="text" name="weight" id="weight" 
                                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
                                                     value={weight}
@@ -539,7 +535,7 @@ function DishesManagement() {
                                                     placeholder="Định lượng món ăn"
                                                     suffix=" kg"
                                                     onValueChange={(values) => handleChangeWeight(values.value)}/>
-                                                </div>
+                                                </div> */}
                                                 <div className="col-span-2 sm:col-span-1">
                                                     <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Giá món ăn <span className="text-red-600">*</span></label>
                                                     <NumericFormat type="text" name="price" id="price" 
@@ -725,7 +721,7 @@ function DishesManagement() {
                                         </div>
                                         <from className="p-4 md:p-5">
                                             <div className="grid gap-4 mb-4 grid-cols-2">
-                                                <div className="col-span-2">
+                                                <div className="col-span-2 sm:col-span-1">
                                                     <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên món ăn <span className="text-red-600">*</span></label>
                                                     <input type="text" name="name" id="name" 
                                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
@@ -733,14 +729,14 @@ function DishesManagement() {
                                                     value={dishName}
                                                     onChange={e => setDishName(e.target.value)}/>
                                                 </div>
-                                                <div className="col-span-2 sm:col-span-1">
+                                                {/* <div className="col-span-2 sm:col-span-1">
                                                     <label htmlFor="weight" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Định lượng món ăn<span className="text-red-600">*</span></label>
                                                     <input type="text"  id="weight" 
                                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" 
                                                     placeholder="Định lượng món ăn"
                                                     value={weight}
                                                     onChange={e => handleChangeWeight(e.target.value)}/>
-                                                </div>
+                                                </div> */}
                                                 <div className="col-span-2 sm:col-span-1">
                                                     <label htmlFor="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Giá món ăn <span className="text-red-600">*</span></label>
                                                     <NumericFormat type="text" name="price" id="price" 

@@ -45,22 +45,14 @@ const cartReducer = (state = [], action) => {
              const data = action.payload;
             let newState = [];
 
-            console.log(state);
-            console.log(data);
-
-            // Xác định điều kiện lọc
             if (data?.comboId) {
-                // Nếu có comboId, lọc theo comboId
                 newState = state.filter(s => s?.comboId !== data?.comboId);
             } else if (data?.dishId) {
-                // Nếu có dishId, lọc theo dishId
                 newState = state.filter(s => s?.dishId !== data?.dishId);
             } else {
-                // Nếu không có cả comboId và dishId, giữ nguyên trạng thái
                 newState = state;
             }
 
-            // Trả về trạng thái mới
             return newState;
         }
 
