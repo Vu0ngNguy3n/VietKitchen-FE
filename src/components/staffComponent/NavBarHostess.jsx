@@ -9,6 +9,7 @@ import { FaCartShopping } from "react-icons/fa6";
 import { useDispatch, useSelector } from 'react-redux';
 import WAITERAVATAR from "../../assests/waiterAvatar.png"
 import { clearUser } from '../../actions/userActions';
+import { useUser } from '../../utils/constant';
 
 
 const NavBarHostess = () => {
@@ -17,11 +18,11 @@ const NavBarHostess = () => {
     const [userStorage, setUserStorage] = useState();
     // const cartList = useSelector(state => state.cart)
     const dispatch = useDispatch();
+    const user = useUser();
 
     useEffect(() =>{
-        const storedUser = localStorage.getItem('user');
-        const user = storedUser ? JSON.parse(storedUser) : null
         setUserStorage(user);
+        console.log(user);
     },[])
 
     const showProfile = () => {
@@ -46,7 +47,10 @@ const NavBarHostess = () => {
                 </div>
                 <div className='flex items-center gap-[20px]'>
                     <div className='flex items-center gap-[15px] relative' onClick={showProfile} >
-                        <p className='font-semibold'>Lễ tân</p>
+                        <div className='flex flex-col justify-center text-center'>
+                            {/* <p className='font-semibold'>Lễ tân</p> */}
+                            <span className='font-semibold text-sm uppercase'>Lễ tân</span>
+                        </div>
                         <div className='h-[50px] w-[50px] rounded-full bg-[#4E73DF] cursor-pointer flex items-center justify-center relative z-40' >
                             <img src={WAITERAVATAR} alt=""  className='rounded-full w-full h-full object-cover'/>
 

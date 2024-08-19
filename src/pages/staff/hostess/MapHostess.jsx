@@ -165,7 +165,7 @@ function MapHostess() {
                         </div>
             
                         <div className='pt-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
-                            <p className='text-[10px] font-extrabold leading-[16px] text-white/[0.4]'> Mặt hàng</p>
+                            <p className='text-[10px] font-extrabold leading-[16px] text-white/[0.4]'> Khu vực</p>
                             {areaList?.map((area, index) => {
                                 return (
                                     <div className='flex items-center justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:bg-secondary'
