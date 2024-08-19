@@ -6,7 +6,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { useUser } from "../../utils/constant";
 import { toast } from "react-toastify";
 import {formatVND} from "../../utils/format"
-import { FaEye, FaSearch } from "react-icons/fa";
+import { FaEdit, FaEye, FaSearch } from "react-icons/fa";
 import { AiFillEdit } from "react-icons/ai";
 import { NumericFormat } from "react-number-format";
 import _ from "lodash";
@@ -272,7 +272,7 @@ function DishesManagement() {
 
     const handleOpenPopUp = () => {
         setIsOpen(true);
-        if(categoryList.length === [0]){
+        if(categoryList.length === 0){
             toast.warn("Bạn hãy tạo loại món ăn để tạo gói")
         }
     }
@@ -780,16 +780,27 @@ function DishesManagement() {
                                                 {formatVND(dish?.price)}
                                             </td>
                                             <td className="px-6 py-4">
-                                                <a onClick={() => handleOpenShow(dish)} className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer">Mô tả</a>
+                                                <button 
+                                                    onClick={() => handleOpenShow(dish)}
+                                                    className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center">
+                                                    <a  className="font-medium text-white dark:text-blue-500 hover:underline cursor-pointer">Mô tả</a>
+                                                </button>
+                                                
                                             </td>
                                             <td className="px-6 py-4">
-                                                <a 
-                                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer" onClick={() => handleOpenEdit(dish)}>Chỉnh sửa</a>
+                                                <button 
+                                                    onClick={() => handleOpenEdit(dish)}
+                                                    className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center">
+                                                    <a className="font-medium text-white dark:text-blue-500 hover:underline cursor-pointer" >Cập nhật</a>
+                                                </button>
+                                                
                                             </td>
                                             <td className="px-6 py-4">
-                                                <a 
+                                                <button 
                                                     onClick={() => handleOpenHidePopUp(dish)}
-                                                    className="font-medium text-blue-600 dark:text-blue-500 hover:underline cursor-pointer" >{statusDish === 'true'? 'Ẩn' : 'Hiện'}</a>
+                                                    className="py-2 px-5 bg-red-400 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center">
+                                                    <a className="font-medium text-white dark:text-blue-500 hover:underline cursor-pointer" >{statusDish === 'true'? 'Ẩn' : 'Hiện'}</a>
+                                                </button>
                                             </td>
                                         </tr>
                                     ))}
