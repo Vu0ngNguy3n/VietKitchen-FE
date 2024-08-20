@@ -9,7 +9,7 @@ import LOGO from "../../../assests/VIET.png"
 import { MdTableBar } from "react-icons/md";
 import NavBarHostess from "../../../components/staffComponent/NavBarHostess";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
-import { BsFillCaretDownFill } from "react-icons/bs";
+import { BsFillCalendarDateFill, BsFillCaretDownFill } from "react-icons/bs";
 import { BsFillCaretUpFill } from "react-icons/bs";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
 import { FaMinus, FaPlus, FaPlusCircle, FaUserCircle } from "react-icons/fa";
@@ -294,6 +294,7 @@ function BookingTable() {
             setListBookingTables(lateTables)
         }else if(value === "all"){
             setListBookingTables(allTables)
+            console.log(allTables);
         }
     }   
 
@@ -805,6 +806,10 @@ function BookingTable() {
                                                 </div>
                                             </div>
                                             <div className="w-[70%]">
+                                                <div className="flex items-center px-2 py-2 ">
+                                                    <BsFillCalendarDateFill className="mr-1 "/>
+                                                    <span >{table?.bookedDate}</span>
+                                                </div>
                                                 <div className="flex">
                                                     <div className="w-[50%] px-2 py-2 flex items-center">
                                                     <GiAlarmClock className="mr-1 "/> <span>{sliceDisplayTime(table?.time)}</span>
@@ -821,11 +826,12 @@ function BookingTable() {
                                         </div>
                                         <div className="bg-gray-200 flex rounded-b-md">
                                             <div className="w-[30%] flex justify-center items-center py-3 border-r-2 text-blue-600 font-semibold">
-                                                ...
+                                                
                                             </div>
                                             <div
                                                 onClick={() => handleOpenConfirmJoin(table?.id)} 
-                                                className="w-[70%] flex justify-center items-center py-3 text-blue-500 font-semibold cursor-pointer">
+                                                className={`w-[70%] flex justify-center items-center py-3 text-blue-500 font-semibold cursor-pointer ${table?.status === "CANCEL" ? 'opacity-0' : ''}`}
+                                                >
                                                 <span>Khách nhận bàn</span>
                                             </div>
                                         </div>
