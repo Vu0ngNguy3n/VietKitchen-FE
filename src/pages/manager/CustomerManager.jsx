@@ -118,11 +118,7 @@ function CustomerManager() {
         })
         .then(res => {
             const data = res.data;
-            if(search === ''){
-                setTotalCustomers(data.totalItems)
-            }else{
-                setTotalCustomers(data.results.length)
-            }
+            setTotalCustomers(data.totalItems)
             setListCustomers(data.results);
             setListCustomersDisplay(data.results);
         })

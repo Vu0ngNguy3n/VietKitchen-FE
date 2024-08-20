@@ -267,7 +267,7 @@ function Menu(){
         return
       }
       axiosInstance
-      .get(`/api/customers/${phoneNumber}`)
+      .get(`/api/customers/restaurant/${user?.restaurantId}/${phoneNumber}`)
       .then((res) => {
         const data = res.data.result;
         if (data !== null) {
@@ -276,29 +276,29 @@ function Menu(){
           dispatch(actionCustomer);
           setIsExistCustomer(true);
           const requestData =  {
-                      tableId: table?.tableId,
-                      employeeId: user?.employeeId,
-                      customerResponse: data,
-                      restaurantId: user?.restaurantId,
-                    };
-                    axiosInstance
-                    .post(`/create`, requestData)
-                    .then((res) => {
-                      const idResult = res.data.result?.id;
-                      const actionOrder = saveOrderId(idResult);
-                      dispatch(actionOrder);
-                      changeStatusTable(requestData);
-                    })
-                    .catch((err) => {
-                      if (err.response) {
-                        const errorRes = err.response.data;
-                        toast.error(errorRes.message);
-                      } else if (err.request) {
-                        toast.error("Yêu cầu không thành công");
-                      } else {
-                        toast.error(err.message);
-                      }
-                    });
+            tableId: table?.tableId,
+            employeeId: user?.employeeId,
+            customerResponse: data,
+            restaurantId: user?.restaurantId,
+          };
+          axiosInstance
+          .post(`/create`, requestData)
+          .then((res) => {
+            const idResult = res.data.result?.id;
+            const actionOrder = saveOrderId(idResult);
+            dispatch(actionOrder);
+            changeStatusTable(requestData);
+          })
+          .catch((err) => {
+            if (err.response) {
+              const errorRes = err.response.data;
+              toast.error(errorRes.message);
+            } else if (err.request) {
+              toast.error("Yêu cầu không thành công");
+            } else {
+              toast.error(err.message);
+            }
+          });
         } else {
           toast("Khách hàng không tồn tại, vui lòng tạo thông tin!");
         }

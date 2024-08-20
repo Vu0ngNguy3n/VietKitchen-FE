@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Dashboardview from "../../components/adminComponent/DashboardView"
 import Sidebar from "../../components/adminComponent/Sidebar"
 import { FaSearch, FaFileExport, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
+import _ from "lodash";
 
 
 function AccountsManagements() {
@@ -13,15 +14,26 @@ function AccountsManagements() {
     const [listUsers, setListUsers] = useState([]);
     const [listUsersShow, setListUsersShow] = useState([]);
     const [search, setSearch] = useState('')
+    const [currentPage, setCurrentPage] = useState(1);
+    const [size, setSize] = useState(10);
+    const [totalManagers, setTotalManagers] = useState();
+    const [isSearch, setIsSearch] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         axiosInstance
-        .get("/api/account/manager")
+        .get("/api/account/manager", {
+            params: {
+                page: currentPage,
+                size: size,
+                query: search
+            }
+        })
         .then(res => {
-            setListUsers(res.data.result);
-            setListUsersShow(res.data.result);
-            console.log(res.data.result);
+            const data =res.data.result;
+            setListUsers(data.results);
+            setListUsersShow(data.results);
+            setTotalManagers(data.totalItems)
         })
         .catch(err => {
             if (err.response) {
@@ -33,13 +45,36 @@ function AccountsManagements() {
                 toast.error(err.message);
             }
         })
-    },[])
+    },[currentPage])
+
+     const handleClick = (page) => {
+        if(page > 0 && page <= (totalManagers / 10 + 1)){
+            setCurrentPage(page);
+        }
+
+    };
+
+    const handleDebouncedChange = useCallback(
+        _.debounce((value) => {
+            setIsSearch(prev => !prev);
+            // setCurrentPage(1)
+        }, 500),
+        []
+    )
 
     useEffect(() => {
-        const newList = listUsers?.filter(user => (user?.restaurant?.restaurantName.toLowerCase().includes(search.toLowerCase()) || user?.email.toLowerCase().includes(search.toLowerCase())))
-        setListUsersShow(newList)
+        handleDebouncedChange(search)
+
+        return () => {
+            handleDebouncedChange.cancel();
+        }
     },[search])
 
+    useEffect(() => {
+        setCurrentPage(1);
+    },[isSearch])
+
+    
 
     return (
         <div className="">
@@ -176,7 +211,27 @@ function AccountsManagements() {
 
                                 </tbody>
                             </table>
-                            
+                            <nav className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
+                                <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Hiển thị <span className="font-semibold text-gray-900 dark:text-white">{1 + 10*(currentPage-1)}-{10 + 10*(currentPage-1)}</span> trong <span className="font-semibold text-gray-900 dark:text-white">{totalManagers} </span>khách hàng</span>
+                                <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+                                    <li onClick={() => handleClick(currentPage-1)}>
+                                        <a href="#" className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Trước</a>
+                                    </li>
+                                    {Array.from({ length: totalManagers/10+1 }).map((_, index) => (
+                                        <li onClick={() => setCurrentPage(index+1)}>
+                                            <a href="#" aria-current="page" className={`flex items-center justify-center px-3 h-8 leading-tight ${
+                                                currentPage === index+1
+                                                    ? 'text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+                                                    : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+                                                }`}>{index+1}</a>
+                                        </li>
+                                    ))}
+                                    <li onClick={() => handleClick(currentPage+1)}>
+                                         <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Sau</a>
+                                    </li>
+                                    
+                                </ul>
+                            </nav>
                         </div>
 
                     </div>
