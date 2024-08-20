@@ -372,6 +372,24 @@ function SignInSide() {
     }
   }
 
+  const handleKeyDown = (event) => {
+      if (event.key === 'Enter') {
+          if(typeLogin === 2){
+            handleLogin();
+          }else{
+            handleOpenPop();
+          }
+      } 
+  };
+
+  useEffect(() => {
+      document.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+          document.removeEventListener('keydown', handleKeyDown);
+      };
+  }, [typeLogin]);
+
   return (
     <div className="w-full h-screen flex flex-col md:flex-row items-start">
       <div className="relative w-full md:w-1/2 h-1/2 md:h-full flex flex-col">

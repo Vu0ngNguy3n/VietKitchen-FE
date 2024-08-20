@@ -29,6 +29,10 @@ function StaffManager() {
     const [employeeDelete, setEmployeeDelete] = useState();
     const [employeeChangePassword, setEmployeeChangePassword] = useState();
     const [search, setSearch] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [size, setSize] = useState(10);
+    const [totalStaffs, setTotalStaffs] = useState();
+    const [isSearch, setIsSearch] = useState(false);
     const account = useUser();
 
     useEffect(() => {
@@ -455,14 +459,14 @@ function StaffManager() {
                                     </div>
                                     
                                     <div className="flex justify-end gap-2">
-                                        <button
+                                        {/* <button
                                             className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-red-700 transition-all duration-300"
                                             onClick={handleCloseChangePass}
                                         >
                                             Hủy
-                                        </button>
+                                        </button> */}
                                         <button
-                                            className="py-2 px-5 bg-blue-500 font-semibold text-white rounded hover:bg-blue-500 transition-all duration-300"
+                                            className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                             onClick={handleSubmitChangePass}
                                         >
                                             Đổi mật khẩu
@@ -490,7 +494,7 @@ function StaffManager() {
                                             data-modal-hide="popup-modal" 
                                             type="button" 
                                             onClick={() => handleSubmitDelete()}
-                                            className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                                            className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                             Có
                                         </button>
                                         <button 

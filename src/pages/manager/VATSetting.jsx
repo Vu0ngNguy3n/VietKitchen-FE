@@ -91,7 +91,7 @@ function VATSetting() {
     }
    
     const handleChangeVAT = (value) => {
-        if(!isNaN(value) && value <= 20){
+        if(!isNaN(value) && value <= 30){
             setVAT(value)
         }
     }

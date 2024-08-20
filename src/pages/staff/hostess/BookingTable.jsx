@@ -732,7 +732,20 @@ function BookingTable() {
         }
     }
     
+    const handleKeyDown = (event) => {
+        if (event.key === 'Escape') {
+            setIsOpenChooseTable(false);
+            setIsOpenChooseDishes(false);
+        }
+    };
 
+    useEffect(() => {
+        document.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
 
 
     return (
@@ -1220,7 +1233,7 @@ function BookingTable() {
                                 onClick={handleConfirmCancelBooking}
                                 data-modal-hide="popup-modal" 
                                 type="button" 
-                                className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                                className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                 Có
                             </button>
                             <button 
@@ -1253,7 +1266,7 @@ function BookingTable() {
                                 onClick={handleSubmitJoin}
                                 data-modal-hide="popup-modal" 
                                 type="button" 
-                                className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                                className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                 Có
                             </button>
                             <button 
@@ -1359,7 +1372,7 @@ function BookingTable() {
 
                                     </div>
                                 </div>
-                                <div className="w-full flex flex-wrap mt-1 rounded-sm">
+                                <div className="w-full flex flex-wrap mt-1 rounded-sm overflow-y-auto no-scrollbar max-h-[79vh]" >
                                     {listDishes?.map((d, index) => (
                                         <div className="w-[16%] mr-1 relative cursor-pointer" key={index} onClick={() => handleAddDish(d)}>
                                             <div className="w-full">
@@ -1384,50 +1397,52 @@ function BookingTable() {
                                     </div>
                                     <div className="w-[20%] flex justify-center items-center"><IoMdMore className="size-8" /></div>
                                 </div>
-                                {dishesChoose?.map((d, index) => (
-                                    <div className="flex-row bg-blue-600 py-2 px-2 " key={index}>
-                                        <div className="w-full ">
-                                            <div className="flex justify-between">
-                                                <div className="w-[5%] flex justify-center">
-                                                    <span className="text-[12px] text-white font-medium">{index+1}.</span>
+                                <div className="min-h-[85vh] max-h-[85vh] overflow-y-auto no-scrollbar">
+                                    {dishesChoose?.map((d, index) => (
+                                        <div className="flex-row bg-blue-600 py-2 px-2 " key={index}>
+                                            <div className="w-full ">
+                                                <div className="flex justify-between">
+                                                    <div className="w-[5%] flex justify-center">
+                                                        <span className="text-[12px] text-white font-medium">{index+1}.</span>
+                                                    </div>
+                                                    <div className="w-[60%] flex-row">
+                                                        <h2 className="text-[12px] text-white font-medium">{d?.name || d?.dish?.name}</h2>
+                                                        <span className="text-[12px] text-white font-normal">Giá thường: {formatVND(d?.price||d?.dish?.price)}</span>
+                                                    </div>
+                                                    <div className="w-[7%] flex items-start">
+                                                        <span className="text-[12px] text-white font-medium">{d?.quantity}</span>
+                                                    </div>
+                                                    <div className="w-[23%] flex items-start">
+                                                        <span className="text-[12px] text-white font-medium">{formatVND((+d?.price||d?.dish?.price)*(+d?.quantity))}</span>
+                                                    </div>
                                                 </div>
-                                                <div className="w-[60%] flex-row">
-                                                    <h2 className="text-[12px] text-white font-medium">{d?.name || d?.dish?.name}</h2>
-                                                    <span className="text-[12px] text-white font-normal">Giá thường: {formatVND(d?.price||d?.dish?.price)}</span>
+                                            </div>
+                                            <div className="flex justify-between w-full my-3">
+                                                <div
+                                                    onClick={() => handleDecreaseDish(d)} 
+                                                    className="w-[17%] bg-white shadow-lg flex justify-center items-center py-2 rounded-md cursor-pointer">
+                                                    <FaMinus className="font-bold text-xl " />
                                                 </div>
-                                                <div className="w-[7%] flex items-start">
-                                                    <span className="text-[12px] text-white font-medium">{d?.quantity}</span>
+                                                <div 
+                                                    onClick={() => handleIncreaseDish(d)} 
+                                                    className="w-[17%] bg-white shadow-lg flex justify-center items-center py-2 rounded-md cursor-pointer">
+                                                    <FaPlus className="font-bold text-xl " />
                                                 </div>
-                                                <div className="w-[23%] flex items-start">
-                                                    <span className="text-[12px] text-white font-medium">{formatVND((+d?.price||d?.dish?.price)*(+d?.quantity))}</span>
+                                                <div className="w-[17%] flex justify-center items-center py-2 ">
+                                                    {/* <FaMinus className="font-bold text-xl " /> */}
+                                                </div>
+                                                <div className="w-[17%] flex justify-center items-center py-2 ">
+                                                    {/* <FaMinus className="font-bold text-xl " /> */}
+                                                </div>
+                                                <div 
+                                                    onClick={() => handleRemoveDish(d)} 
+                                                    className="w-[17%] bg-white shadow-lg flex justify-center items-center py-2 rounded-md cursor-pointer">
+                                                    <span className="font-medium text-red-500 text-sm ">Xoá</span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="flex justify-between w-full my-3">
-                                            <div
-                                                onClick={() => handleDecreaseDish(d)} 
-                                                className="w-[17%] bg-white shadow-lg flex justify-center items-center py-2 rounded-md cursor-pointer">
-                                                <FaMinus className="font-bold text-xl " />
-                                            </div>
-                                            <div 
-                                                onClick={() => handleIncreaseDish(d)} 
-                                                className="w-[17%] bg-white shadow-lg flex justify-center items-center py-2 rounded-md cursor-pointer">
-                                                <FaPlus className="font-bold text-xl " />
-                                            </div>
-                                            <div className="w-[17%] flex justify-center items-center py-2 ">
-                                                {/* <FaMinus className="font-bold text-xl " /> */}
-                                            </div>
-                                            <div className="w-[17%] flex justify-center items-center py-2 ">
-                                                {/* <FaMinus className="font-bold text-xl " /> */}
-                                            </div>
-                                            <div 
-                                                onClick={() => handleRemoveDish(d)} 
-                                                className="w-[17%] bg-white shadow-lg flex justify-center items-center py-2 rounded-md cursor-pointer">
-                                                <span className="font-medium text-red-500 text-sm ">Xoá</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
                             <div className="absolute bg-white bottom-2 left-36 w-[70%] rounded-lg p-4">
                                 <h3 className="font-semibold mb-3">Món đang chọn ({dishesChooseSubmit?.length})</h3>
