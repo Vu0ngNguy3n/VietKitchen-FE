@@ -549,7 +549,7 @@ function BookingTable() {
         setTables([]);
         setTablesEdit([]);
         setIsOpenBooking(false);
-        setIsBooking(!isBooking)
+        // setIsBooking(!isBooking)
         setIsOpenShowInformation(false);
         setDishesChoose([]);
         setDishesChooseSubmit([]);
