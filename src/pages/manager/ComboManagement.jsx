@@ -92,6 +92,8 @@ function ComboManagement() {
         if(!isNaN(price) && price > 0){
              const numericValue = price.replace(/[^0-9]/g, '');
             setComboPrice(numericValue);
+        }else{
+            setComboPrice('')
         }
     }
 
