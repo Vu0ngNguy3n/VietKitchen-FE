@@ -27,7 +27,7 @@ import {formatVND} from "../../../utils/format"
 import { FaCircleCheck } from "react-icons/fa6";
 import validator from "validator";
 import { parse, format } from "date-fns";
-import { vi } from 'date-fns/locale';
+import { is, vi } from 'date-fns/locale';
 
 function BookingTable() {
 
@@ -308,7 +308,7 @@ function BookingTable() {
         setNumberCustomer(prev => prev + 1);
     }
     const handleDecreaseNumberCustomer = () => {
-        if(numberCustomer > 1){
+        if(numberCustomer > 1 && !isNaN(numberCustomer)){
             setNumberCustomer(prev => prev - 1);
         }
     }

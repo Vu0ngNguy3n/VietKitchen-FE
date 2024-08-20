@@ -254,9 +254,10 @@ function DishesManagement() {
 
 
     const handleOpenPopUp = () => {
-        setIsOpen(true);
         if(categoryList.length === 0){
             toast.warn("Bạn hãy tạo loại món ăn để tạo gói")
+        }else{
+            setIsOpen(true);
         }
     }
 
@@ -279,11 +280,15 @@ function DishesManagement() {
             toast.warn("Hãy tạo đơn vị tính cho món ăn")
             return
         }
+        if((price/1 <=0 ) ){
+            toast.warn("Giá món ăn phải lớn hơn 0")
+        }
         if(categoryList?.length === 0){
             toast.warn('Hãy tạo loại món ăn')
-        }else if(dishName === '' || description === '' || (price/1 <=0 || isNaN(price)) || imgDishCreate === '' || !imgDishCreate || !currentCategory || !currentUnit){
+        }else if(dishName === '' || description === '' || imgDishCreate === '' || !imgDishCreate ){
             toast.warn("Thông tin món ăn không được để trống")
         }else{
+
             const data = new FormData();
             data.append("file",imgDishCreate);
             data.append("upload_preset", "seafood");
@@ -406,12 +411,19 @@ function DishesManagement() {
     // },[search])
 
     const handleChangePrice = (price) => {
-        if(!isNaN(price) ){
-            const numericValue = price.replace(/[^0-9]/g, '');
-            const numericValueAsNumber = Number(numericValue);
-            if (numericValueAsNumber > 0 && Number.isSafeInteger(numericValueAsNumber)) {
-                setPrice(numericValue);
-            }
+        // if(!isNaN(price) && price >0 ){
+        //     // const numericValue = price.replace(/[^0-9]/g, '');
+        //     // const numericValueAsNumber = Number(numericValue);
+        //     // if (numericValueAsNumber > 0 && Number.isSafeInteger(numericValueAsNumber)) {
+        //     //     setPrice(numericValue);
+        //     // }
+        //     setPrice(price)
+        // }
+        if (!isNaN(price) && price >= 0) {
+            setPrice(price);
+        } else {
+            // If the value is negative, reset it to 0 or an empty string
+            setPrice('');
         }
     }
 
@@ -443,9 +455,7 @@ function DishesManagement() {
         setWeight('');
         setDescription('');
         setPrice('');
-        setCurrentCategory('');
         setImgDishCreate('');
-        setCurrentUnit('')
         setDishIdEdit('')
     }
 
@@ -482,6 +492,7 @@ function DishesManagement() {
                             imageUrl: data.url ,
                             unitId: currentUnit
                         }
+                        
                     
                         
                         axiosInstance
@@ -517,7 +528,7 @@ function DishesManagement() {
                     imageUrl: currentImgEdit ,
                     unitId: currentUnit
                 }
-            
+               
                 
                 axiosInstance
                 .put(`/api/dish/${dishIdEdit}`, request)
@@ -669,7 +680,10 @@ function DishesManagement() {
                                                     displayType="input"
                                                     placeholder="Giá món ăn"
                                                     suffix=" VNĐ"
-                                                    onValueChange={(values) => handleChangePrice(values.value)}/>
+                                                    onValueChange={(values) => {
+                                                        const nonNegativeValue = values.floatValue >= 0 ? values.value : "";
+                                                        handleChangePrice(nonNegativeValue);
+                                                    }}/>
                                                 </div>
                                                 <div className="col-span-2 sm:col-span-1">
                                                     <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Loại đồ ăn  <span className="text-red-600">*</span></label>
@@ -873,7 +887,10 @@ function DishesManagement() {
                                                     displayType="input"
                                                     placeholder="Giá món ăn"
                                                     suffix=" VNĐ"
-                                                    onValueChange={(values) => handleChangePrice(values.value)}/>
+                                                    onValueChange={(values) => {
+                                                        const nonNegativeValue = values.floatValue >= 0 ? values.value : "";
+                                                        handleChangePrice(nonNegativeValue);
+                                                    }}/>
                                                 </div>
                                                 <div className="col-span-2 sm:col-span-1">
                                                     <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Loại đồ ăn  <span className="text-red-600">*</span></label>
