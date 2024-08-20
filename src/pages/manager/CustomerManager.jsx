@@ -2,10 +2,11 @@ import SidebarManager from "../../components/managerComponent/SidebarManager";
 import HeaderManagerDashboard from "../../components/managerComponent/HeaderManagerDashboard";
 import { FaSearch, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
 import { useUser } from "../../utils/constant";
+import _ from "lodash";
 
 function CustomerManager() {
     const [statusTable, setStatusTable] = useState("enable");
@@ -24,6 +25,10 @@ function CustomerManager() {
     const [isUpdate, setIsUpdate] = useState(false);
     const [idCustomer,setIdCustomer] = useState('');    
     const [search, setSearch] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [size, setSize] = useState(10);
+    const [totalCustomers, setTotalCustomers] = useState();
+    const [isSearch, setIsSearch] = useState(false);
     const navigate = useNavigate();
     const user = useUser();
 
@@ -32,11 +37,19 @@ function CustomerManager() {
         setRestaurantId(user.restaurantId);
 
         axiosInstance
-        .get(`/api/customers/rankingCustomer/${user?.restaurantId}`)
+        .get(`/api/customers/rankingCustomer/${user?.restaurantId}`,{
+            params: {
+                page: currentPage,
+                size: size,
+                query: search
+            }
+        })
         .then(res => {
             const data = res.data;
-            setListCustomers(data);
-            setListCustomersDisplay(data);
+            console.log(data);
+            setTotalCustomers(data.totalItems)
+            setListCustomers(data.results);
+            setListCustomersDisplay(data.results);
         })
         .catch(err => {
             if (err.response) {
@@ -49,6 +62,88 @@ function CustomerManager() {
             }
         })
     },[isUpdate])
+
+    const handleDebouncedChange = useCallback(
+        _.debounce((value) => {
+            setIsSearch(prev => !prev);
+            // setCurrentPage(1)
+        }, 500),
+        []
+    )
+
+    useEffect(() => {
+        handleDebouncedChange(search)
+
+        return () => {
+            handleDebouncedChange.cancel();
+        }
+    },[search])
+
+    useEffect(() => {
+        axiosInstance
+        .get(`/api/customers/rankingCustomer/${user?.restaurantId}`,{
+            params: {
+                page: currentPage,
+                size: size,
+                query: search
+            }
+        })
+        .then(res => {
+            const data = res.data;
+            setTotalCustomers(data.totalItems)
+            setListCustomers(data.results);
+            setListCustomersDisplay(data.results);
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })
+    },[currentPage])
+
+    useEffect(() => {
+
+        axiosInstance
+        .get(`/api/customers/rankingCustomer/${user?.restaurantId}`,{
+            params: {
+                page: 1,
+                size: size,
+                query: search
+            }
+        })
+        .then(res => {
+            const data = res.data;
+            if(search === ''){
+                setTotalCustomers(data.totalItems)
+            }else{
+                setTotalCustomers(data.results.length)
+            }
+            setListCustomers(data.results);
+            setListCustomersDisplay(data.results);
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        })
+    },[isSearch])
+
+    const handleClick = (page) => {
+        if(page > 0 && page <= (totalCustomers / 10 + 1)){
+            setCurrentPage(page);
+        }
+
+    };
 
     const handleSelectAll = (e) => {
         const isChecked = e.target.checked;
@@ -150,10 +245,10 @@ function CustomerManager() {
         setIdCustomer(customer?.id);
     }
 
-    useEffect(() => {
-        const newListCustomers = listCustomers?.filter(c => (c?.phoneNumber.includes(search) || c?.name.toLowerCase().includes(search.toLowerCase())))
-        setListCustomersDisplay(newListCustomers)
-    },[search])
+    // useEffect(() => {
+    //     const newListCustomers = listCustomers?.filter(c => (c?.phoneNumber.includes(search) || c?.name.toLowerCase().includes(search.toLowerCase())))
+    //     setListCustomersDisplay(newListCustomers)
+    // },[search])
 
     const handleChangePhone = (phone) => {
         if(!isNaN(phone) && phone.length <=10){
@@ -349,6 +444,27 @@ function CustomerManager() {
                                     )}
                                 </tbody>
                             </table>
+                            <nav className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
+                                <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Hiển thị <span className="font-semibold text-gray-900 dark:text-white">{1 + 10*(currentPage-1)}-{10 + 10*(currentPage-1)}</span> trong <span className="font-semibold text-gray-900 dark:text-white">{totalCustomers} </span>khách hàng</span>
+                                <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+                                    <li onClick={() => handleClick(currentPage-1)}>
+                                        <a href="#" className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Trước</a>
+                                    </li>
+                                    {Array.from({ length: totalCustomers/10+1 }).map((_, index) => (
+                                        <li onClick={() => setCurrentPage(index+1)}>
+                                            <a href="#" aria-current="page" className={`flex items-center justify-center px-3 h-8 leading-tight ${
+                                                currentPage === index+1
+                                                    ? 'text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+                                                    : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+                                                }`}>{index+1}</a>
+                                        </li>
+                                    ))}
+                                    <li onClick={() => handleClick(currentPage+1)}>
+                                         <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Sau</a>
+                                    </li>
+                                    
+                                </ul>
+                            </nav>
                         </div>
                     </div>
                 </div>

@@ -26,12 +26,16 @@ function ComboManagement() {
     const [comboList, setComboList] = useState([]);
     const [comboDetail, setComboDetail] = useState(null);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [size, setSize] = useState(10);
+    const [totalCustomers, setTotalCustomers] = useState();
+    const [isSearch, setIsSearch] = useState(false);
     const user = useUser();
 
     useEffect(() => {
         setUserStorage(user);
         axiosInstance
-            .get(`/api/dish/restaurant/${user.restaurantId}/true`)
+            .get(`/api/dish/restaurant/${user.restaurantId}`)
             .then(res => {
                 const data = res.data.result;
                 if(data.length >0){
@@ -456,8 +460,8 @@ function ComboManagement() {
                                     <div className="col-span-2 sm:col-span-1">
                                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ảnh minh hoạ  <span className="text-red-600">*</span></label>
                                         {showImgUpload ? (
-                                        <img src={showImgUpload} alt='Ảnh combo' className="w-[50%] object-cover h-[70px]" />
-                                        ):<img src="https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg" className="w-[50%] object-cover h-[70px]" alt="" />}
+                                        <img src={showImgUpload} alt='Ảnh combo' className="w-[50%] object-cover " />
+                                        ):<img src="https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg" className="w-[50%] object-cover " alt="" />}
                                     </div>
                                     <div className="col-span-2">
                                         <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Miêu tả combo <span className="text-red-600">*</span></label>
@@ -467,7 +471,7 @@ function ComboManagement() {
                                         className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                         placeholder="Miêu tả combo"></textarea>                    
                                     </div>
-                                    <div className="col-span-2 ">
+                                    <div className="col-span-2 md:col-span-1">
                                         <label htmlFor="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Chọn món ăn  <span className="text-red-600">*</span></label>
                                         <select id="category" 
                                         onChange={e => {
@@ -490,13 +494,13 @@ function ComboManagement() {
                                     </div>
                                     
                                     
-                                    <div className="col-span-2 ">
+                                    <div className="col-span-2 md:col-span-1">
                                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Món đã chọn  <span className="text-red-600">*</span></label>
-                                        <div className="flex flex-wrap">
+                                        <div className="flex flex-wrap w-full justify-between">
                                             {selectedDishes?.map(dish => (
-                                                <div key={dish.id} className="flex items-center m-1 p-2 border rounded">
+                                                <div key={dish.id} className="flex items-center m-1 p-2 border rounded w-[45%]">
                                                     <img src={dish.imageUrl} alt={dish.name} className="w-10 h-10 mr-2" />
-                                                    <span>{dish.name}</span>
+                                                    <span className="overflow-hidden text-sm">{dish.name}</span>
                                                     <button
                                                         className="ml-2 text-red-500"
                                                         onClick={() => handleRemoveDish(dish)}
@@ -511,7 +515,7 @@ function ComboManagement() {
                                 </div>
                                 <button 
                                      onClick={isUpdateMode ? handleUpdateCombo : handleCreateCombo}
-                                    type="submit" class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    type="submit" className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                     <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
                                     {isUpdateMode ? "Lưu" : "Thêm combo"}
                                 </button>

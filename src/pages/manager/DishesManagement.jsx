@@ -246,29 +246,12 @@ function DishesManagement() {
     },[currentPage])
 
     const handleClick = (page) => {
-        setCurrentPage(page);
+        if(page > 0 && page <= (totalDishes / 10 + 1)){
+            setCurrentPage(page);
+        }
+
     };
 
-    const renderPageNumbers = () => {
-        const pages = [];
-        for (let i = 1; i <= totalDishes/10; i++) {
-        pages.push(
-            <li key={i}>
-                <a
-                    onClick={setCurrentPage(i)}
-                    className={`flex items-center justify-center px-3 h-8 leading-tight ${
-                    currentPage === i
-                        ? 'text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
-                        : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
-                    }`}
-                >
-                    {i}
-                </a>
-            </li>
-        );
-        }
-        return pages;
-    };
 
     const handleOpenPopUp = () => {
         setIsOpen(true);
@@ -625,7 +608,7 @@ function DishesManagement() {
                                             data-modal-hide="popup-modal" 
                                             type="button" 
                                             onClick={() => handleSubmitHideDish()}
-                                            className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                                            className="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                             Có
                                         </button>
                                         <button 
@@ -722,8 +705,8 @@ function DishesManagement() {
                                                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ảnh minh hoạ  <span className="text-red-600">*</span></label>
                                                     
                                                     {showImgUpload ? (
-                                                    <img src={showImgUpload.preview} alt='' className="w-[50%] object-cover h-[70px]" />
-                                                    ):<img src="https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg" className="w-[50%] object-cover h-[70px]" alt="" />}
+                                                    <img src={showImgUpload.preview} alt='' className="w-[50%] object-cover " />
+                                                    ):<img src="https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg" className="w-[50%] object-cover " alt="" />}
                                                 </div>
                                                 <div className="col-span-2">
                                                     <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Miêu tả món ăn <span className="text-red-600">*</span></label>
@@ -824,7 +807,7 @@ function DishesManagement() {
                                 <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Hiển thị <span className="font-semibold text-gray-900 dark:text-white">{1 + 10*(currentPage-1)}-{10 + 10*(currentPage-1)}</span> trong <span className="font-semibold text-gray-900 dark:text-white">{totalDishes} </span>món ăn</span>
                                 <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
                                     <li onClick={() => handleClick(currentPage-1)}>
-                                        <a href="#" className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
+                                        <a href="#" className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Trước</a>
                                     </li>
                                     {Array.from({ length: totalDishes/10+1 }).map((_, index) => (
                                         <li onClick={() => setCurrentPage(index+1)}>
@@ -836,7 +819,7 @@ function DishesManagement() {
                                         </li>
                                     ))}
                                     <li onClick={() => handleClick(currentPage+1)}>
-                                         <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
+                                         <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Sau</a>
                                     </li>
                                     
                                 </ul>
@@ -926,8 +909,8 @@ function DishesManagement() {
                                                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ảnh minh hoạ  <span className="text-red-600">*</span></label>
                                                     
                                                     {showImgUpload ? (
-                                                    <img src={showImgUpload?.preview} alt='' className="w-[50%] object-cover h-[70px]" />
-                                                    ):<img src={currentImgEdit} className="w-[50%] object-cover h-[70px]" alt="" />}
+                                                    <img src={showImgUpload?.preview} alt='' className="w-[50%] object-cover " />
+                                                    ):<img src={currentImgEdit} className="w-[50%] object-cover " alt="" />}
                                                 </div>
                                                 <div className="col-span-2">
                                                     <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Miêu tả món ăn <span className="text-red-600">*</span></label>
