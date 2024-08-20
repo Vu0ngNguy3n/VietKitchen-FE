@@ -203,7 +203,7 @@ function DishesManagement() {
             console.log(data);
             setDishesList(data.results);
             setDishesListDisplay(data.results);
-            setTotalDishes(data.results.length)
+            setTotalDishes(data.totalItems)
         })
         .catch(err => {
             if (err.response) {
