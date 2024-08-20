@@ -281,7 +281,7 @@ function DishesManagement() {
         }
         if(categoryList?.length === 0){
             toast.warn('Hãy tạo loại món ăn')
-        }else if(dishName === '' || description === '' || (price/1 <=0 || isNaN(price)) || imgDishCreate === '' || !imgDishCreate){
+        }else if(dishName === '' || description === '' || (price/1 <=0 || isNaN(price)) || imgDishCreate === '' || !imgDishCreate || !currentCategory || !currentUnit){
             toast.warn("Thông tin món ăn không được để trống")
         }else{
             const data = new FormData();
@@ -306,6 +306,7 @@ function DishesManagement() {
                         // accountId: userStorage.accountId
                         restaurantId: user?.restaurantId
                     }
+                    console.log(resultDish);
 
                     axiosInstance
                     .post(`/api/dish/create`, resultDish)
@@ -456,7 +457,7 @@ function DishesManagement() {
         }
         if(categoryList?.length === 0){
             toast.warn('Hãy tạo loại món ăn')
-        }else if(dishName === '' || weight === '' || description === '' || (price/1 <=0 || isNaN(price)) || imgDishCreate === '' || !imgDishCreate){
+        }else if(dishName === '' || description === '' || (price/1 <=0 || isNaN(price))  ){
             toast.warn("Thông tin món ăn không được để trống")
         }else{
             if(imgDishCreate !== ''){
