@@ -43,7 +43,8 @@ function SignInSide() {
 
   const handleOpenPop = () =>{
     if( typeLogin === 3){
-      if(email.trim() === '' || password.trim() === ''){
+      console.log(email + password);
+      if(email === ''|| password === ''){
         toast.warn("Email hoặc mật khẩu không dược để trống")
         return
       }else{
@@ -109,7 +110,8 @@ function SignInSide() {
     }
 
     if(typeLogin === 1){
-      if(email.trim() === ''  ){
+      console.log(email);
+      if(!email ){
         toast.warn("Email không dược để trống")
         return
       }else{
@@ -123,7 +125,7 @@ function SignInSide() {
             axios
             .post(`/api/account/${email}/send-otp`)
             .then(res => {
-                console.log('Đã gửi mã xác thực OTP thành công');
+                toast.success('Đã gửi mã xác thực OTP thành công');
             })
             .catch((err) => {
               if (err.response) {
@@ -165,7 +167,7 @@ function SignInSide() {
 
   const handleLogin = async () => {
     if(typeLogin === 2){
-      if(phoneNumber === '' || staffUsername.trim() === '' || password.trim() === ''){
+      if(!phoneNumber || !staffUsername || !password){
         toast.warn("Thông tin không dược để trống")
         return
       }
@@ -378,6 +380,11 @@ function SignInSide() {
 
   const handleKeyDown = (event) => {
       if (event.key === 'Enter') {
+          event.preventDefault();
+          if(isOpenPop){
+            handleLoginByOTP();
+            return
+          }
           if(typeLogin === 2){
             handleLogin();
           }else{
@@ -392,7 +399,7 @@ function SignInSide() {
       return () => {
           document.removeEventListener('keydown', handleKeyDown);
       };
-  }, [typeLogin]);
+  }, [handleKeyDown]);
 
   return (
     <div className="w-full h-screen flex flex-col md:flex-row items-start">
@@ -522,15 +529,6 @@ function SignInSide() {
               Đăng ký
             </button>
           </div>
-
-          {/* <div className="w-full flex items-center justify-center relative py-2">
-            <div className="w-full h-[1px] bg-black/40"></div>
-            <p className="text-lg absolute text-black/80 bg-[#f5f5f5]">or</p>
-          </div>
-          <div className="w-full text-[#060606] my-2 font-semibold bg-white border-2 border-black/40 rounded-md p-4 text-center flex items-center justify-center cursor-pointer">
-            <img className="h-6 mr-2" src={GOOGLE_ICON} alt="" />
-            Đăng nhập bằng Google
-          </div> */}
         </div>
 
         <div className={`w-full flex  items-center justify-center ${typeLogin === 2 ? "hidden" : ""}`}>
