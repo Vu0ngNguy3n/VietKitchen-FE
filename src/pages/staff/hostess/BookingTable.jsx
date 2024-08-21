@@ -41,7 +41,7 @@ function BookingTable() {
     const [tablesEdit, setTablesEdit] = useState([]);
     const [deposit, setDeposit] = useState("");
     const [customerName, setCustomerName] = useState('');
-    const [numberCustomer, setNumberCustomer] = useState(1);
+    const [numberCustomer, setNumberCustomer] = useState(+1);
     const [intendTime, setIntendTime] = useState(60);
     const [note, setNote] = useState('');
     const [currentArea, setCurrentArea] = useState({});
@@ -305,11 +305,13 @@ function BookingTable() {
     }
 
     const handleIncreaseNumberCustomer = () => {
-        setNumberCustomer(prev => prev + 1);
+        if(!isNaN(numberCustomer)){
+            setNumberCustomer(prev => +prev + 1);
+        }
     }
     const handleDecreaseNumberCustomer = () => {
         if(numberCustomer > 1 && !isNaN(numberCustomer)){
-            setNumberCustomer(prev => prev - 1);
+            setNumberCustomer(prev => +prev - 1);
         }
     }
     const handleChangeNumberCustomer = (value) => {
@@ -434,6 +436,12 @@ function BookingTable() {
             toast.warn("Số điện thoại không hợp lệ")
             return;
         }
+        if(deposit <=0 || deposit === ''){
+            toast.warn("Tiền đặt cọc đang để trống");
+            return
+        }
+
+
         const data = {
             customerName: customerName,
             customerPhone: phoneNumber,
@@ -1014,7 +1022,7 @@ function BookingTable() {
                                             </div>
                                         </div>
                                         <div>
-                                            <label htmlFor="money" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Đặt cọc trước</label>
+                                            <label htmlFor="money" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Đặt cọc trước<span className="text-red-500">(*)</span></label>
                                             <div className="flex items-center">
                                                 <div className="w-[50%] p-2.5 flex items-center border-2 rounded-l-lg ">
                                                     <GiMoneyStack className="mr-4 size-6" />
