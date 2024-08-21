@@ -114,7 +114,7 @@ function ForgotPassword() {
             <button
               className="w-full text-white my-2 font-semibold bg-[#060606] rounded-md p-4 text-center flex items-center justify-center cursor-pointer"
               onClick={() => handleForgotPassword()}>
-              Quên mặt khẩu
+              Quên mật khẩu
             </button>
 
           </div>
