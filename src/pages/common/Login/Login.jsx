@@ -298,6 +298,10 @@ function SignInSide() {
 
   const handleLoginByOTP = () => {
     let otpString = otp.join('');
+    if(otpString === '' || otpString.length < 6){
+      toast.warn("Vui lòng nhập OTP")
+      return
+    }
     const otpRequest = {
       email: email.trim(),
       otp: otpString

@@ -305,7 +305,9 @@ function BookingTableManagement() {
     }
 
     const handleIncreaseNumberCustomer = () => {
-        setNumberCustomer(prev => prev + 1);
+        if(!isNaN(numberCustomer)){
+            setNumberCustomer(prev => +prev + 1);
+        }
     }
     const handleDecreaseNumberCustomer = () => {
         if(numberCustomer > 1){
@@ -433,6 +435,11 @@ function BookingTableManagement() {
         if(!isValidPhoneSpan){
             toast.warn("Số điện thoại không hợp lệ")
             return;
+        }
+
+        if(deposit <=0 || deposit === ''){
+            toast.warn("Tiền đặt cọc đang để trống");
+            return
         }
         const data = {
             customerName: customerName,
