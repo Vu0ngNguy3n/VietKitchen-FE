@@ -24,6 +24,12 @@ function MapHostess() {
     const user = useUser();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [isOpen, setIsOpen] = useState(false);
+    const [currentTable, setCurrentTable] = useState();
+    const [listSchedule, setListSchedule] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [size, setSize] = useState(6);
+    const [totalSchedules, setTotalSchedules] = useState();
     const [client, setClient] = useState(null);
     const [connected, setConnected] = useState(false);
     const {slug} = useParams();
@@ -153,7 +159,38 @@ function MapHostess() {
     const handleChangeArea = (area) => {
         navigate(`/hostess/map/${area?.id}`)
     }
+
+    useEffect(() => {
+        if(currentTable ){
+            axiosInstance
+            .get(`/api/schedule/table/${currentTable?.id}`)
+            .then(res => {
+                const data = res.data.result;
+                setListSchedule(data)
+                console.log(data);
+            })
+            .catch(err => {
+                if (err.response) {
+                    const errorRes = err.response.data;
+                    toast.error(errorRes.message);
+                } else if (err.request) {
+                    toast.error("Yêu cầu không thành công");
+                } else {
+                    toast.error(err.message);
+                }
+            })  
+        }
+    },[currentTable])
     
+    const handleClose = ()  => {
+        setIsOpen(false);
+        setCurrentTable();
+    }
+
+    const handleOpen = (table) => {
+        setIsOpen(true);
+        setCurrentTable(table)
+    }
 
     return (
         <div className="flex">
@@ -202,6 +239,7 @@ function MapHostess() {
                             <div 
                                 className={`flex-row p-8 border-2 border-transparent ${table?.booked === true ? 'bg-lgreen' : 'bg-white'} justify-center w-[12%] mb-2 rounded-lg shadow-lg cursor-pointer hover:opacity-80 transition-all duration-300`} 
                                 key={index} 
+                                onClick={() => handleOpen(table)}
                             >
                                 <div className="text-center">
                                     <b>{table?.name}</b>
@@ -222,7 +260,134 @@ function MapHostess() {
                         <div className="w-[12%]"></div>
                     </div>
                 </div>
+                {isOpen && (
+                    <div id="popup-delete" className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 animate-fadeIn">
+                        <div className="relative w-full max-w-5xl bg-white rounded-lg shadow dark:bg-gray-700 animate-slideIn">
+                            <button type="button" onClick={() => handleClose()} className="absolute top-3 end-2.5 text-red-600 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                </svg>
+                                <span className="sr-only">Close modal</span>
+                            </button>
+                            <div className="w-full flex justify-center items-center mb-4 border-b-2 pb-2 pt-4 bg-slate-200 rounded-t-lg">
+                                <h2 className="font-bold text-lg">Danh sách các đơn đặt bàn - {currentTable?.name}</h2>
+                            </div>
+                            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                                <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                        <tr>
+                                            <th scope="col" className="px-6 py-3">
+                                                Khách hàng
+                                            </th>
+                                            <th scope="col" className="px-6 py-3">
+                                                Số điện thoại
+                                            </th>
+                                            <th scope="col" className="px-6 py-3">
+                                                Thời gian
+                                            </th>
+                                            <th scope="col" className="px-6 py-3">
+                                                Số khách
+                                            </th>
+                                            <th scope="col" className="px-6 py-3">
+                                                Dự kiến 
+                                            </th>
+                                            <th scope="col" className="px-6 py-3">
+                                                Lưu ý
+                                            </th>
+                                            <th scope="col" className="px-6 py-3">
+                                                Trạng thái
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {listSchedule?.map((schedule, index) => (
+                                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                            
+                                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    {schedule?.customerName}
+                                                </th>
+                                                <td className="px-6 py-4">
+                                                    {schedule?.customerPhone}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {schedule?.time}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {schedule?.numbersOfCustomer}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {schedule?.intendTime}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {schedule?.note}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <a className="font-medium text-blue-600 dark:text-blue-500 hover:underline">{schedule?.status === 'PENDING' ? "Chưa nhận" : (schedule?.status === 'ACCEPT' ? "Đã nhận" : 'Từ chối')}</a>
+                                                </td>
+                                            </tr>
+                                        ) )}
+                                        {listSchedule?.length === 0 && (
+                                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                            
+                                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"></th>
+                                                <td className="px-6 py-4">Bàn không có đơn đặt bàn nào trong ngày hôm nay</td>
+                                                <td className="px-6 py-4"></td>
+                                                <td className="px-6 py-4"></td>
+                                                <td className="px-6 py-4"></td>
+                                                <td className="px-6 py-4"></td>
+                                                <td className="px-6 py-4"></td>
+                                            </tr>
+                                        )}
+                                        
+                                    </tbody>
+                                </table>
+                                {listSchedule?.length > 0 && (
+                                    <nav className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
+                                        <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Hiển thị <span className="font-semibold text-gray-900 dark:text-white">{1 + size*(currentPage-1)}-{size + size*(currentPage-1)}</span> trong <span className="font-semibold text-gray-900 dark:text-white">1000</span></span>
+                                        <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+                                            <li>
+                                                <a href="#" className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
+                                            </li>
+                                            <li>
+                                                <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
+                                            </li>
+                                            
+                                        </ul>
+                                    </nav>
+                                )}
+                            </div>
+                        </div>
+                    
+                </div>
+                )}
             </div>
+            <style jsx>{`
+                @keyframes fadeIn {
+                    from {
+                        opacity: 0;
+                    }
+                    to {
+                        opacity: 1;
+                    }
+                }
+
+                @keyframes slideIn {
+                    from {
+                        transform: translateY(-20%);
+                    }
+                    to {
+                        transform: translateY(0);
+                    }
+                }
+
+                .animate-fadeIn {
+                    animation: fadeIn 0.3s ease-in-out;
+                }
+
+                .animate-slideIn {
+                    animation: slideIn 0.3s ease-in-out;
+                }
+            `}</style>
         </div>
     )
 }

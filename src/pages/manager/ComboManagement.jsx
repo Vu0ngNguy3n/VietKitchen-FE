@@ -1,14 +1,15 @@
 import SidebarManager from "../../components/managerComponent/SidebarManager";
 import HeaderManagerDashboard from "../../components/managerComponent/HeaderManagerDashboard";
 import { IoMdAdd } from "react-icons/io";
-import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
-import { useEffect, useState } from "react";
+import { FaEdit, FaTrash, FaEye, FaSearch } from "react-icons/fa";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axiosInstance from "../../utils/axiosInstance";
 import {formatVND} from "../../utils/format"
 import { useUser } from "../../utils/constant";
 import { toast } from "react-toastify";
 import { NumericFormat } from "react-number-format";
+import _ from "lodash";
 
 function ComboManagement() {
     const navigate = useNavigate();
@@ -26,39 +27,48 @@ function ComboManagement() {
     const [comboList, setComboList] = useState([]);
     const [comboDetail, setComboDetail] = useState(null);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [search, setSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [size, setSize] = useState(10);
-    const [totalCustomers, setTotalCustomers] = useState();
+    const [size, setSize] = useState(6);
+    const [totalCombos, setTotalCombos] = useState();
     const [isSearch, setIsSearch] = useState(false);
     const user = useUser();
 
     useEffect(() => {
         setUserStorage(user);
         axiosInstance
-            .get(`/api/dish/restaurant/${user.restaurantId}`)
-            .then(res => {
-                const data = res.data.result;
-                if(data.length >0){
-                    setDishesList(data);
-                }
-            })
-            .catch(err => {
-                if (err.response) {
-                    const errorRes = err.response.data;
-                    toast.error(errorRes.message);
-                } else if (err.request) {
-                    toast.error("Yêu cầu không thành công");
-                } else {
-                    toast.error(err.message);
-                }
-            });
+        .get(`/api/dish/restaurant/${user.restaurantId}/active`)
+        .then(res => {
+            const data = res.data.result;
+            if(data.length >0){
+                setDishesList(data);
+            }
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        });
 
         axiosInstance
-            .get(`/api/combos/restaurant/${user?.restaurantId}`)
+            .get(`/api/combos/restaurant/${user?.restaurantId}`,{
+                params: {
+                    page: currentPage,
+                    size: size,
+                    query: search
+                }
+            })
             .then(res => {
                 const data = res.data.result;
-                if(data?.length > 0){
-                    setComboList(data);
+                console.log(data);
+                if(data?.results?.length > 0){
+                    setComboList(data.results);
+                    setTotalCombos(data.totalItems)
                 } 
             })
             .catch(err => {
@@ -72,6 +82,58 @@ function ComboManagement() {
                 }
             });
     }, []);
+
+    const handleDebouncedChange = useCallback(
+        _.debounce((value) => {
+            setIsSearch(prev => !prev);
+            setCurrentPage(1)
+        }, 500),
+        []
+    )
+
+    useEffect(() => {
+        handleDebouncedChange(search)
+
+        return () => {
+            handleDebouncedChange.cancel();
+        }
+    },[search])
+
+     const handleClick = (page) => {
+        if(page > 0 && page <= (totalCombos / size + 1)){
+            setCurrentPage(page);
+        }
+
+    };
+
+    useEffect(() => {
+        axiosInstance
+        .get(`/api/combos/restaurant/${user?.restaurantId}`,{
+            params: {
+                page: currentPage,
+                size: size,
+                query: search
+            }
+        })
+        .then(res => {
+            const data = res.data.result;
+            console.log(data);
+            if(data?.results?.length > 0){
+                setComboList(data.results);
+                setTotalCombos(data.totalItems)
+            } 
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Yêu cầu không thành công");
+            } else {
+                toast.error(err.message);
+            }
+        });
+    },[isSearch, currentPage])
 
     const handleOpenPopUp = () => {
         setIsOpen(true);
@@ -108,6 +170,7 @@ function ComboManagement() {
         }
         if(selectedDishes.length === 0){
             toast.warn("Món ăn của combo không dược để trống");
+            return
         }
         
         const data = new FormData();
@@ -127,7 +190,7 @@ function ComboManagement() {
                     description,
                     imageUrl: data.url,
                     status: true,
-                    dishIds: selectedDishes.map(dish => dish.id),
+                    dishIds: selectedDishes?.map(dish => dish.id),
                     // accountId: userStorage.accountId
                     restaurantId: user?.restaurantId
                 };
@@ -136,24 +199,9 @@ function ComboManagement() {
                     .post(`/api/combos`, resultCombo)
                     .then(res => {
                         toast.success(`Tạo combo ${comboName} thành công!`);
-                        axiosInstance
-                            .get(`/api/combos/restaurant/${user?.restaurantId}`)
-                            .then(res => {
-                                if(res.data.result.length !== 0){
-                                    setComboList(res.data.result);
-                                }
-                            })
-                            .catch(err => {
-                                if (err.response) {
-                                    const errorRes = err.response.data;
-                                    toast.error(errorRes.message);
-                                } else if (err.request) {
-                                    toast.error("Yêu cầu không thành công");
-                                } else {
-                                    toast.error(err.message);
-                                }
-                            });
-                        handleClosePopUp();
+                        setIsSearch(prev => !prev);
+                        setCurrentPage(1);
+                        handleClosePopUp()
                     })
                     .catch(err => {
                         if (err.response) {
@@ -190,7 +238,7 @@ function ComboManagement() {
             price: comboPrice,
             description,
             status: true,
-            dishIds: selectedDishes.map(dish => dish.id)
+            dishIds: selectedDishes?.map(dish => dish.id)
         };
 
         if (imgComboCreate) {
@@ -211,10 +259,8 @@ function ComboManagement() {
                         .put(`/api/combos/update/${currentCombo.id}`, updatedCombo)
                         .then(res => {
                             toast.success(`Cập nhật combo ${comboName} thành công!`);
-                            const updatedComboList = comboList.map(combo =>
-                                combo.id === currentCombo.id ? res.data.result : combo
-                            );
-                            setComboList(updatedComboList);
+                            setIsSearch(prev => !prev);
+                            setCurrentPage(1);
                             handleClosePopUp();
                         })
                         .catch(err => {
@@ -234,7 +280,7 @@ function ComboManagement() {
                 .put(`/api/combos/update/${currentCombo.id}`, updatedCombo)
                 .then(res => {
                     toast.success(`Cập nhật combo ${comboName} thành công!`);
-                    const updatedComboList = comboList.map(combo =>
+                    const updatedComboList = comboList?.map(combo =>
                         combo.id === currentCombo.id ? res.data.result : combo
                     );
                     setComboList(updatedComboList);
@@ -276,7 +322,6 @@ function ComboManagement() {
     };
 
     const handleEditCombo = (combo) => {
-        console.log(combo);
         setIsUpdateMode(true);
         setCurrentCombo(combo);
         setComboName(combo?.name);
@@ -311,6 +356,7 @@ function ComboManagement() {
         setComboDetail(null);
     };
 
+
     return (
         <div className="">
             <div className="flex ">
@@ -320,14 +366,29 @@ function ComboManagement() {
                 <div className="basis-[88%] border overflow-scroll h-[100vh]">
                     <HeaderManagerDashboard />
                     <div className="min-w-[40]x rounded-lg bg-white p-16 shadow min-h-[90vh] mt-2">
-                        <div className="flex justify-between">
-                            <h1 className="font-black text-3xl">Quản lý Combo</h1>
-                            <button
-                                className="py-2 px-3 bg-secondary font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
-                                onClick={handleOpenPopUp}
-                            >
-                                <IoMdAdd /> Thêm Combo
-                            </button>
+                        <h1 className="font-black text-3xl">Quản lý Combo</h1>
+                        <div className="flex mt-6 flex-col gap-4 md:flex-row justify-between">
+                            <div className="w-[25%]">
+                                <div className="relative grow rounded-md border-2 border-gray-300 ">
+                                    <FaSearch className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        className="w-full px-4 py-3 pl-10 outline-none italic "
+                                        value={search}
+                                        onChange={e => setSearch(e.target.value)}
+                                        placeholder="Nhập tên combo"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="flex justify-between">
+                                <button
+                                    className="py-2 px-3 bg-secondary font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center"
+                                    onClick={handleOpenPopUp}
+                                >
+                                    <IoMdAdd /> Thêm Combo
+                                </button>
+                            </div>
                         </div>
                         <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-6">
                             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -401,6 +462,27 @@ function ComboManagement() {
                                     ))}
                                 </tbody>
                             </table>
+                             <nav className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
+                                <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Hiển thị <span className="font-semibold text-gray-900 dark:text-white">{1 + size*(currentPage-1)}-{size + size*(currentPage-1)}</span> trong <span className="font-semibold text-gray-900 dark:text-white">{totalCombos} </span>combo</span>
+                                <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+                                    <li onClick={() => handleClick(currentPage-1)}>
+                                        <a className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Trước</a>
+                                    </li>
+                                    {Array.from({ length: totalCombos/size+1 })?.map((_, index) => (
+                                        <li onClick={() => setCurrentPage(index+1)}>
+                                            <a aria-current="page" className={`flex items-center justify-center px-3 h-8 leading-tight ${
+                                                currentPage === index+1
+                                                    ? 'text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+                                                    : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+                                                }`}>{index+1}</a>
+                                        </li>
+                                    ))}
+                                    <li onClick={() => handleClick(currentPage+1)}>
+                                         <a className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Sau</a>
+                                    </li>
+                                    
+                                </ul>
+                            </nav>
                         </div>
                     </div>
                 </div>
@@ -550,7 +632,7 @@ function ComboManagement() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {comboDetail.dishes.map(dish => (
+                                {comboDetail?.dishes?.map(dish => (
                                     <tr key={dish.id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td className="px-4 py-2">
                                             <img src={dish?.imageUrl} alt={dish?.name} className="w-10 h-10 object-cover rounded-md" />
@@ -561,6 +643,7 @@ function ComboManagement() {
                                 ))}
                             </tbody>
                         </table>
+                        
                     </div>
                 </div>
             )}

@@ -61,6 +61,24 @@ function ForgotPassword() {
     })
     }
   }
+  const handleKeyDown = (event) => {
+      if (event.key === 'Enter') {
+          event.preventDefault();
+          if(isOpenPop){
+            navigate('/login')
+            return
+          }
+          handleForgotPassword();
+      } 
+  };
+
+  useEffect(() => {
+      document.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+          document.removeEventListener('keydown', handleKeyDown);
+      };
+  }, [handleKeyDown]);
 
 
 

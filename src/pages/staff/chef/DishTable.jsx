@@ -33,9 +33,11 @@ function DishTable(){
 
   useEffect(() => {
     axiosInstance
-    .get(`/api/dish-order/${slug}`)
+    .get(`/api/dish-order/${slug}`, {
+      size: 100
+    })
     .then(res => {
-        const data = res.data.result;
+        const data = res.data.result.results;
         if(data.length > 0){
             const table = data[0].order.tableRestaurant;
             setCurrentTable(table);

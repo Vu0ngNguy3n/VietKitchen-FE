@@ -246,7 +246,7 @@ function DishesManagement() {
     },[currentPage])
 
     const handleClick = (page) => {
-        if(page > 0 && page <= (totalDishes / 10 + 1)){
+        if(page > 0 && page <= (totalDishes / size + 1)){
             setCurrentPage(page);
         }
 

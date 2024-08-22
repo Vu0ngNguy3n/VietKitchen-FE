@@ -29,6 +29,9 @@ function Ordering() {
   const user = useUser();
   const table = useSelector(state => state.table);
   const [isEnablePayment, setIsEnablePayment] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [size, setSize] = useState(6);
+  const [totalDishes, setTotalDishes] = useState();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -66,11 +69,16 @@ function Ordering() {
 
   useEffect(() => {
      axiosInstance
-    .get(`/api/dish-order/${orderIdRedux}`)
+    .get(`/api/dish-order/${orderIdRedux}`,{
+      params: {
+        size: 100
+      }
+    })
     .then(res => {
       const data = res.data.result;
-      console.log(orderIdRedux);
-      setOldCart(data);
+      console.log(data);
+      setOldCart(data.results);
+      setTotalDishes(data?.totalItems);
     })
     .catch((err) => {
         if (err.response) {
@@ -133,14 +141,15 @@ function Ordering() {
               <div class=" overflow-x-auto  sm:rounded-lg w-full ">
                   
                                                             
-                  <div className="w-full  flex flex-wrap justify-around overflow-y-auto no-scrollbar max-h-[80vh] pb-4">
+                  <div className="w-full  flex flex-wrap justify-around overflow-y-auto no-scrollbar max-h-[90vh] pb-4">
                     
                                 {oldCart?.map((d,index) => {
                                   return (                                                        
-                                    <a href="#" class="w-[40%] mt-8 flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
-                                        <img class="object-cover ml-2 w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src={d?.dish?.imageUrl || d?.combo?.imageUrl} alt=""/>
+                                    <a class="w-[40%] h-[22vh] mt-8 flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                        <div className="w-[40%] h-full flex items-stretch">
+                                          <img class="object-cover w-full h-full rounded-t-lg md:rounded-none md:rounded-s-lg" src={d?.dish?.imageUrl || d?.combo?.imageUrl} alt=""/>
+                                        </div>
                                         <div class="flex flex-col p-4 leading-normal">
-
                                             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{d?.dish?.name || d?.combo?.name}</h5>
                                             <p class=" mb-3 font-normal text-gray-700 dark:text-gray-400">Số lượng: {d?.quantity} {d?.dish?.unit?.name ? d?.dish?.unit?.name : "combo"}</p>
                                             <p class={`mb-3 font-normal text-gray-700 dark:text-gray-400`}>
@@ -166,18 +175,6 @@ function Ordering() {
                                     </a>
                                   )
                                 })}
-                                 {/* {messages?.map((d, index) =>  {
-                                    return (
-                                      <a key={index} class="w-[40%] mt-8 flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
-                                        <img class="object-cover ml-2 w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src={d?.dish?.imageUrl || d?.combo?.imageUrl} alt=""/>
-                                        <div class="flex flex-col p-4 leading-normal">
-                                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{d?.dish?.name || d?.combo?.name}</h5>
-                                            <p class=" mb-3 font-normal text-gray-700 dark:text-gray-400">Số lượng: {d?.quantity} {d?.dish?.unit?.name ? d?.dish?.unit?.name  : "combo"}</p>
-                                            <p class=" mb-3 font-normal dark:text-gray-400 text-green">Trạng thái: {d?.status} </p>
-                                        </div>
-                                    </a>
-                                    )
-                                  })} */}
                                   <div class="w-[40%] "></div>
                                   <div class="w-[40%] "></div>
                                     

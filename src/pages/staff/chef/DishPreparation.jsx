@@ -30,7 +30,7 @@ function DishPreparation(){
 
   useEffect(() => {
     axiosInstance
-    .get(`/api/dish-order/restaurant/${user?.restaurantId}/state/${currentStatus}`)
+    .get(`/api/dish-order/restaurant/${user?.restaurantId}`)
     .then(res => {
       const data = res.data.result;
       console.log(data);
