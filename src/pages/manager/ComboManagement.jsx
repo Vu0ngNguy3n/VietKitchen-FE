@@ -10,6 +10,7 @@ import { useUser } from "../../utils/constant";
 import { toast } from "react-toastify";
 import { NumericFormat } from "react-number-format";
 import _ from "lodash";
+import Loading from "../common/Loading/Loading";
 
 function ComboManagement() {
     const navigate = useNavigate();
@@ -32,6 +33,7 @@ function ComboManagement() {
     const [size, setSize] = useState(6);
     const [totalCombos, setTotalCombos] = useState();
     const [isSearch, setIsSearch] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const user = useUser();
 
     useEffect(() => {
@@ -173,6 +175,7 @@ function ComboManagement() {
             return
         }
         
+        setIsLoading(true);
         const data = new FormData();
         data.append("file", imgComboCreate);
         data.append("upload_preset", "seafood");
@@ -184,6 +187,8 @@ function ComboManagement() {
         })
             .then((res) => res.json())
             .then((data) => {
+                setIsLoading(true);
+                console.log(111);
                 const resultCombo = {
                     name: comboName,
                     price: comboPrice,
@@ -202,14 +207,18 @@ function ComboManagement() {
                         setIsSearch(prev => !prev);
                         setCurrentPage(1);
                         handleClosePopUp()
+                        setIsLoading(false)
                     })
                     .catch(err => {
                         if (err.response) {
                             const errorRes = err.response.data;
+                            setIsLoading(false);
                             toast.error(errorRes.message);
                         } else if (err.request) {
+                            setIsLoading(false);
                             toast.error("Yêu cầu không thành công");
                         } else {
+                            setIsLoading(false);
                             toast.error(err.message);
                         }
                     });
@@ -241,6 +250,7 @@ function ComboManagement() {
             dishIds: selectedDishes?.map(dish => dish.id)
         };
 
+        setIsLoading(true);
         if (imgComboCreate) {
             const data = new FormData();
             data.append("file", imgComboCreate);
@@ -262,14 +272,18 @@ function ComboManagement() {
                             setIsSearch(prev => !prev);
                             setCurrentPage(1);
                             handleClosePopUp();
+                            setIsLoading(false);
                         })
                         .catch(err => {
                             if (err.response) {
                                 const errorRes = err.response.data;
+                                setIsLoading(false);
                                 toast.error(errorRes.message);
                             } else if (err.request) {
+                                setIsLoading(false);
                                 toast.error("Yêu cầu không thành công");
                             } else {
+                                setIsLoading(false);
                                 toast.error(err.message);
                             }
                         });
@@ -285,14 +299,18 @@ function ComboManagement() {
                     );
                     setComboList(updatedComboList);
                     handleClosePopUp();
+                    setIsLoading(false);
                 })
                 .catch(err => {
                     if (err.response) {
                         const errorRes = err.response.data;
+                        setIsLoading(false);
                         toast.error(errorRes.message);
                     } else if (err.request) {
+                        setIsLoading(false);
                         toast.error("Yêu cầu không thành công");
                     } else {
+                        setIsLoading(false);
                         toast.error(err.message);
                     }
                 });
@@ -645,8 +663,12 @@ function ComboManagement() {
                         </table>
                         
                     </div>
+                   
                 </div>
             )}
+             {isLoading && (
+                        <Loading/>
+                    )}
         </div>
     );
 }

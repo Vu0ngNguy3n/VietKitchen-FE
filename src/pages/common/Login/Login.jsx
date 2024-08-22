@@ -9,6 +9,7 @@ import axiosInstance from '../../../utils/axiosInstance';
 import { useDispatch } from 'react-redux';
 import Cookies from 'js-cookie';
 import { clearUser, saveUser } from '../../../actions/userActions';
+import Loading from '../Loading/Loading';
 import validator from 'validator';
 
 function SignInSide() {
@@ -23,6 +24,7 @@ function SignInSide() {
   const inputs = useRef([]);
   const initialTime = 60;
   const [timeLeft, setTimeLeft] = useState(initialTime);
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(()=> {
@@ -118,20 +120,25 @@ function SignInSide() {
         .then(res => { 
           const data = res.data.result;
           if(data.authenticated === true){
+            setIsLoading(true)
             setIsOpenPop(true);
             setTimeLeft(60)
             axios
             .post(`/api/account/${email}/send-otp`)
             .then(res => {
                 toast.success('Đã gửi mã xác thực OTP thành công');
+                setIsLoading(false)
             })
             .catch((err) => {
               if (err.response) {
                 const errorRes = err.response.data;
+                setIsLoading(false)
                 toast.error(errorRes.message);
               } else if (err.request) {
+                setIsLoading(false)
                 toast.error(err.request);
               } else {
+                setIsLoading(false)
                 toast.error(err.message);
               }
             });
@@ -586,6 +593,9 @@ function SignInSide() {
                 </div>
             </div>
         </div>
+      )}
+      {isLoading && (
+        <Loading/>
       )}
       <style jsx>{`
         @keyframes fadeIn {

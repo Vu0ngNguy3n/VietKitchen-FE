@@ -11,6 +11,7 @@ import { AiFillEdit } from "react-icons/ai";
 import { NumericFormat } from "react-number-format";
 import _ from "lodash";
 import Pagination from "../../components/component/Pagination/Pagination";
+import Loading from "../common/Loading/Loading";
 
 
 function DishesManagement() {
@@ -44,6 +45,7 @@ function DishesManagement() {
     const [size, setSize] = useState(6);
     const [totalDishes, setTotalDishes] = useState();
     const [isSearch, setIsSearch] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const user = useUser();
     
 
@@ -288,7 +290,7 @@ function DishesManagement() {
         }else if(dishName === '' || description === '' || imgDishCreate === '' || !imgDishCreate ){
             toast.warn("Thông tin món ăn không được để trống")
         }else{
-
+            setIsLoading(true);
             const data = new FormData();
             data.append("file",imgDishCreate);
             data.append("upload_preset", "seafood");
@@ -311,7 +313,6 @@ function DishesManagement() {
                         // accountId: userStorage.accountId
                         restaurantId: user?.restaurantId
                     }
-                    console.log(resultDish);
 
                     axiosInstance
                     .post(`/api/dish/create`, resultDish)
@@ -322,14 +323,18 @@ function DishesManagement() {
                         setImgDishCreate('');
                         handleClosePouUp();
                         setCurrentCategory(categoryList[0]?.id)
+                        setIsLoading(false);
                     })
                     .catch(err => {
                             if (err.response) {
                                 const errorRes = err.response.data;
+                                setIsLoading(false);
                                 toast.error(errorRes.message);
                             } else if (err.request) {
+                                setIsLoading(false);
                                 toast.error("Yêu cầu không thành công");
                             } else {
+                                setIsLoading(false);                                
                                 toast.error(err.message);
                             }
                         })
@@ -471,6 +476,7 @@ function DishesManagement() {
             toast.warn("Thông tin món ăn không được để trống")
         }else{
             if(imgDishCreate !== ''){
+                setIsLoading(true);
                 const data = new FormData();
                 data.append("file",imgDishCreate);
                 data.append("upload_preset", "seafood");
@@ -501,15 +507,19 @@ function DishesManagement() {
                             handleCloseEdit();
                             toast.success("Cập nhật thông tin món ăn thành công")
                             setIsReRender(!isReRender)
+                            setIsLoading(false);
                             setShowImgUpload('')
                         })
                         .catch(err => {
                             if (err.response) {
                                 const errorRes = err.response.data;
+                                setIsLoading(false);
                                 toast.error(errorRes.message);
                             } else if (err.request) {
+                                setIsLoading(false);
                                 toast.error("Yêu cầu không thành công");
                             } else {
+                                setIsLoading(false);
                                 toast.error(err.message);
                             }
                         })
@@ -528,7 +538,7 @@ function DishesManagement() {
                     imageUrl: currentImgEdit ,
                     unitId: currentUnit
                 }
-               
+                setIsLoading(true);
                 
                 axiosInstance
                 .put(`/api/dish/${dishIdEdit}`, request)
@@ -536,15 +546,19 @@ function DishesManagement() {
                     handleCloseEdit();
                     toast.success("Cập nhật thông tin món ăn thành công")
                     setIsReRender(!isReRender)
+                    setIsLoading(false);
                     setShowImgUpload('')
                 })
                 .catch(err => {
                     if (err.response) {
                         const errorRes = err.response.data;
+                        setIsLoading(false);
                         toast.error(errorRes.message);
                     } else if (err.request) {
+                        setIsLoading(false);
                         toast.error("Yêu cầu không thành công");
                     } else {
+                        setIsLoading(false);
                         toast.error(err.message);
                     }
                 })
@@ -1039,6 +1053,9 @@ function DishesManagement() {
 
 
             </div>
+            {isLoading && (
+                <Loading/>
+            )}
         </div>
     )
 }

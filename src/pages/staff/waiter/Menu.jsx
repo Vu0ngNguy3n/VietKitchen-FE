@@ -221,8 +221,7 @@ function Menu(){
 
     const handleAddDish = (dish) => {
         let dishAdd;
-        console.log(dish);
-        if(dish?.dishes){
+        if(slug === 'combo'){
             dishAdd = {
                 dishId: null,
                 name: dish?.name,
@@ -568,7 +567,7 @@ function Menu(){
                         </div>
                       </div>
                       
-                      <div className="w-[35%] bg-slate-500">
+                      <div className="w-[35%] bg-slate-500 max-h-[86vh]">
                           <div className="w-full h-14 flex justify-between">
                             <div className="bg-slate-300 flex flex-col items-center text-center w-[25%] p-2 rounded-sm ">
                               <GrRestaurant className="size-4 mb-2"/>
@@ -584,8 +583,8 @@ function Menu(){
                                 return (
                                   <div className="w-full bg-secondary px-1 py-2 mt-2 shadow-sm rounded-sm " key={index}>
                                       <div className="w-full text-white flex justify-between">
-                                        <b>{index <= 9 ? index+1 : index+1}. {cart?.name}</b>
-                                        <div className="w-[30%] font-semibold text-right">
+                                        <b className="">{index <= 9 ? index+1 : index+1}. {cart?.name}</b>
+                                        <div className="w-[30%] font-semibold text-center">
                                           <span>{cart?.quantity}</span>
                                         </div>
                                         <i className="font-semibold">{formatVND(cart?.price*cart?.quantity)}</i>
