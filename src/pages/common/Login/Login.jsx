@@ -43,7 +43,6 @@ function SignInSide() {
 
   const handleOpenPop = () =>{
     if( typeLogin === 3){
-      console.log(email + password);
       if(email === ''|| password === ''){
         toast.warn("Email hoặc mật khẩu không dược để trống")
         return
@@ -110,7 +109,6 @@ function SignInSide() {
     }
 
     if(typeLogin === 1){
-      console.log(email);
       if(!email ){
         toast.warn("Email không dược để trống")
         return

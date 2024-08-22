@@ -163,6 +163,10 @@ function SignUp() {
 
   const handleSignUpReVerify = async () => {
     let otpString = otp.join('');
+    if(otpString === '' || otpString.length < 6){
+      toast.warn("Vui lòng nhập OTP")
+      return
+    }
     const verifyAccount = {
       email: email,
       otp: otpString
@@ -219,6 +223,26 @@ function SignUp() {
 
 
   }
+
+  const handleKeyDown = (event) => {
+      if (event.key === 'Enter') {
+          event.preventDefault();
+          if(isOpenPop){
+            handleSignUpReVerify();
+            return
+          }
+          handleSignUp();
+      } 
+  };
+
+  useEffect(() => {
+      document.addEventListener('keydown', handleKeyDown);
+
+      return () => {
+          document.removeEventListener('keydown', handleKeyDown);
+      };
+  }, [handleKeyDown]);
+
 
 
 

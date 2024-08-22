@@ -135,7 +135,7 @@ function CustomerManager() {
     },[isSearch])
 
     const handleClick = (page) => {
-        if(page > 0 && page <= (totalCustomers / 10 + 1)){
+        if(page > 0 && page <= (totalCustomers / size + 1)){
             setCurrentPage(page);
         }
 

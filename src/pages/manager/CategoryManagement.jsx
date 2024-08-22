@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import SidebarManager from "../../components/managerComponent/SidebarManager";
 import HeaderManagerDashboard from "../../components/managerComponent/HeaderManagerDashboard";
 import { IoMdAdd } from "react-icons/io";
@@ -6,6 +6,7 @@ import { FaEdit, FaSearch, FaTrash } from "react-icons/fa";
 import axiosInstance from '../../utils/axiosInstance';
 import { toast } from 'react-toastify';
 import { useUser } from '../../utils/constant';
+import _ from 'lodash';
 
 function CategoryManagement() {
     const [categories, setCategories] = useState([]);
@@ -17,32 +18,92 @@ function CategoryManagement() {
     const [isCreate, setIsCreate] = useState(true);
     const [currentCategoryId, setCurrentCategoryId] = useState(null);
     const [search, setSearch] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [size, setSize] = useState(6);
+    const [totalCategories, setTotalCategories] = useState();
+    const [isSearch, setIsSearch] = useState(false);
     const user = useUser()
 
     useEffect(() => {
 
 
-        axiosInstance.get(`/api/dish-category/${user?.restaurantId}`)
-            .then(res => {
-                if (res.data.code === 200) {
-                    setCategories(res.data.result);
-                    console.log(res.data.result);
-                    setCategoriesDisplay(res.data.result)
-                } else {
-                    toast.error("Failed to fetch categories");
-                }
-            })
-            .catch(err => {
-                if (err.response) {
-                    const errorRes = err.response.data;
-                    toast.error(errorRes.message);
-                } else if (err.request) {
-                    toast.error("Request failed");
-                } else {
-                    toast.error(err.message);
-                }
-            });
+        axiosInstance
+        .get(`/api/dish-category/${user?.restaurantId}/page`,{
+            params: {
+                page: currentPage,
+                size: size,
+                query: search
+            }
+        })
+        .then(res => {
+            const data = res.data.result;
+            setTotalCategories(data.totalItems)
+            setCategories(data.results)
+            setCategoriesDisplay(data.results)
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Request failed");
+            } else {
+                toast.error(err.message);
+            }
+        });
     }, []);
+
+    const handleDebouncedChange = useCallback(
+        _.debounce((value) => {
+            setIsSearch(prev => !prev);
+            setCurrentPage(1)
+        }, 500),
+        []
+    )
+
+    useEffect(() => {
+        handleDebouncedChange(search)
+
+        return () => {
+            handleDebouncedChange.cancel();
+        }
+    },[search])
+
+    const handleClick = (page) => {
+        if(page > 0 && page <= (totalCategories / size + 1)){
+            setCurrentPage(page);
+        }
+
+    };
+
+    useEffect(() => {
+        axiosInstance
+        .get(`/api/dish-category/${user?.restaurantId}/page`,{
+            params: {
+                page: currentPage,
+                size: size,
+                query: search
+            }
+        })
+        .then(res => {
+            const data = res.data.result;
+            setTotalCategories(data.totalItems)
+            setCategories(data.results)
+            setCategoriesDisplay(data.results)
+        })
+        .catch(err => {
+            if (err.response) {
+                const errorRes = err.response.data;
+                toast.error(errorRes.message);
+            } else if (err.request) {
+                toast.error("Request failed");
+            } else {
+                toast.error(err.message);
+            }
+        });
+    },[currentPage, isSearch])
+
+
 
     const handleOpenCreatePop = () => {
         setIsOpenCreatePop(true);
@@ -95,6 +156,8 @@ function CategoryManagement() {
                         toast.success("Thêm loại món ăn thành công");
                         setCategories([...categories, res.data.result]);
                         setCategoriesDisplay([...categories, res.data.result])
+                        setCurrentPage(1);
+                        setIsSearch(prev => !prev)
                         handleCloseCreatePop();
                     } else {
                         toast.error("Thêm mới loại món ăn thất bại");
@@ -182,10 +245,10 @@ function CategoryManagement() {
             });
     };
 
-    useEffect(() => {
-        const newCategories = categories?.filter(c => c?.name.toLowerCase().includes(search.toLowerCase().trim()))
-        setCategoriesDisplay(newCategories);
-    },[search])
+    // useEffect(() => {
+    //     const newCategories = categories?.filter(c => c?.name.toLowerCase().includes(search.toLowerCase().trim()))
+    //     setCategoriesDisplay(newCategories);
+    // },[search])
 
     return (
         <div className="">
@@ -275,6 +338,27 @@ function CategoryManagement() {
                                     )}
                                 </tbody>
                             </table>
+                            <nav className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
+                                <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Hiển thị <span className="font-semibold text-gray-900 dark:text-white">{1 + size*(currentPage-1)}-{size + size*(currentPage-1)}</span> trong <span className="font-semibold text-gray-900 dark:text-white">{totalCategories} </span>loại món ăn</span>
+                                <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
+                                    <li onClick={() => handleClick(currentPage-1)}>
+                                        <a href="#" className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Trước</a>
+                                    </li>
+                                    {Array.from({ length: totalCategories/size+1 }).map((_, index) => (
+                                        <li onClick={() => setCurrentPage(index+1)}>
+                                            <a href="#" aria-current="page" className={`flex items-center justify-center px-3 h-8 leading-tight ${
+                                                currentPage === index+1
+                                                    ? 'text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+                                                    : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+                                                }`}>{index+1}</a>
+                                        </li>
+                                    ))}
+                                    <li onClick={() => handleClick(currentPage+1)}>
+                                         <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Sau</a>
+                                    </li>
+                                    
+                                </ul>
+                            </nav>
                         </div>
 
                     </div>
