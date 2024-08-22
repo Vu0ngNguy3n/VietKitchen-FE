@@ -123,7 +123,7 @@ function Ordering() {
       <div className="w-full flex justify-center absolute mt-6 bottom-6" onClick={() => handlePayment()}>
         <button className="ml-[12%] px-4 py-3 border-none rounded-md bg-primary text-white uppercase font-semibold transition-all duration-300 hover:opacity-[60%]">Thanh toán</button>
       </div>
-      <div className="absolute left-[60%] top-4 w-[13%] flex justify-between items-center p-2 rounded-md bg-primary/[0.8] text-white font-semibold">
+      <div className="absolute left-[55%] top-4 w-[13%] flex justify-between items-center p-2 rounded-md bg-primary/[0.8] text-white font-semibold">
           <span className="md:text-xs text-sm">Tổng tiền:</span>
           <span className="md:text-xs">{formatVND(totalMoney)}</span>
       </div>  

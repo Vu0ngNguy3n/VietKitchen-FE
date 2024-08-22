@@ -163,11 +163,16 @@ function MapHostess() {
     useEffect(() => {
         if(currentTable ){
             axiosInstance
-            .get(`/api/schedule/table/${currentTable?.id}`)
+            .get(`/api/schedule/table/${currentTable?.id}`,{
+                params: {
+                    page: currentPage,
+                    size: size
+                }
+            })
             .then(res => {
                 const data = res.data.result;
-                setListSchedule(data)
-                console.log(data);
+                setListSchedule(data.results)
+                setTotalSchedules(data.totalItems)
             })
             .catch(err => {
                 if (err.response) {
@@ -181,6 +186,40 @@ function MapHostess() {
             })  
         }
     },[currentTable])
+
+    useEffect(() => {
+        if(currentTable){
+            axiosInstance
+            .get(`/api/schedule/table/${currentTable?.id}`,{
+                params: {
+                    page: currentPage,
+                    size: size
+                }
+            })
+            .then(res => {
+                const data = res.data.result;
+                setListSchedule(data.results)
+                setTotalSchedules(data.totalItems)
+            })
+            .catch(err => {
+                if (err.response) {
+                    const errorRes = err.response.data;
+                    toast.error(errorRes.message);
+                } else if (err.request) {
+                    toast.error("Yêu cầu không thành công");
+                } else {
+                    toast.error(err.message);
+                }
+            })  
+        }
+    },[currentPage])
+
+    const handleClick = (page) => {
+        if(page > 0 && page <= (totalSchedules / size + 1)){
+            setCurrentPage(page);
+        }
+
+    };
     
     const handleClose = ()  => {
         setIsOpen(false);
@@ -190,6 +229,7 @@ function MapHostess() {
     const handleOpen = (table) => {
         setIsOpen(true);
         setCurrentTable(table)
+        setCurrentPage(1);
     }
 
     return (
@@ -343,13 +383,22 @@ function MapHostess() {
                                 </table>
                                 {listSchedule?.length > 0 && (
                                     <nav className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
-                                        <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Hiển thị <span className="font-semibold text-gray-900 dark:text-white">{1 + size*(currentPage-1)}-{size + size*(currentPage-1)}</span> trong <span className="font-semibold text-gray-900 dark:text-white">1000</span></span>
+                                        <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Hiển thị <span className="font-semibold text-gray-900 dark:text-white">{1 + size*(currentPage-1)}-{(size + size*(currentPage-1) <= totalSchedules ? size + size*(currentPage-1) : totalSchedules)}</span> trong <span className="font-semibold text-gray-900 dark:text-white">{totalSchedules} </span>loại món ăn</span>
                                         <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
-                                            <li>
-                                                <a href="#" className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
+                                            <li onClick={() => handleClick(currentPage-1)}>
+                                                <a href="#" className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Trước</a>
                                             </li>
-                                            <li>
-                                                <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">1</a>
+                                            {Array.from({ length: (totalSchedules%size > 0 ?totalSchedules/size+1 : totalSchedules/size) }).map((_, index) => (
+                                                <li onClick={() => setCurrentPage(index+1)}>
+                                                    <a href="#" aria-current="page" className={`flex items-center justify-center px-3 h-8 leading-tight ${
+                                                        currentPage === index+1
+                                                            ? 'text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
+                                                            : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+                                                        }`}>{index+1}</a>
+                                                </li>
+                                            ))}
+                                            <li onClick={() => handleClick(currentPage+1)}>
+                                                <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Sau</a>
                                             </li>
                                             
                                         </ul>
