@@ -175,9 +175,13 @@ function Menu(){
     useEffect(() => {
         if(slug === "combo"){
           axiosInstance
-          .get(`/api/combos/restaurant/${user?.restaurantId}`)
+          .get(`/api/combos/restaurant/${user?.restaurantId}`,{
+            params: {
+              size: 100
+            }
+          })
           .then(res => {
-              const data = res.data.result;
+              const data = res.data.result.results;
               setDishesList(data);
           })
           .catch((err) => {
