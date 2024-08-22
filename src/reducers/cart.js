@@ -2,7 +2,10 @@ const cartReducer = (state = [], action) => {
     switch(action.type){
         case "ADD_DISH":{
             const dishes = [...state];
-            const index = dishes.findIndex((dish) => dish.dishId === action.payload.dishId);
+            const data = action.payload;
+            const index = dishes.findIndex((dish) => {
+                return dish.dishId === data.dishId && dish.comboId === data.comboId
+            });
 
             if (index !== -1) {
                 dishes[index].quantity += 1;

@@ -10,6 +10,7 @@ import { useUser } from "../../utils/constant";
 import { toast } from "react-toastify";
 import { NumericFormat } from "react-number-format";
 import _ from "lodash";
+import Loading from "../common/Loading/Loading";
 
 function ComboManagement() {
     const navigate = useNavigate();
@@ -32,6 +33,7 @@ function ComboManagement() {
     const [size, setSize] = useState(6);
     const [totalCombos, setTotalCombos] = useState();
     const [isSearch, setIsSearch] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const user = useUser();
 
     useEffect(() => {
@@ -173,6 +175,7 @@ function ComboManagement() {
             return
         }
         
+        setIsLoading(true);
         const data = new FormData();
         data.append("file", imgComboCreate);
         data.append("upload_preset", "seafood");
@@ -184,6 +187,8 @@ function ComboManagement() {
         })
             .then((res) => res.json())
             .then((data) => {
+                setIsLoading(true);
+                console.log(111);
                 const resultCombo = {
                     name: comboName,
                     price: comboPrice,
@@ -202,14 +207,18 @@ function ComboManagement() {
                         setIsSearch(prev => !prev);
                         setCurrentPage(1);
                         handleClosePopUp()
+                        setIsLoading(false)
                     })
                     .catch(err => {
                         if (err.response) {
                             const errorRes = err.response.data;
+                            setIsLoading(false);
                             toast.error(errorRes.message);
                         } else if (err.request) {
+                            setIsLoading(false);
                             toast.error("Yêu cầu không thành công");
                         } else {
+                            setIsLoading(false);
                             toast.error(err.message);
                         }
                     });
@@ -241,6 +250,7 @@ function ComboManagement() {
             dishIds: selectedDishes?.map(dish => dish.id)
         };
 
+        setIsLoading(true);
         if (imgComboCreate) {
             const data = new FormData();
             data.append("file", imgComboCreate);
@@ -262,14 +272,18 @@ function ComboManagement() {
                             setIsSearch(prev => !prev);
                             setCurrentPage(1);
                             handleClosePopUp();
+                            setIsLoading(false);
                         })
                         .catch(err => {
                             if (err.response) {
                                 const errorRes = err.response.data;
+                                setIsLoading(false);
                                 toast.error(errorRes.message);
                             } else if (err.request) {
+                                setIsLoading(false);
                                 toast.error("Yêu cầu không thành công");
                             } else {
+                                setIsLoading(false);
                                 toast.error(err.message);
                             }
                         });
@@ -285,14 +299,18 @@ function ComboManagement() {
                     );
                     setComboList(updatedComboList);
                     handleClosePopUp();
+                    setIsLoading(false);
                 })
                 .catch(err => {
                     if (err.response) {
                         const errorRes = err.response.data;
+                        setIsLoading(false);
                         toast.error(errorRes.message);
                     } else if (err.request) {
+                        setIsLoading(false);
                         toast.error("Yêu cầu không thành công");
                     } else {
+                        setIsLoading(false);
                         toast.error(err.message);
                     }
                 });
@@ -463,12 +481,12 @@ function ComboManagement() {
                                 </tbody>
                             </table>
                              <nav className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
-                                <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Hiển thị <span className="font-semibold text-gray-900 dark:text-white">{1 + size*(currentPage-1)}-{size + size*(currentPage-1)}</span> trong <span className="font-semibold text-gray-900 dark:text-white">{totalCombos} </span>combo</span>
+                                <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Hiển thị <span className="font-semibold text-gray-900 dark:text-white">{1 + size*(currentPage-1)}-{(size + size*(currentPage-1) <= totalCombos ? size + size*(currentPage-1) : totalCombos)}</span> trong <span className="font-semibold text-gray-900 dark:text-white">{totalCombos} </span>combo</span>
                                 <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
                                     <li onClick={() => handleClick(currentPage-1)}>
                                         <a className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Trước</a>
                                     </li>
-                                    {Array.from({ length: totalCombos/size+1 })?.map((_, index) => (
+                                    {Array.from({ length: (totalCombos%size >0 ? totalCombos/size+1 : totalCombos/size) })?.map((_, index) => (
                                         <li onClick={() => setCurrentPage(index+1)}>
                                             <a aria-current="page" className={`flex items-center justify-center px-3 h-8 leading-tight ${
                                                 currentPage === index+1
@@ -645,8 +663,12 @@ function ComboManagement() {
                         </table>
                         
                     </div>
+                   
                 </div>
             )}
+             {isLoading && (
+                        <Loading/>
+                    )}
         </div>
     );
 }
