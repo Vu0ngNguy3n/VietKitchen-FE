@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import validator from "validator";
 import axios from "axios";
 import GREEN_CHECK from "../../../assests/greenCheck.png"
+import Loading from "../Loading/Loading";
 
 
 function ForgotPassword() {
@@ -15,6 +16,7 @@ function ForgotPassword() {
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [isValidPhone, setIsValidPhone] = useState(true);
   const [isOpenPop, setIsOpenPop] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
  
 
   const handleEmailChange = (e) => {
@@ -39,6 +41,7 @@ function ForgotPassword() {
     if(!isValidEmailSpan || !isValidPhoneSpan){
         toast.warn("Email hoặc số điện thoại không đúng định dạng")
     }else{
+      setIsLoading(true);
       const data = {
         email: email,
         phoneNumber: phoneNumber
@@ -48,14 +51,18 @@ function ForgotPassword() {
       .then(res => {
         toast.success("Bạn đã đổi lại mật khẩu thành công.")
         setIsOpenPop(true);
+        setIsLoading(false);
       })
       .catch(err => {
         if (err.response) {
+            setIsLoading(false);
             const errorRes = err.response.data;
             toast.error(errorRes.message);
         } else if (err.request) {
+            setIsLoading(false);
             toast.error("Yêu cầu không thành công");
         } else {
+            setIsLoading(false);
             toast.error(err.message);
         }
     })
@@ -187,6 +194,9 @@ function ForgotPassword() {
         </div>
         <img className="w-full h-full object-cover" src="https://i.pinimg.com/736x/8e/9f/5c/8e9f5c1d7ef1fbeac183f4ee6622d5f9.jpg" alt="" />
       </div>
+      {isLoading && (
+        <Loading/>
+      )}
       
 
       <style jsx>{`

@@ -313,6 +313,7 @@ function DishesManagement() {
                         // accountId: userStorage.accountId
                         restaurantId: user?.restaurantId
                     }
+                    console.log(data.url)
 
                     axiosInstance
                     .post(`/api/dish/create`, resultDish)

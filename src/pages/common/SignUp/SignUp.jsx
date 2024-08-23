@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import validator from "validator";
 import axios from "axios";
+import Loading from "../Loading/Loading";
 
 function SignUp() {
   const navigate = useNavigate()
@@ -21,6 +22,7 @@ function SignUp() {
   const initialTime = 60;
   const [timeLeft, setTimeLeft] = useState(initialTime);
   const [isShow, setIsShow] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const anonymizeEmail = (email) => {
     const [localPart, domain] = email.split('@');
@@ -118,7 +120,7 @@ function SignUp() {
       } else if (password.trim() !== confirmPassword.trim()) {
         toast.warn("Xác nhận mật khẩu không đúng")
       } else {
-
+        setIsLoading(true);
         const userRegister = {
           username: username,
           phoneNumber: phoneNumber,
@@ -133,12 +135,13 @@ function SignUp() {
               setIsOpenPop(true);
               setTimeLeft(60)
               toast.success("Đăng ký thành công vui lòng xác nhận")
+              setIsLoading(false);
             }
           })
           .catch(err => {
             if (err.response) {
               const errorRes = err.response.data
-              console.log(errorRes);
+              setIsLoading(false);
               toast.error(errorRes.message)
               // if (errorRes.message.trim() === "User existed") {
               //   toast.error("Email đã được sử dụng!")
@@ -146,10 +149,12 @@ function SignUp() {
               //   toast.error("Số điện thoại đã tồn tại")
               // }
             } else if (err.request) {
+              setIsLoading(false);
               console.log("xảy ra lỗi khi gửi yêu cầu");
               // Yêu cầu đã được gửi nhưng không nhận được phản hồi
               toast.error(err.request);
             } else {
+              setIsLoading(false);
               // Đã xảy ra lỗi khi thiết lập yêu cầu
               console.log('Error', err.message);
             }
@@ -404,10 +409,13 @@ function SignUp() {
                         </div>
                     </div>  
                 </div>
+                
             </div>
         </div>
       )}
-
+      {isLoading && (
+                  <Loading/>
+                )}
       <style jsx>{`
         @keyframes fadeIn {
             from {
