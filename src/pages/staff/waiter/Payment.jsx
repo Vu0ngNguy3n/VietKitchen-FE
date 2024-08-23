@@ -88,7 +88,7 @@ function Payment() {
             accountName: managerInformation?.account_NAME,
             acqId: managerInformation?.bank_ID,
             amount: requireMoney,
-            addInfo: "Ung Ho Dinh Hoan",
+            addInfo: "",
             format: "text",
             template: "compact2"
         }
@@ -102,6 +102,9 @@ function Payment() {
                     },
             })
             .then(res => {
+                if(res.data.code === '21'){
+                    toast.warn('Tài khoản chủ nhà hàng đang bị lỗi. Không thể tạo mã QR vui lòng thành tiền mặt.');
+                }
                 setQRCodeImg(res.data.data?.qrDataURL);
             })
             .catch(err => {
@@ -210,7 +213,7 @@ function Payment() {
       <div className="w-full border overflow-scroll">
         <NavBarStaff/>
         <div className="h-full w-full bg-slate-300 flex justify-center ">
-            <div className="w-[70%] h-[65%] bg-white mt-10 shadow-lg">
+            <div className="w-[70%] h-[65vh] max-h-[65vh] bg-white mt-10 shadow-lg">
                 <div className="flex justify-between py-4 bg-white w-full h-[12%] items-center">
                     <div className="w-[5%] flex justify-center items-center cursor-pointer" onClick={() => navigate("/waiter/ordering")}>
                         <MdArrowBackIosNew className=" size-6"/>
@@ -242,7 +245,7 @@ function Payment() {
                             >
                                 <div className="flex-row">
                                     <div className="flex justify-center">
-                                        <FaQrcode className="size-9"/>
+                                        <FaQrcode className="lg:size-9 sm:size-6"/>
                                     </div>
                                     <div className="flex justify-center">
                                         <span className="font-semibold">QR</span>
@@ -257,8 +260,8 @@ function Payment() {
                                     <div className="flex justify-center">
                                         <FcMoneyTransfer className="size-9"/>
                                     </div>
-                                    <div className="flex justify-center">
-                                        <span className="font-semibold">Tiền mặt</span>
+                                    <div className="flex justify-center ">
+                                        <span className="font-semibold text-center">Tiền mặt</span>
                                     </div>
                                 </div>
                             </div>
@@ -298,12 +301,12 @@ function Payment() {
                                         <div className="w-[45%] pl-2">
                                             <span>Khách trả</span>
                                         </div>
-                                        <div className="">
+                                        <div className="w-[45%]">
                                             <input 
                                                 type="text" 
                                                 value={formatVND(customerPay)}
                                                 // onChange={(e) => setCustomerPay(e.target.value)}
-                                                className='px-2 py-3 border-2 border-secondary text-secondary outline-none rounded-sm text-right cursor-default'
+                                                className='px-2 py-3 border-2 w-full border-secondary text-secondary outline-none rounded-sm text-right cursor-default'
                                             />
                                         </div>
                                     </div>

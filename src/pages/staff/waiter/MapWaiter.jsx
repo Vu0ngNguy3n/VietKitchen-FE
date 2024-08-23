@@ -157,7 +157,7 @@ function MapWaiter(){
                             {board?.map((table, index) => {
                                 return (
                                     <div 
-                                        className="flex-row p-8 border-2 border-transparent bg-white justify-center w-[12%] mb-2 rounded-lg shadow-lg cursor-pointer hover:opacity-80 transition-all duration-300" 
+                                        className="flex-row p-8 border-2 border-transparent bg-white justify-center lg:w-[13%] md:w-[14%] mb-2 rounded-lg shadow-lg cursor-pointer hover:opacity-80 transition-all duration-300" 
                                         key={index} 
                                         onClick={() => handleChooseTable(table)}    
                                     >
@@ -172,12 +172,12 @@ function MapWaiter(){
 
                                 )
                             })}
-                            <div className="w-[12%]"></div>
-                            <div className="w-[12%]"></div>
-                            <div className="w-[12%]"></div>
-                            <div className="w-[12%]"></div>
-                            <div className="w-[12%]"></div>
-                            <div className="w-[12%]"></div>
+                            <div className="lg:w-[13%] md:w-[14%]"></div>
+                            <div className="lg:w-[13%] md:w-[14%]"></div>
+                            <div className="lg:w-[13%] md:w-[14%]"></div>
+                            <div className="lg:w-[13%] md:w-[14%]"></div>
+                            <div className="lg:w-[13%] md:w-[14%]"></div>
+                            <div className="lg:w-[13%] md:w-[14%]"></div>
                         </div>
                     </div>
                 </div>
