@@ -68,6 +68,7 @@ function SignInSide() {
             restaurantId: user.restaurantId,
             packName: user.packName
           };
+          console.log(token);
           // localStorage.setItem('user', JSON.stringify(userStorage));
           const action = saveUser(userStorage);
           dispatch(action);

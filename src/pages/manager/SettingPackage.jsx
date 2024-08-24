@@ -12,6 +12,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
 import { saveUser } from "../../actions/userActions";
+import Loading from "../common/Loading/Loading";
 
 
 function SettingPackage(){
@@ -28,6 +29,7 @@ function SettingPackage(){
     const [status, setStatus] = useState();
     const [orderCode, setOrderCode] = useState();
     const [isCheck, setIsCheck] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const user = useUser();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -156,8 +158,8 @@ function SettingPackage(){
             
 
             const apiUrl = 'https://api-merchant.payos.vn/v2/payment-requests'; 
-            const apiKey = 'a19ee99f-43c6-4228-b2b3-4c4e6cb450be'; // Thay bằng API Key của bạn
-            const checkSumKey = "fd15ae84d754ae31a13ba466924301bca749ef66f3b6be708ea02d271293fe74";
+            // const apiKey = 'a19ee99f-43c6-4228-b2b3-4c4e6cb450be'; // Thay bằng API Key của bạn
+            const checkSumKey = "0e8ccdc617ecfbaa8d4f3af5a552c6976c515cdbe3b098edd4f281487cd3b807";
             const urlReturn = `http://localhost:3000/manager/packageRestaurant`;
             const urlCancel = 'http://localhost:3000/manager/packageRestaurant';
             const des = `${packageUpdate?.packName}`;
@@ -173,18 +175,19 @@ function SettingPackage(){
                 const newOrderCode = res.data.result;
                 console.log(newOrderCode);
                 const payload = {
-                    orderCode: 2010,
+                    orderCode: newOrderCode,
                     amount: requireMoney, 
                     description: des,
                     returnUrl: urlReturn,
                     cancelUrl: urlCancel,
                 };
+                setIsLoading(true);
                 const signature = createSignature(payload, checkSumKey)
                 axios
                 .post(apiUrl, {...payload, signature}, {
                     headers: { 
-                        'x-client-id': '04c49f53-5c64-4175-b9a4-74a78656d2c5', 
-                        'x-api-key': 'a19ee99f-43c6-4228-b2b3-4c4e6cb450be', 
+                        'x-client-id': 'd3d83bdb-eed9-4be9-8132-12a75380a5f3', 
+                        'x-api-key': '4b36e11e-f3a3-417c-908a-28776f831bbe', 
                         'Content-Type': 'application/json',
                     },
                 })
@@ -197,15 +200,18 @@ function SettingPackage(){
                     }
                     localStorage.setItem('packUpdate', JSON.stringify(dataUpdate));
                     setResponsePayment(data)
-                    
+                    setIsLoading(false)
                 })
                 .catch(err => {
                     if (err.response) {
                         const errorRes = err.response.data;
+                        setIsLoading(false)
                         toast.error(errorRes.message);
                     } else if (err.request) {
+                        setIsLoading(false)
                         toast.error("Request failed");
                     } else {
+                        setIsLoading(false)
                         toast.error(err.message);
                     }
                 });
@@ -425,7 +431,9 @@ function SettingPackage(){
                     </div>
                 )}
 
-
+                {isLoading && (
+                    <Loading/>
+                )}
             </div>
         </div>
     )
