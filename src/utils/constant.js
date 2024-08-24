@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux"
 
 const TOKEN_KEY = "token"
-export const WEBSOCKET_CONNECTION = "https://be.vietkitchen.shop/websocket"
+export const WEBSOCKET_CONNECTION = "http://be.vietkitchen.shop/websocket"
 
 
 const getToken = () => {
