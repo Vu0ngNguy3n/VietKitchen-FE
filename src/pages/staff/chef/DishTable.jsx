@@ -56,7 +56,7 @@ function DishTable(){
       });
 
 
-    const socket = new SockJS('http://localhost:8080/websocket');
+    const socket = new SockJS('http:/14.225.206.68:8080/websocket');
     const stompClient = new Client({
       webSocketFactory: () => socket,
       onConnect: () => {
