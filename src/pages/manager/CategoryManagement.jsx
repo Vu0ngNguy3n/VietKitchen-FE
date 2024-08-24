@@ -245,6 +245,18 @@ function CategoryManagement() {
             });
     };
 
+    const handleChangeCategoryName = (name) => {
+        if(name?.length <=30 ){
+            setName(name);
+        }
+    }
+
+    const handleChangeDescription = (descript) => {
+        if(descript?.length <= 250){
+            setDescription(descript)
+        }
+    }
+
     // useEffect(() => {
     //     const newCategories = categories?.filter(c => c?.name.toLowerCase().includes(search.toLowerCase().trim()))
     //     setCategoriesDisplay(newCategories);
@@ -378,22 +390,22 @@ function CategoryManagement() {
                             {isCreate ? "Thêm loại món ăn" : "Cập nhật loại món ăn"}
                         </h2>
                         <div className="mb-4">
-                            <label className="block mb-2">Tên loại món ăn</label>
+                            <label className="block mb-2">Tên loại món ăn<span className="text-red-600">* </span> ({name?.length}/30)</label>
                             <input
                                 type="text"
                                 placeholder="Tên loại món ăn"
                                 value={name}
-                                onChange={e => setName(e.target.value)}
+                                onChange={e => handleChangeCategoryName(e.target.value)}
                                 className="w-full px-3 py-2 border rounded-md"
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block mb-2">Mô tả</label>
-                            <input
+                            <label className="block mb-2">Mô tả <span className="text-red-600">* </span> ({description?.length}/250)</label>
+                            <textarea
                                 type="text"
                                 placeholder="Mô tả"
                                 value={description}
-                                onChange={e => setDescription(e.target.value)}
+                                onChange={e => handleChangeDescription(e.target.value)}
                                 className="w-full px-3 py-2 border rounded-md"
                             />
                         </div>

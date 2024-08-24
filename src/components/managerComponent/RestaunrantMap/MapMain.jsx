@@ -393,6 +393,12 @@ const MapMain = () => {
         })
     }
 
+    const handleChangeAreaName = (name) => {
+        if(name?.length <=30 ) {
+            setAreaName(name)
+        }
+    }
+
 
 
     return (
@@ -489,12 +495,12 @@ const MapMain = () => {
                                         {isCreateArea ? 'Thêm khu vực mới' : 'Thêm bàn mới'}
                                     </h2>
                                     {isCreateArea && <div className="mb-4">
-                                        <label className="block mb-2">Tên khu vực <span className="text-red-500">*</span></label>
+                                        <label className="block mb-2">Tên khu vực <span className="text-red-500">*</span> ({areaName?.length}/30)</label>
                                         <input
                                             type="text"
                                             placeholder="Tên khu vực"
                                             value={areaName}
-                                            onChange={(e) => setAreaName(e.target.value)}
+                                            onChange={(e) => handleChangeAreaName(e.target.value)}
                                             className="w-full px-3 py-2 border rounded-md"
                                         />
                                     </div>}
@@ -531,12 +537,12 @@ const MapMain = () => {
                                             Đổi tên khu vực
                                         </h2>
                                         {isOpenEditArea && <div className="mb-4">
-                                            <label className="block mb-2">Tên khu vực <span className="text-red-500">*</span></label>
+                                            <label className="block mb-2">Tên khu vực <span className="text-red-500">*</span> ({areaName?.length}/30)</label>
                                             <input
                                                 type="text"
                                                 placeholder="VD: Tầng 1"
                                                 value={areaName}
-                                                onChange={(e) => setAreaName(e.target.value)}
+                                                onChange={(e) => handleChangeAreaName(e.target.value)}
                                                 className="w-full px-3 py-2 border rounded-md"
                                             />
                                         </div>}
