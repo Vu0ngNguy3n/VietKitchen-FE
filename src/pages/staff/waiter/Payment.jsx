@@ -88,11 +88,11 @@ function Payment() {
             accountName: managerInformation?.account_NAME,
             acqId: managerInformation?.bank_ID,
             amount: requireMoney,
-            addInfo: "",
+            addInfo: `Thanh toán hoá đơn VietKitChen`,
             format: "text",
             template: "compact2"
         }
-        if(dataPayment?.accountName !== undefined){
+        if(dataPayment?.accountNo !== undefined){
             axios
             .post(`https://api.vietqr.io/v2/generate`,dataPayment,{
                 headers: { 
