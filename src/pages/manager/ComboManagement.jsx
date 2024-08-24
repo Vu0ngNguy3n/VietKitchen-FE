@@ -67,7 +67,6 @@ function ComboManagement() {
             })
             .then(res => {
                 const data = res.data.result;
-                console.log(data);
                 if(data?.results?.length > 0){
                     setComboList(data.results);
                     setTotalCombos(data.totalItems)
@@ -119,11 +118,8 @@ function ComboManagement() {
         })
         .then(res => {
             const data = res.data.result;
-            console.log(data);
-            if(data?.results?.length > 0){
-                setComboList(data.results);
-                setTotalCombos(data.totalItems)
-            } 
+            setComboList(data.results);
+            setTotalCombos(data.totalItems)
         })
         .catch(err => {
             if (err.response) {
@@ -138,8 +134,13 @@ function ComboManagement() {
     },[isSearch, currentPage])
 
     const handleOpenPopUp = () => {
-        setIsOpen(true);
-        setIsUpdateMode(false);
+        if(dishesList?.length===0){
+            toast.warn("Hãy tạo món ăn")
+        }else{
+            setIsOpen(true);
+            setIsUpdateMode(false);
+        }
+        
     };
 
     const handleClosePopUp = () => {
@@ -162,6 +163,10 @@ function ComboManagement() {
     }
 
     const handleCreateCombo = () => {
+        if(selectedDishes?.length <=1 || selectedDishes?.length >8){
+            toast.warn("Chỉ có thể thêm 2-8 món ăn cho 1 combo")
+            return
+        }
         if (comboName === '' || comboPrice === 0 || description === '' ) {
             toast.warn("Vui lòng điền đầy đủ thông tin");
             return;
@@ -188,7 +193,6 @@ function ComboManagement() {
             .then((res) => res.json())
             .then((data) => {
                 setIsLoading(true);
-                console.log(111);
                 const resultCombo = {
                     name: comboName,
                     price: comboPrice,
@@ -264,7 +268,6 @@ function ComboManagement() {
                 .then((res) => res.json())
                 .then((data) => {
                     updatedCombo.imageUrl = data.url;
-
                     axiosInstance
                         .put(`/api/combos/update/${currentCombo.id}`, updatedCombo)
                         .then(res => {
@@ -374,6 +377,18 @@ function ComboManagement() {
         setComboDetail(null);
     };
 
+    const handleChangeComboName = (name) => {
+        if(name?.length <=30){
+            setComboName(name)
+        }
+    }
+
+    const handleChangeDescription =(descript) => {
+        if(descript?.length <=250){
+            setDescription(descript)
+        }
+    } 
+
 
     return (
         <div className="">
@@ -416,7 +431,7 @@ function ComboManagement() {
                                             <span className="sr-only">Image</span>
                                         </th>
                                         <th scope="col" className="px-6 py-3">
-                                            Tên món ăn
+                                            Tên combo
                                         </th>
                                         <th scope="col" className="px-6 py-3">
                                             Giá
@@ -478,6 +493,19 @@ function ComboManagement() {
                                             </td>
                                         </tr>
                                     ))}
+                                    {comboList?.length === 0 && (
+                                        <tr classNameName="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                                            <td className="px-10 py-3">
+                                            </td>
+                                            <td classNameName="px-6 py-4 text-red-500">
+                                                Không tìm thấy thông tin combo tương ứng
+                                            </td>
+                                            <td classNameName="px-6 p-4"></td>
+                                            <td classNameName="px-6 p-4"></td>
+                                            <td classNameName="px-6 p-4"></td>
+                                            <td classNameName="px-6 p-4"></td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                              <nav className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
@@ -524,10 +552,10 @@ function ComboManagement() {
                             <from className="p-4 md:p-5">
                                 <div className="grid gap-4 mb-4 grid-cols-2">
                                     <div className="col-span-2 sm:col-span-1">
-                                        <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên combo <span className="text-red-600">*</span></label>
+                                        <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên combo <span className="text-red-600">*</span>({comboName?.length}/30)</label>
                                         <input type="text" name="name" id="name" 
                                         value={comboName}
-                                        onChange={e => setComboName(e.target.value)}
+                                        onChange={e => handleChangeComboName(e.target.value)}
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                         placeholder="Tên combo"
                                        />
@@ -566,10 +594,10 @@ function ComboManagement() {
                                         ):<img src="https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg" className="w-[50%] object-cover " alt="" />}
                                     </div>
                                     <div className="col-span-2">
-                                        <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Miêu tả combo <span className="text-red-600">*</span></label>
+                                        <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Miêu tả combo <span className="text-red-600">*</span> ({description?.length}/250)</label>
                                         <textarea id="description" rows="4" 
                                         value={description}
-                                        onChange={e => setDescription(e.target.value)}
+                                        onChange={e => handleChangeDescription(e.target.value)}
                                         className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                         placeholder="Miêu tả combo"></textarea>                    
                                     </div>

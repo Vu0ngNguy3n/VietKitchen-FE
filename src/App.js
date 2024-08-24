@@ -9,7 +9,7 @@ import Main from './components/adminComponent/Main';
 import {  useUser } from './utils/constant';
 import { useEffect } from 'react';
 import { checkAuth, logoutLocalStorage } from './utils/localStorageHelper';
-axios.defaults.baseURL = "https://be.vietkitchen.shop/"
+axios.defaults.baseURL = "http://be.vietkitchen.shop/"
 
 function App() {
 

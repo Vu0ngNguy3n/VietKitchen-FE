@@ -24,9 +24,9 @@ function DishesManagement() {
     const [userStorage, setUserStorage] = useState();
     const [isOpen, setIsOpen] = useState(false);
     const [currentCategory, setCurrentCategory] = useState();
-    const [dishName, setDishName] = useState();
+    const [dishName, setDishName] = useState('');
     const [weight, setWeight] = useState('');
-    const [description, setDescription] = useState();
+    const [description, setDescription] = useState('');
     const [price, setPrice] = useState(100000);
     const [isOpenHidePopUp, setIsOpenHidePopUp] = useState(false);
     const [isReRender, setIsReRender] = useState(false);
@@ -256,8 +256,12 @@ function DishesManagement() {
 
 
     const handleOpenPopUp = () => {
+        if(unitsList?.length === 0){
+            toast.warn("Hãy tạo đơn vị tính cho món ăn")
+            return
+        }
         if(categoryList.length === 0){
-            toast.warn("Bạn hãy tạo loại món ăn để tạo gói")
+            toast.warn("Hãy tạo loại món ăn")
         }else{
             setIsOpen(true);
         }
@@ -278,12 +282,10 @@ function DishesManagement() {
   
 
     const handleCreateDish = () => {
-        if(unitsList?.length === 0){
-            toast.warn("Hãy tạo đơn vị tính cho món ăn")
-            return
-        }
+        
         if((price/1 <=0 ) ){
             toast.warn("Giá món ăn phải lớn hơn 0")
+            return
         }
         if(categoryList?.length === 0){
             toast.warn('Hãy tạo loại món ăn')
@@ -568,6 +570,18 @@ function DishesManagement() {
         }
     }
 
+    const handleChangeDishName = (dishName) => {
+        if(dishName?.length <= 30){
+            setDishName(dishName)
+        }
+    }
+
+    const handleChangeDishDescription = (description) => {
+        if(description?.length <= 250){
+            setDescription(description)
+        }
+    }
+
     return (
         <div className="">
             <div className="flex ">
@@ -667,12 +681,12 @@ function DishesManagement() {
                                         <from className="p-4 md:p-5">
                                             <div className="grid gap-4 mb-4 grid-cols-2">
                                                 <div className="col-span-2 sm:col-span-1">
-                                                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên món ăn <span className="text-red-600">*</span></label>
+                                                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên món ăn <span className="text-red-600">*</span> ({dishName?.length}/30)</label>
                                                     <input type="text" name="name" id="name" 
                                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                     placeholder="Tên món ăn"
                                                     value={dishName}
-                                                    onChange={e => setDishName(e.target.value)}/>
+                                                    onChange={e => handleChangeDishName(e.target.value)}/>
                                                 </div>
                                                 {/* <div className="col-span-2 sm:col-span-1">
                                                     <label htmlFor="weight" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Định lượng món ăn <span className="text-red-600">*</span></label>
@@ -739,11 +753,11 @@ function DishesManagement() {
                                                     ):<img src="https://www.shutterstock.com/image-vector/default-ui-image-placeholder-wireframes-600nw-1037719192.jpg" className="w-[50%] object-cover " alt="" />}
                                                 </div>
                                                 <div className="col-span-2">
-                                                    <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Miêu tả món ăn <span className="text-red-600">*</span></label>
+                                                    <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Miêu tả món ăn <span className="text-red-600">*</span> ({description?.length}/250)</label>
                                                     <textarea id="description" rows="4" 
                                                     className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                                     value={description}
-                                                    onChange={e => setDescription(e.target.value)}
+                                                    onChange={e => handleChangeDishDescription(e.target.value)}
                                                     placeholder="Miêu tả món ăn"></textarea>                    
                                                 </div>
                                             </div>
@@ -878,12 +892,12 @@ function DishesManagement() {
                                         <from className="p-4 md:p-5">
                                             <div className="grid gap-4 mb-4 grid-cols-2">
                                                 <div className="col-span-2 sm:col-span-1">
-                                                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên món ăn <span className="text-red-600">*</span></label>
+                                                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tên món ăn <span className="text-red-600">* </span>({dishName?.length}/30)</label>
                                                     <input type="text" name="name" id="name" 
                                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                                     placeholder="Tên món ăn"
                                                     value={dishName}
-                                                    onChange={e => setDishName(e.target.value)}/>
+                                                    onChange={e => handleChangeDishName(e.target.value)}/>
                                                 </div>
                                                 {/* <div className="col-span-2 sm:col-span-1">
                                                     <label htmlFor="weight" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Định lượng món ăn<span className="text-red-600">*</span></label>
@@ -946,7 +960,7 @@ function DishesManagement() {
                                                     ):<img src={currentImgEdit} className="w-[50%] object-cover " alt="" />}
                                                 </div>
                                                 <div className="col-span-2">
-                                                    <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Miêu tả món ăn <span className="text-red-600">*</span></label>
+                                                    <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Miêu tả món ăn <span className="text-red-600">*</span> ({description?.length}/250)</label>
                                                     <textarea id="description" rows="4" 
                                                     className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
                                                     value={description}

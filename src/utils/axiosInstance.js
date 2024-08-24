@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'https://be.vietkitchen.shop/', 
-  timeout: 10000, // Timeout 10 giây
+  baseURL: 'http://be.vietkitchen.shop/', 
+  timeout: 10000, 
 });
 
 axiosInstance.interceptors.request.use(
