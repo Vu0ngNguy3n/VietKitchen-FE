@@ -48,6 +48,7 @@ function Menu(){
   const [phoneNumberAdd, setPhoneNumberAdd] = useState();
   const [customerName, setCustomerName] = useState('');
   const [address, setAddress] = useState('');
+  const [currentOrderId, setCurrentOrderId] = useState();
   const user = useUser();
   const navigate = useNavigate();
 
@@ -289,6 +290,7 @@ function Menu(){
             const idResult = res.data.result?.id;
             const actionOrder = saveOrderId(idResult);
             dispatch(actionOrder);
+            // setCurrentOrderId(idResult)
             changeStatusTable(requestData);
           })
           .catch((err) => {
@@ -400,6 +402,44 @@ function Menu(){
         if(!isNaN(value) && value.length<=10){
             setPhoneNumber(value);
         }
+    }
+
+    const handleNavigatePayment = () => {
+      axiosInstance
+      .get(`/api/dish-order/${orderId}`,{
+        params: {
+          size: 100
+        }
+      })
+      .then(res => {
+        const data = res.data.result.results;
+        console.log(data);
+        let statusConfirm = true;
+        data?.forEach(d => {
+          
+          if(d?.status === "WAITING" || d?.status === "PREPARE"){
+            statusConfirm = false;
+            return
+          }
+        })
+
+        if(statusConfirm){
+          navigate('/waiter/payment')
+        }else{
+          toast.warn("Có món ăn chưa được hoàn thành")
+        }
+        
+      })
+      .catch((err) => {
+          if (err.response) {
+            const errorRes = err.response.data;
+            toast.error(errorRes.message);
+          } else if (err.request) {
+            toast.error(err.request);
+          } else {
+            toast.error(err.message);
+          }
+        });
     }
 
 
@@ -628,7 +668,7 @@ function Menu(){
                                   <span>Xác nhận</span>
                                 </div>
                                 <div className="w-[24%] bg-blue-600 h-16 text-white ml-[2px] rounded-sm flex items-center justify-center cursor-pointer text-center"
-                                  onClick={() => navigate('/waiter/payment')}
+                                  onClick={() => handleNavigatePayment()}
                                 >
                                   <span className="text-center">Thanh toán</span>
                                 </div>
