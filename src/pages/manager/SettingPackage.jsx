@@ -160,8 +160,8 @@ function SettingPackage(){
             const apiUrl = 'https://api-merchant.payos.vn/v2/payment-requests'; 
             // const apiKey = 'a19ee99f-43c6-4228-b2b3-4c4e6cb450be'; // Thay bằng API Key của bạn
             const checkSumKey = "0e8ccdc617ecfbaa8d4f3af5a552c6976c515cdbe3b098edd4f281487cd3b807";
-            const urlReturn = `https://vietkitchen.shop/manager/packageRestaurant`;
-            const urlCancel = 'https://vietkitchen.shop/manager/packageRestaurant';
+            const urlReturn = `http://vietkitchen.shop/manager/packageRestaurant`;
+            const urlCancel = 'http://vietkitchen.shop/manager/packageRestaurant';
             const des = `${packageUpdate?.packName}`;
             const requestPack = {
                 packageId: packageUpdate?.id,
