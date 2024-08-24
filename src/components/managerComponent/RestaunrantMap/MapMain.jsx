@@ -154,6 +154,10 @@ const MapMain = () => {
     const handleCreateArea = () => {
         
             if(isCreateArea){
+                if(numberTables <= 0){
+                    toast.warn("Số bàn phải lớn hơn 0");
+                    return
+                }
                 if(areaName.trim() === ''){
                     toast.warn('Tên khu vực không dược để trống!')   
                 }else{
@@ -264,12 +268,8 @@ const MapMain = () => {
     }
  
     const handleChangeNumberTable = (number) => {
-        if(!isNaN(number)){
-            if(number > 0 && number <= 20){
-                setNumberTables(number)
-            }else{
-                setNumberTables(1)
-            }
+        if(!isNaN(number) && number <= 20){
+            setNumberTables(number);
         }
     }
 
