@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import SockJS from "sockjs-client";
 import NavBarStaff from "../../../components/staffComponent/NavBarStaff"
 import axiosInstance from "../../../utils/axiosInstance";
-import {  useUser } from "../../../utils/constant";
+import {  useUser, WEBSOCKET_CONNECTION } from "../../../utils/constant";
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { RiProgress6Line } from "react-icons/ri";
 import { FaCheck, FaTrash } from "react-icons/fa";
@@ -48,7 +48,7 @@ function DishPreparation(){
       });
 
 
-    const socket = new SockJS('http:/14.225.206.68:8080/websocket');
+    const socket = new SockJS(WEBSOCKET_CONNECTION);
     const stompClient = new Client({
       webSocketFactory: () => socket,
       onConnect: () => {
