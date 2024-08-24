@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
-import { useUser } from "../../../utils/constant";
+import { useUser, WEBSOCKET_CONNECTION } from "../../../utils/constant";
 import axiosInstance from "../../../utils/axiosInstance";
 import { toast } from "react-toastify";
 import { IoMdAdd } from "react-icons/io";
@@ -35,7 +35,7 @@ function Ordering() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const socket = new SockJS("http:/14.225.206.68:8080/websocket");
+    const socket = new SockJS(WEBSOCKET_CONNECTION);
     const stompClient = new Client({
       webSocketFactory: () => socket,
       onConnect: () => {

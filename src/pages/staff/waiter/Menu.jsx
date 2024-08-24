@@ -18,7 +18,7 @@ import { FaSearch } from "react-icons/fa";
 import { GrRestaurant } from "react-icons/gr";
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import { CiEdit } from "react-icons/ci";
-import { useUser } from "../../../utils/constant";
+import { useUser, WEBSOCKET_CONNECTION } from "../../../utils/constant";
 import { saveCustomer } from "../../../actions/customerActions";
 import { saveTable } from "../../../actions/tableActions";
 import { saveOrderId } from "../../../actions/orderActions";
@@ -73,7 +73,7 @@ function Menu(){
       });
 
 
-    const socket = new SockJS('http:/14.225.206.68:8080/websocket');
+    const socket = new SockJS(WEBSOCKET_CONNECTION);
     const stompClient = new Client({
       webSocketFactory: () => socket,
       onConnect: () => {

@@ -28,7 +28,6 @@ function Page404() {
             navigate('/hostess/map')
         }else{
             navigate('/')
-            console.log('/');
         }
     }
 

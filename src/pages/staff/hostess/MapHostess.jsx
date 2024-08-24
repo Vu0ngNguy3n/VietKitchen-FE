@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 import NavBarStaff from "../../../components/staffComponent/NavBarStaff"
 import axiosInstance from "../../../utils/axiosInstance";
-import { useUser } from "../../../utils/constant";
+import { useUser, WEBSOCKET_CONNECTION } from "../../../utils/constant";
 import LOGO from "../../../assests/VIET.png"
 import Table from "../../../components/managerComponent/RestaunrantMap/Table"
 import { MdTableBar } from "react-icons/md";
@@ -35,7 +35,7 @@ function MapHostess() {
     const {slug} = useParams();
 
     useEffect(()=>{
-        const socket = new SockJS("http:/14.225.206.68:8080/websocket");
+        const socket = new SockJS(WEBSOCKET_CONNECTION);
         const stompClient = new Client({
         webSocketFactory: () => socket,
         onConnect: () => {
