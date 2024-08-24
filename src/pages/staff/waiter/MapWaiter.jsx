@@ -13,6 +13,7 @@ import { clearCustomer, saveCustomer } from "../../../actions/customerActions";
 import { clearOrderId, saveOrderId } from "../../../actions/orderActions";
 import { clearState } from "../../../utils/localStorageHelper";
 import { FaLocationDot } from "react-icons/fa6";
+import { clearCart } from "../../../actions/cartActions";
 
 
 function MapWaiter(){
@@ -31,7 +32,10 @@ function MapWaiter(){
 
         const actionCustomer = clearCustomer();
         dispatch(actionCustomer);
-        clearState();
+
+        const actionCart = clearCart();
+        dispatch(actionCart)
+
         axiosInstance
         .get(`/api/area/${user?.restaurantId}`)
         .then(res =>{ 
