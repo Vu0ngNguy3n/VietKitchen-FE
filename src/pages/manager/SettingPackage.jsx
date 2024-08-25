@@ -77,6 +77,7 @@ function SettingPackage(){
         if (status === "PAID" && orderCode) {
             setStatus(status);
             setOrderCode(orderCode);
+            setIsLoading(true)
             const storePackage = JSON.parse(localStorage.getItem("packUpdate"));       
             const dataSend = {
                 packageId: storePackage?.packId,
@@ -92,6 +93,7 @@ function SettingPackage(){
                 const token = res.data.result;
                 const user = jwtDecode(token);
                 localStorage.setItem('token', token);
+                setIsLoading(false);
                 const userStorage = {
                     username: user.sub,
                     email: user.email,
@@ -108,10 +110,13 @@ function SettingPackage(){
             .catch(err => {
                 if (err.response) {
                     const errorRes = err.response.data;
+                    setIsLoading(false);
                     toast.error(errorRes.message);
                 } else if (err.request) {
+                    setIsLoading(false);
                     toast.error("Request failed");
                 } else {
+                    setIsLoading(false);
                     toast.error(err.message);
                 }
             });
