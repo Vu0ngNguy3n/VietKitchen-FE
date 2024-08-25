@@ -14,7 +14,7 @@ const Footer = () => {
                         <span className="text-white">VietKitchen</span>
                     </a>
 
-                    <p className="md:w-1/2 ">A simple paragraph is comprised of three major components. The first sentence, which is often a declarative sentence</p>
+                    <p className="md:w-1/2 ">Phần mềm quản lí nhà hàng VietKitchen sẽ đem dến cho nhà hàng của bạn sự tiện ích, tối ưu hoá thời gian trong khâu quản lí khách hàng và gọi món.</p>
                     <div>
                         <input
                             type="email"
@@ -32,30 +32,30 @@ const Footer = () => {
 
                 <div className="md:w-1/2 flex flex-col md:flex-row flex-wrap justify-between gap-8 items-start">
                     <div className="space-y-4 mt-5">
-                        <h4 className="text-xl">Platform</h4>
+                        <h4 className="text-xl">Hỏi đáp</h4>
                         <ul className="space-y-3">
-                            <a href="/" className="block hover:text-gray-300">Overview</a>
-                            <a href="/" className="block hover:text-gray-300">Feature</a>
-                            <a href="/" className="block hover:text-gray-300">About</a>
-                            <a href="/" className="block hover:text-gray-300">Pricing</a>
+                            <a  className="block hover:text-gray-300">Cách sử dụng?</a>
+                            <a  className="block hover:text-gray-300">Giá của các gói?</a>
+                            <a  className="block hover:text-gray-300">Làm thể nào để dùng thử?</a>
+                            <a  className="block hover:text-gray-300">Mục đích của trang web?</a>
                         </ul>
                     </div>
                     <div className="space-y-4 mt-5">
-                        <h4 className="text-xl">Help</h4>
+                        <h4 className="text-xl">Nền tảng</h4>
                         <ul className="space-y-3">
-                            <a href="/" className="block hover:text-gray-300">How does it works?</a>
-                            <a href="/" className="block hover:text-gray-300">Where to ask question?</a>
-                            <a href="/" className="block hover:text-gray-300">How to play?</a>
-                            <a href="/" className="block hover:text-gray-300">What is needed for this?</a>
+                            <a  className="block hover:text-gray-300">Tổng quát</a>
+                            <a  className="block hover:text-gray-300">Chức năng</a>
+                            <a  className="block hover:text-gray-300">Nền tảng</a>
+                            <a  className="block hover:text-gray-300">Bảng giá</a>
                         </ul>
                     </div>
                     <div className="space-y-4 mt-5">
-                        <h4 className="text-xl">Contact</h4>
+                        <h4 className="text-xl">Liên hệ</h4>
                         <ul className="space-y-3">
                             <p className=" hover:text-gray-300">(+84) 888-637-937</p>
                             <p className=" hover:text-gray-300">Số 7, ngách 5, đường Hoàng Đan</p>
                             <p className=" hover:text-gray-300">Cửa Lò, Nghệ An</p>
-                            <p className=" hover:text-gray-300">Pricing</p>
+                            <p className=" hover:text-gray-300">vietkitchenservice@gmail.com</p>
                         </ul>
                     </div>
                 </div>

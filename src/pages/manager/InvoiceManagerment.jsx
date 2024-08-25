@@ -59,6 +59,7 @@ function InvoiceManagement() {
             } else {
                 setInvoices(data);
             }
+            console.log(data);
         } catch (error) {
             console.error("Lỗi khi gọi API:", error);
             toast.error("Có lỗi xảy ra khi lấy dữ liệu hóa đơn.");
@@ -154,6 +155,19 @@ function InvoiceManagement() {
         console.log(billDetails);
     },[billDetails])
 
+    function formatDateTime(inputDateTime) {
+        const date = new Date(inputDateTime);
+        
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+        const year = date.getFullYear();
+
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+
+        return `${day}/${month}/${year} ${hours}:${minutes}`;
+    }
+    
     return (
         <div className="flex h-screen">
             <div className="basis-[12%] bg-gray-100">
@@ -197,7 +211,7 @@ function InvoiceManagement() {
                             <tbody >
                                 {invoices?.map(invoice => (
                                     <tr key={invoice.id} className='bg-white border-b-2 text-center'>
-                                        <td className="px-6 py-4">{invoice?.dateCreated}</td>
+                                        <td className="px-6 py-4">{formatDateTime(invoice?.dateCreated)}</td>
                                         <td className="px-6 py-4">{invoice.order.tableRestaurant?.name}</td>
                                         <td className="px-6 py-4">{invoice?.order.customer?.name} - {invoice.order.customer?.phoneNumber}</td>
                                         <td className="px-6 py-4">
