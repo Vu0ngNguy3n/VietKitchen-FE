@@ -62,7 +62,7 @@ const NavBar = () => {
                     </div>
 
                     <div className="space-x-12 hidden md:flex items-center">
-                        {userStorage !== null ?<a  className="hidden lg:flex items-center hover:text-secondary cursor-pointer" onClick={() => toast.success("success")}>Hello, {userStorage?.username}</a> : ''}
+                        {userStorage !== null ?<a  className="hidden lg:flex items-center hover:text-secondary cursor-pointer" >Hello, {userStorage?.username}</a> : ''}
                         {userStorage !== null ?<button className="bg-secondary py-2 px-4 transition-all duration-300 rounded hover:text-white hover:bg-indigo-600 " onClick={() => hanldeLogout()}>Đăng xuất</button>:<button className="bg-secondary py-2 px-4 transition-all duration-300 rounded hover:text-white hover:bg-indigo-600 " onClick={() => navigate("/login")}>Đăng nhập</button>}
                     </div>
 
