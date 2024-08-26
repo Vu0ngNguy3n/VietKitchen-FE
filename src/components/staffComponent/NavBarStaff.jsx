@@ -13,6 +13,7 @@ const NavBarStaff = () => {
     const [open, setOpen] = useState(false)
     const navigate = useNavigate();
     const [userStorage, setUserStorage] = useState();
+    const orderId = useSelector(state => state.orderId);
     // const cartList = useSelector(state => state.cart)
     const user = useUser();
     const dispatch = useDispatch();
@@ -45,7 +46,7 @@ const NavBarStaff = () => {
                 </div>
                 <div className='flex items-center gap-[20px]'>
                     <div className='flex items-center gap-[25px] border-r-[1px] pr-[25px]'>
-                        <div className='flex items-center pr-2 justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:text-secondary'
+                        <div className={`flex items-center pr-2 justify-between gap-[10px] py-[15px] cursor-pointer transition ease-in-out duration-300 rounded pl-4 hover:text-secondary ${orderId !== null ? '' : 'hidden'}`}
                             onClick={() => navigate("/waiter/ordering")}>
                                 <FaCartShopping  /> <p className='text-[14px] font-semibold leading-[20px]  '>Giỏ hàng</p>
                         </div>

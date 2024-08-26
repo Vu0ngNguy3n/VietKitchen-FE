@@ -13,6 +13,7 @@ import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import NavBarHostess from "../../../components/staffComponent/NavBarHostess";
 import { MdLocationOn } from "react-icons/md";
+import { IoMdRefreshCircle } from "react-icons/io";
 
 
 function MapHostess() {
@@ -32,6 +33,7 @@ function MapHostess() {
     const [totalSchedules, setTotalSchedules] = useState();
     const [client, setClient] = useState(null);
     const [connected, setConnected] = useState(false);
+    const [isReload, setIsReload] = useState(false);
     const {slug} = useParams();
 
     useEffect(()=>{
@@ -153,7 +155,7 @@ function MapHostess() {
                 }
             })  
         } 
-    },[currentArea])
+    },[currentArea, isReload])
 
 
     const handleChangeArea = (area) => {
@@ -233,6 +235,25 @@ function MapHostess() {
         setCurrentPage(1);
     }
 
+    // useEffect(() => {
+    //     axiosInstance
+    //     .get(`/api/table/area/${slug}`)
+    //     .then(res => {
+    //         const data = res.data.result;
+    //         setBoard(data);
+    //     })
+    //     .catch(err => {
+    //         if (err.response) {
+    //             const errorRes = err.response.data;
+    //             toast.error(errorRes.message);
+    //         } else if (err.request) {
+    //             toast.error("Yêu cầu không thành công");
+    //         } else {
+    //             toast.error(err.message);
+    //         }
+    //     })  
+    // },[isReload])
+
     return (
         <div className="flex">
             <div className="basis-[12%] h-[100vh]">
@@ -273,7 +294,7 @@ function MapHostess() {
                 </div>
             <div className="basis-[88%] border overflow-scroll h-[100vh]">
                 <NavBarHostess />
-                <div className="min-w-[40]x bg-secondary p-10 shadow min-h-[86vh] mt-2">
+                <div className="min-w-[40]x bg-secondary p-10 shadow min-h-[86vh] mt-2 relative">
                         
                     <div className="w-full flex flex-wrap justify-between">
                         {board?.map((table, index) => (
@@ -333,6 +354,9 @@ function MapHostess() {
                                                 Dự kiến 
                                             </th>
                                             <th scope="col" className="px-6 py-3">
+                                                Tiền cọc
+                                            </th>
+                                            <th scope="col" className="px-6 py-3">
                                                 Lưu ý
                                             </th>
                                             <th scope="col" className="px-6 py-3">
@@ -360,6 +384,9 @@ function MapHostess() {
                                                     {schedule?.intendTime}
                                                 </td>
                                                 <td className="px-6 py-4">
+                                                    {schedule?.deposit}
+                                                </td>
+                                                <td className="px-6 py-4">
                                                     {schedule?.note}
                                                 </td>
                                                 <td className="px-6 py-4">
@@ -372,6 +399,7 @@ function MapHostess() {
                                             
                                                 <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"></th>
                                                 <td className="px-6 py-4">Bàn không có đơn đặt bàn nào trong ngày hôm nay</td>
+                                                <td className="px-6 py-4"></td>
                                                 <td className="px-6 py-4"></td>
                                                 <td className="px-6 py-4"></td>
                                                 <td className="px-6 py-4"></td>
@@ -410,6 +438,9 @@ function MapHostess() {
                     
                 </div>
                 )}
+                <div className="absolute bottom-6 right-6 cursor-pointer " onClick={() => setIsReload(!isReload)}>
+                    <IoMdRefreshCircle className="size-10"/>
+                </div>
             </div>
             <style jsx>{`
                 @keyframes fadeIn {
