@@ -441,6 +441,11 @@ function BookingTableManagement() {
             toast.warn("Tiền đặt cọc đang để trống");
             return
         }
+
+        if(intendTime <= 0){
+            toast.warn("Thời gian dự kiến không được nhỏ hơn 0");
+            return;
+        }
         const data = {
             customerName: customerName,
             customerPhone: phoneNumber,
