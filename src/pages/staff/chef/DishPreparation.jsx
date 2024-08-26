@@ -30,7 +30,11 @@ function DishPreparation(){
 
   useEffect(() => {
     axiosInstance
-    .get(`/api/dish-order/restaurant/${user?.restaurantId}`)
+    .get(`/api/dish-order/restaurant/${user?.restaurantId}`,{
+      params: {
+        size: 100
+      }
+    })
     .then(res => {
       const data = res.data.result;
       console.log(data);
@@ -277,7 +281,7 @@ function DishPreparation(){
                                       return (
                                         <tr className={`bg-white border-b dark:bg-gray-800 dark:border-gray-700 ${(d?.status === confirm || d?.status === decline) && "hidden"}`} key={index}>
                                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {d?.dish?.name}
+                                              {d?.dish?.name || d?.combo?.name}
                                             </th>
                                             <td className="px-6 py-4">
                                                 {d?.order?.tableRestaurant?.name}

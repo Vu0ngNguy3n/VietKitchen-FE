@@ -9,8 +9,8 @@ import Main from './components/adminComponent/Main';
 import {  useUser } from './utils/constant';
 import { useEffect } from 'react';
 import { checkAuth, logoutLocalStorage } from './utils/localStorageHelper';
-// axios.defaults.baseURL = "http://localhost:8080"
-axios.defaults.baseURL = "http://be.vietkitchen.shop/"
+axios.defaults.baseURL = "http://localhost:8080"
+// axios.defaults.baseURL = "http://be.vietkitchen.shop/"
 
 function App() {
 

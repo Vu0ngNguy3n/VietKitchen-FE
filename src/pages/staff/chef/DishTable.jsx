@@ -34,7 +34,9 @@ function DishTable(){
   useEffect(() => {
     axiosInstance
     .get(`/api/dish-order/${slug}`, {
-      size: 100
+      params: {
+        size: 100
+      }
     })
     .then(res => {
         const data = res.data.result.results;
