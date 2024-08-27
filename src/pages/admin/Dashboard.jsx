@@ -12,6 +12,10 @@ import Highcharts from 'highcharts';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import axios from "axios";
+import { FaBuildingUser, FaMoneyBillWave } from "react-icons/fa6";
+import { LuPackage } from "react-icons/lu";
+import { FiUserPlus } from "react-icons/fi";
+import { PiMoneyWavy } from "react-icons/pi";
 
 
 function Dashboard() {
@@ -158,7 +162,8 @@ function Dashboard() {
 
     // const handleExport = () => {
     //     // console.log(allDataLineChart);        
-    //     const ws = XLSX.utils.json_to_sheet(allDataLineChart);
+        
+    //     const ws = XLSX.utils.json_to_sheet(dataStatisticAll);
     //      const wb = XLSX.utils.book_new();
     //     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     //     const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
@@ -179,41 +184,43 @@ function Dashboard() {
                             <div className='flex items-center justify-between'>
                                 <h1 className='text-[28px] leading-[34px] font-normal text-[#5a5c69] cursor-pointer'>Dashboard</h1>
 
-                                <button 
-                                    className='bg-[#2E59D9] h-[32px] rounded-[3px] text-white flex items-center justify-center px-4 py-2 transition-all duration-300 shadow-md hover:translate-x-2 hover:bg-blue-600'>
+                                {/* <button 
+                                    onClick={() => handleExport()}
+                                    className='bg-[#2E59D9] h-[32px] rounded-[3px] text-white flex items-center justify-center px-4 py-2 transition-all duration-300 shadow-md hover:translate-x-2 hover:bg-blue-600'
+                                    >
                                     <BiExport className="mr-2"/>Xuất dữ liệu
-                                </button>
+                                </button> */}
                             </div>
-                            <div className='grid grid-cols-4 gap-[30px] mt-[25px] pb-[15px]'>
+                            <div className='grid grid-cols-3 gap-[30px] mt-[25px] pb-[15px] '>
                                 <div className=' h-[100px] rounded-[8px] bg-white border-l-[4px] border-[#4E73DF] flex items-center justify-between px-[30px] cursor-pointer hover:shadow-lg transform hover:scale-[103%] transition duration-300 ease-out'>
                                     <div>
                                         <h2 className='text-[#B589DF] text-[11px] leading-[17px] font-bold uppercase'>Doanh thu</h2>
                                         <h1 className='text-[20px] leading-[24px] font-bold text-[#5a5c69] mt-[5px]'>{formatVND(revenueTotal)}</h1>
                                     </div>
-                                    <FaRegCalendarMinus fontSize={28} color="" />
+                                    <PiMoneyWavy fontSize={28} color="" />
 
                                 </div>
-                                <div className=' h-[100px] rounded-[8px] bg-white border-l-[4px] border-[#1CC88A] flex items-center justify-between px-[30px] cursor-pointer hover:shadow-lg transform hover:scale-[103%] transition duration-300 ease-out'>
+                                {/* <div className=' h-[100px] rounded-[8px] bg-white border-l-[4px] border-[#1CC88A] flex items-center justify-between px-[30px] cursor-pointer hover:shadow-lg transform hover:scale-[103%] transition duration-300 ease-out'>
                                     <div>
                                         <h2 className='text-[#1cc88a] text-[11px] leading-[17px] font-bold uppercase'>
                                             Tổng hoá đơn</h2>
                                         <h1 className='text-[20px] leading-[24px] font-bold text-[#5a5c69] mt-[5px]'><span className="text-[#1cc88a]">{dataStatistic?.numbersBill}</span> hoá đơn</h1>
                                     </div>
                                     <FaRegCalendarMinus fontSize={28} />
-                                </div>
+                                </div> */}
                                 <div className=' h-[100px] rounded-[8px] bg-white border-l-[4px] border-[#36B9CC] flex items-center justify-between px-[30px] cursor-pointer hover:shadow-lg transform hover:scale-[103%] transition duration-300 ease-out'>
                                     <div>
                                         <h2 className='text-[#1cc88a] text-[11px] leading-[17px] font-bold uppercase'>Số khách hàng mới</h2>
                                         <h1 className='text-[20px] leading-[24px] font-bold text-[#5a5c69] mt-[5px]'>{restaurantTotal} nhà hàng</h1>
                                     </div>
-                                    <FaRegCalendarMinus fontSize={28} />
+                                    <FiUserPlus fontSize={28} />
                                 </div>
                                 <div className=' h-[100px] rounded-[8px] bg-white border-l-[4px] border-[#F6C23E] flex items-center justify-between px-[30px] cursor-pointer hover:shadow-lg transform hover:scale-[103%] transition duration-300 ease-out'>
                                     <div>
                                         <h2 className='text-[#1cc88a] text-[11px] leading-[17px] font-bold uppercase'>Tổng số gói</h2>
                                         <h1 className='text-[20px] leading-[24px] font-bold text-[#5a5c69] mt-[5px]'>{packages?.length} gói</h1>
                                     </div>
-                                    <FaRegCalendarMinus fontSize={28} />
+                                    <LuPackage fontSize={28} />
                                 </div>
 
                             </div>
