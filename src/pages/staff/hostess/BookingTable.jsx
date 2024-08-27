@@ -762,7 +762,7 @@ function BookingTable() {
 
     const handleChangeIntendTime = (value) => {
         console.log(!isNaN(value));
-        if(!isNaN(value) && value < 120){
+        if(!isNaN(value) && value <= 120){
             setIntendTime(value)
         }
     }
