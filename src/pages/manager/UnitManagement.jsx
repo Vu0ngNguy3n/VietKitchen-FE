@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import axiosInstance from "../../utils/axiosInstance";
 import { useNavigate } from "react-router";
 import { useUser } from "../../utils/constant";
+import Loading from "../common/Loading/Loading";
 
 function UnitManagement() {
 
@@ -20,6 +21,7 @@ function UnitManagement() {
     const [unitId, setUnitId] = useState();
     const [isOpenDeletePop, setIsOpenDeletePop] = useState(false);
     const [unitDeleteName, setUnitDeleteName] = useState();
+    const [isLoading, setIsLoading] = useState(false);
     const account = useUser();
     const navigate = useNavigate();
 
@@ -64,6 +66,7 @@ function UnitManagement() {
                 name: unitName,
                 accountId: accountStorage?.accountId
             }
+            setIsLoading(true);
 
             if(isCreate){
                 
@@ -75,14 +78,18 @@ function UnitManagement() {
                     setIsAddUnit(!isAddUnit)
                     setOpenPop(false);
                     setUnitName('');
+                    setIsLoading(false);
                 })
                 .catch(err => {
                     if (err.response) {
                         const errorRes = err.response.data;
                         toast.error(errorRes.message);
+                        setIsLoading(false);
                     } else if (err.request) {
                         toast.error("Yêu cầu không thành công");
+                        setIsLoading(false);
                     } else {
+                        setIsLoading(false);
                         toast.error(err.message);
                     }
                 })
@@ -95,14 +102,18 @@ function UnitManagement() {
                     setIsAddUnit(!isAddUnit)
                     setOpenPop(false);
                     setUnitName('');
+                    setIsLoading(false);
                 })
                 .catch(err => {
                     if (err.response) {
                         const errorRes = err.response.data;
+                        setIsLoading(false);
                         toast.error(errorRes.message);
                     } else if (err.request) {
+                        setIsLoading(false);
                         toast.error("Yêu cầu không thành công");
                     } else {
+                        setIsLoading(false);
                         toast.error(err.message);
                     }
                 })
@@ -302,6 +313,9 @@ function UnitManagement() {
                             </table>
                         </div>
                     </div>
+                    {isLoading && (
+                        <Loading/>
+                    )}
                 </div>
             </div>
             <style jsx>{`
