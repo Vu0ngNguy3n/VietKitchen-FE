@@ -619,10 +619,9 @@ function StaffManager() {
                                             <span className="sr-only">Đổi mật khẩu</span>
                                             {/* <span className="sr-only">Xóa</span> */}
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
+                                        {/* <th scope="col" className="px-6 py-3">
                                             <span className="sr-only">Xoá</span>
-                                            {/* <span className="sr-only">Xóa</span> */}
-                                        </th>
+                                        </th> */}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -657,14 +656,14 @@ function StaffManager() {
                                                     Đổi mật khẩu
                                                 </button>
                                             </td>
-                                            <td className="px-6 py-4 ">
+                                            {/* <td className="px-6 py-4 ">
                                                 <button 
                                                     onClick={() => handleDeleteEmployee(e)}
                                                     className="py-2 px-5 bg-red-600 font-semibold text-white rounded hover:bg-primary transition-all duration-300 flex items-center">
                                                     <FaTrash className="mr-1" />
                                                     Xóa
                                                 </button>
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     ))}
                                     {listEmployeesDisplay?.length === 0 && (
