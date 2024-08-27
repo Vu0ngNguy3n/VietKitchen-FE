@@ -34,7 +34,7 @@ function BookingTableManagement() {
 
     const [areaList, setAreaList] = useState([])
     const [isOpenBooking, setIsOpenBooking] = useState(false);
-    const [time, setTime] = useState('12:00');
+    const [time, setTime] = useState('19:00');
     const [pickUpDay, setPickUpDay] = useState("");    
     const [phoneNumber, setPhoneNumber] = useState('');
     const [isOpenChooseTable, setIsOpenChooseTable] = useState(false);
@@ -476,7 +476,7 @@ function BookingTableManagement() {
                 setIsCancel(!isCancel)
                 setDishesChoose([]);
                 setDishesChooseSubmit([]);
-                setTime('12:00')
+                setTime('19:00')
            }else{
             toast.error(response)
            }
@@ -559,7 +559,7 @@ function BookingTableManagement() {
         setIsOpenShowInformation(false);
         setDishesChoose([]);
         setDishesChooseSubmit([]);
-        setTime("12:00")
+        setTime("19:00")
     }
 
     const handleCancelBooking = () => {

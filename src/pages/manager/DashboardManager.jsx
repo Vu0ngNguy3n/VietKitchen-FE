@@ -213,14 +213,33 @@ function DashboardManager() {
    
 
     const handleExport = () => {
-        // console.log(allDataLineChart);        
-        const ws = XLSX.utils.json_to_sheet(allDataLineChart);
-         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-        const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-        saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'data.xlsx');
+        const totalObject = {
+            time: "Tổng",
+            numbersBill: dataStatistic?.numbersBill + " hoá đơn",
+            profit: formatVND(dataStatistic?.profit)
+        };
 
-    }
+        let newData = allDataLineChart.map(item => ({
+            ...item,
+            profit: formatVND(item?.profit)
+        }));
+        newData.push(totalObject);
+
+        const headers = ['Thời gian', 'Số hoá đơn', 'Doanh thu'];
+
+        const formattedData = [
+            headers, 
+            ...newData.map(item => [item.time, item.numbersBill, item.profit]) 
+        ];
+
+        const ws = XLSX.utils.aoa_to_sheet(formattedData);
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+        const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+        saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'doanh_thu.xlsx');
+    };
 
     
     return (
