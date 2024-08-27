@@ -92,6 +92,7 @@ function Payment() {
             format: "text",
             template: "compact2"
         }
+        console.log(dataPayment);
         if(dataPayment?.accountNo !== undefined){
             axios
             .post(`https://api.vietqr.io/v2/generate`,dataPayment,{
